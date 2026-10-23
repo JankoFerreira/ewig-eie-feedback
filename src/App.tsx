@@ -1,0 +1,10 @@
+import { lazy, Suspense, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { Header, Footer, FloatingTools, Cursor, ScrollProgress } from './components/Chrome';
+import Home from './pages/Home';
+const InvitationPreview = lazy(() => import('./pages/InvitationPreview'));
+import { Websites, Stationery, Collections, Pricing, Contact, Expo } from './pages/Pages';
+import { SiteTranslator, useLanguage } from './i18n';
+import { translate } from './translations';
+function ScrollReset(){const {pathname,hash}=useLocation();const {language}=useLanguage();useEffect(()=>{if(hash){requestAnimationFrame(()=>document.getElementById(hash.slice(1))?.scrollIntoView())}else{window.scrollTo(0,0)}},[pathname,hash]);useEffect(()=>{const titles:Record<string,string>={'/':'Wedding Websites & Stationery','/websites':'Wedding Websites & RSVP','/stationery':'Wedding Stationery','/collections':'Wedding Collections','/pricing':'Pricing','/contact':'Get in Touch','/expo':'Wedding Expo','/invitation-preview':'Wedding Invitation Preview'};document.title=`${translate(titles[pathname]||'Ewig & Eie',language)} | Ewig & Eie`},[pathname,language]);return null}
+export default function App(){const location=useLocation();const sample=location.pathname==='/invitation-preview';return <><ScrollReset/><SiteTranslator/>{!sample&&<ScrollProgress/>}<a className="skip-link" href="#main-content">Skip to content</a>{!sample&&<Header/>}<main id="main-content"><Suspense fallback={null}><Routes><Route path="/" element={<Home/>}/><Route path="/invitation-preview" element={<InvitationPreview/>}/><Route path="/websites" element={<Websites/>}/><Route path="/stationery" element={<Stationery/>}/><Route path="/collections" element={<Collections/>}/><Route path="/pricing" element={<Pricing/>}/><Route path="/contact" element={<Contact/>}/><Route path="/expo" element={<Expo/>}/><Route path="*" element={<Home/>}/></Routes></Suspense></main>{!sample&&<><Footer/><FloatingTools/></>}<Cursor/></>}

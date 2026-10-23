@@ -1,0 +1,18 @@
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, HashRouter } from 'react-router-dom';
+import App from './App';
+import { LanguageProvider } from './i18n';
+import './styles/global.css';
+import './styles/hero-refresh.css';
+import './styles/footer-brand.css';
+import './styles/site-polish.css';
+import './styles/editorial-refresh.css';
+import './styles/interactions.css';
+import './styles/story-motion.css';
+import './styles/quote-builder.css';
+import './styles/minimal-home.css';
+import './styles/hero-finale.css';
+import './styles/personalize-preview.css';
+const Router = import.meta.env.BASE_URL === '/' ? BrowserRouter : HashRouter;
+createRoot(document.getElementById('root')!).render(<React.StrictMode><Router><LanguageProvider><App/></LanguageProvider></Router></React.StrictMode>);

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.tsbuildinfo
+*.log
+.env
+.env.*
+!.env.example
+preview-*.png
+design-preview.png
+public/everafter-*.png
+.DS_Store
+Thumbs.db

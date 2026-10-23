@@ -1,0 +1,147 @@
+/* Full-screen photographic covers and the layered transition into page content. */
+.hero,
+.page-hero,
+.expo-hero {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100svh;
+  min-height: 0;
+  max-height: none;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero-background,
+.page-hero-background {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-position: center;
+  background-size: cover;
+  transform: scale(1);
+  animation: cover-breathe 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes cover-breathe {
+  from { transform: scale(1); }
+  to { transform: scale(1.085); }
+}
+
+.hero { background: #303a32; }
+.hero-content { padding-top: 48px; }
+.hero h1 { font-size: clamp(4.2rem, 8vw, 9.5rem); }
+.hero-frame { inset: 104px 26px 24px; }
+.hero-bottom { bottom: 45px; }
+
+.page-hero {
+  display: flex;
+  align-items: center;
+  padding: 110px 9vw 50px;
+  background: #414e41;
+}
+.page-hero h1 {
+  font-size: clamp(3.4rem, 6vw, 6.6rem);
+  line-height: 1.02;
+  margin: 20px 0 24px;
+}
+.page-hero h1 em { font-size: .8em; }
+.page-hero-content { max-width: min(1100px, 100%); }
+.page-hero-mark { bottom: 35px; }
+
+.expo-hero {
+  background-size: cover;
+  animation: none;
+}
+
+/* Every section needs its own opaque surface while passing over the sticky hero. */
+main > * {
+  position: relative;
+  z-index: 2;
+  background-color: var(--cream);
+}
+
+.hero + section,
+.page-hero + section,
+.expo-hero + section {
+  position: relative;
+  z-index: 2;
+  background-color: var(--cream);
+  box-shadow: 0 -18px 45px rgba(25, 31, 24, .08);
+}
+
+/* A large closing signature gives the footer the same branded finish as the other projects. */
+.footer-wordmark {
+  display: flex;
+  align-items: baseline;
+  gap: .18em;
+  padding: 0 0 28px;
+  font-family: var(--serif);
+  font-size: clamp(4.2rem, 12.3vw, 13rem);
+  line-height: .92;
+  letter-spacing: -.065em;
+  white-space: nowrap;
+  color: #f7f4ef;
+}
+.footer-wordmark em { font-family: Georgia, serif; font-weight: 400; }
+.footer-wordmark span { align-self: flex-start; font: 400 .18em Georgia, serif; letter-spacing: 0; color: #b6c1b4; }
+
+@media (pointer: fine) {
+  html, body, body *, body *::before, body *::after { cursor: none !important; }
+  #cursor-dot, #cursor-ring { opacity: 0; }
+  #cursor-dot { display: block; width: 6px; height: 6px; background: #a6b7a1; margin: -3px; }
+  #cursor-ring { display: block; width: 31px; height: 31px; border: 1px solid #a6b7a1; margin: -15px; }
+}
+
+@media (max-height: 700px) and (min-width: 761px) {
+  .hero h1 { font-size: clamp(3.7rem, 6vw, 7rem); margin-bottom: 18px; }
+  .hero-kicker { margin-bottom: 18px; }
+  .hero-actions { margin-top: 18px; }
+  .hero-description { line-height: 1.55; }
+  .page-hero h1 { font-size: clamp(3.1rem, 5vw, 5.3rem); }
+}
+
+@media (max-width: 760px) {
+  .hero,
+  .page-hero,
+  .expo-hero { height: 100svh; min-height: 0; }
+  .hero-background { background-position: 58% center; }
+  .hero-frame { inset: 87px 12px 13px; }
+  .hero-content { margin: 0; padding: 56px 35px 45px; }
+  .hero h1 { font-size: clamp(3.05rem, 10.5vw, 5.6rem); line-height: .94; margin-bottom: 20px; }
+  .hero-kicker { margin-bottom: 18px; }
+  .hero-description { font-size: 12px; line-height: 1.55; max-width: 330px; }
+  .hero-actions { margin-top: 20px; gap: 15px; }
+  .hero-primary { padding: 15px 18px; }
+  .hero-bottom { bottom: 30px; }
+  .page-hero { padding: 90px 24px 45px; }
+  .page-hero h1 { font-size: clamp(3.15rem, 9vw, 5.5rem); line-height: 1.02; }
+  .page-hero h1 em { font-size: .78em; }
+  .page-hero p { font-size: 13px; line-height: 1.6; }
+  .expo-hero { padding: 100px 24px 55px; }
+  .expo-hero h1 { font-size: clamp(3.2rem, 9vw, 6rem); }
+  .footer-wordmark { font-size: clamp(2.8rem, 11.8vw, 6.5rem); white-space: normal; flex-wrap: wrap; gap: 0 .15em; }
+}
+
+@media (max-width: 420px) {
+  .hero h1 { font-size: clamp(2.9rem, 10.2vw, 3.8rem); }
+  .hero-content { padding-inline: 28px; }
+  .hero-bottom { left: 28px; right: 28px; }
+  .page-hero h1 { font-size: clamp(2.85rem, 9vw, 3.8rem); }
+}
+
+@media (max-height: 600px) and (max-width: 760px) {
+  .hero-content { padding-top: 75px; }
+  .hero h1 { font-size: clamp(2.65rem, 9vw, 4rem); }
+  .hero-description { line-height: 1.4; }
+  .hero-bottom { display: none; }
+  .page-hero h1 { font-size: clamp(2.7rem, 8vw, 4rem); }
+  .expo-hero h1 { font-size: clamp(2.7rem, 8vw, 4rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-background,
+  .page-hero-background { animation: none; }
+}
