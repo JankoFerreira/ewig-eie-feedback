@@ -46,14 +46,19 @@
 .home-cover .hero-signature { color: #e4eadf; }
 .home-cover .hero-bottom { left: 0; right: 0; bottom: 21px; color: #e4eadf; }
 .home-cover .hero-bottom a { color: #e4eadf; }
-.home-seal-wrap { position: absolute; z-index: 3; right: 4.5vw; top: 17vh; width: clamp(100px, 12vw, 170px); aspect-ratio: 1; border-radius: 50%; cursor: grab; touch-action: none; filter: drop-shadow(0 18px 16px #07150c65); }
-.home-seal-wrap:active { cursor: grabbing; }
-.home-seal { display: grid; place-items: center; width: 100%; height: 100%; border: 1px solid #f2eddfb0; border-radius: 50%; background: radial-gradient(circle at 35% 26%,#f4edda 0%,#d6d9c5 37%,#8da285 73%,#45634d 100%); box-shadow: inset 3px 4px 12px #ffffffb0,inset -8px -10px 20px #1e432b8c,0 0 0 7px #f6f0db24; transform-style: preserve-3d; animation: seal-float 5s ease-in-out infinite; }
-.home-seal::before { content: ''; position: absolute; inset: 9%; border: 1px solid #f7f5e9d0; border-radius: 50%; box-shadow: inset 0 0 0 2px #34503b2b; }
-.home-seal-ring { position: absolute; top: 18%; width: 100%; text-align: center; font: 700 clamp(7px,.6vw,10px) 'DM Sans',sans-serif; letter-spacing: .17em; color: #35533f; transform: translateZ(12px); }
-.home-seal-core { font: normal clamp(23px,3vw,44px) Georgia,serif; color: #294132; text-shadow: 0 1px #fff9; transform: translateZ(18px); }
-.home-seal-core i { font-size: .55em; color: #6b8870; }
-@keyframes seal-float { 50% { transform: translateY(-8px) rotateY(12deg) rotateX(7deg); } }
+.hero-invitation-wrap { position: absolute; z-index: 3; right: 4.8vw; top: 18vh; width: clamp(146px,14vw,190px); filter: drop-shadow(0 18px 22px #0a170e66); }
+.hero-invitation { position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; aspect-ratio: .77; padding: 16px 12px 12px; border: 1px solid #ddd4bf; background: linear-gradient(145deg,#fffdf5,#eae3d4); color: #344338; box-shadow: inset 0 0 0 6px #f8f5ec,inset 0 0 0 7px #b5ad9770,0 3px 8px #0d1a1266; text-align: center; transition: box-shadow .35s ease,background .35s ease; }
+.hero-invitation::before { content: ''; position: absolute; z-index: -1; inset: 6px -8px -8px 7px; border: 1px solid #d6cbb7; background: #e5dccb; transform: rotate(4deg); transition: transform .4s ease; }
+.hero-invitation:hover::before,.hero-invitation:focus-visible::before { transform: rotate(8deg) translate(3px,3px); }
+.hero-invitation:hover,.hero-invitation:focus-visible { box-shadow: inset 0 0 0 6px #f8f5ec,inset 0 0 0 7px #b5ad9770,0 12px 20px #0d1a1255; }
+.hero-invitation:focus-visible { outline: 2px solid #e8efdc; outline-offset: 8px; }
+.hero-invitation-top { font: 700 7px 'DM Sans',sans-serif; letter-spacing: .18em; }
+.hero-invitation-monogram { margin: auto 0 6px; font: 43px 'Italiana',Georgia,serif; letter-spacing: -.09em; white-space: nowrap; }
+.hero-invitation-monogram i { font: italic .48em Georgia,serif; color: #8a907a; }
+.hero-invitation-rule { width: 42px; height: 1px; margin-bottom: 10px; background: #a7a78f; }
+.hero-invitation-copy { font: italic 13px Georgia,serif; }
+.hero-invitation-action { margin-top: auto; padding-top: 18px; border-top: 1px solid #c4bfae; width: 100%; font: 700 8px 'DM Sans',sans-serif; letter-spacing: .06em; }
+.hero-invitation > svg { position: absolute; right: 10px; bottom: 10px; color: #566b58; }
 
 /* The navigation reads as a slim strip, including the language control. */
 .site-header,.site-header.header-solid { top: 8px; width: min(940px,calc(100% - 48px)); }
@@ -112,9 +117,7 @@
   .home-cover h1 { font-size: clamp(3.1rem,10.5vw,5.6rem); }
   .home-cover .hero-description { font-size: 13px; max-width: 380px; }
   .home-cover .hero-actions { flex-direction: row; }
-  .home-seal-wrap { width: 94px; right: 17px; top: auto; bottom: 46px; opacity: .75; }
-  .home-seal-ring { font-size: 5.4px; }
-  .home-seal-core { font-size: 25px; }
+  .hero-invitation-wrap { display: none; }
 }
 @media (max-width: 480px) {
   .hero.editorial-hero.home-cover { padding-inline: 14px; }
@@ -122,9 +125,6 @@
   .home-cover .hero-actions { flex-direction: column; width: 100%; }
   .home-cover .hero-primary,.home-cover .hero-secondary { width: min(250px,100%); }
   .home-cover .hero-signature { display: none; }
-  .home-seal-wrap { width: 69px; right: 12px; bottom: 18px; opacity: .62; }
-  .home-seal-ring { display: none; }
-  .home-seal-core { font-size: 20px; }
 }
 @media (max-height: 650px) {
   .home-cover h1 { font-size: clamp(2.8rem,6vw,6rem); margin-bottom: 12px; }
@@ -134,6 +134,6 @@
   .home-cover .hero-signature { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .home-seal { animation: none; }
   .language-switch::before,:is(a,button)>svg { transition: none !important; }
 }
+@media (max-width: 1050px) { .hero-invitation-wrap { display: none; } }
