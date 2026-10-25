@@ -14,5 +14,7 @@ import './styles/quote-builder.css';
 import './styles/minimal-home.css';
 import './styles/hero-finale.css';
 import './styles/personalize-preview.css';
+import './styles/story-portal.css';
+import './styles/mobile-impact.css';
 const Router = import.meta.env.BASE_URL === '/' ? BrowserRouter : HashRouter;
 createRoot(document.getElementById('root')!).render(<React.StrictMode><Router><LanguageProvider><App/></LanguageProvider></Router></React.StrictMode>);

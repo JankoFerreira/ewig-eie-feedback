@@ -1,0 +1,55 @@
+.story-portal { position: fixed; z-index: 300; inset: 0; display: grid; grid-template-columns: minmax(0,1.08fr) minmax(380px,.92fr); background: #f8f5ef; color: #27372c; overflow: auto; }
+.story-portal-close { position: fixed; z-index: 5; top: 22px; right: 24px; width: 43px; height: 43px; display: grid; place-items: center; border: 1px solid #c7d2c5; border-radius: 50%; background: #f8f5ef; color: #2b3d30; box-shadow: 0 8px 24px #14241822; }
+.story-portal-close:hover,.story-portal-close:focus-visible { background: #dce9d8; }
+.story-portal-visual { position: relative; min-height: 100svh; background-size: cover; background-position: center; overflow: hidden; }
+.story-portal-photo-shade { position: absolute; inset: 0; background: linear-gradient(180deg,#07110b15 5%,#13251a34 42%,color-mix(in srgb,var(--portal-accent),#07150d 75%) 100%); transition: background .45s ease; }
+.story-portal-visual::after { content: ''; position: absolute; inset: 24px; border: 1px solid #fff9; pointer-events: none; }
+.story-portal-visual-copy { position: absolute; z-index: 1; inset: auto 9% 13%; display: grid; justify-items: center; text-align: center; color: #fffdf4; text-shadow: 0 3px 18px #07160aaa; }
+.story-portal-visual-copy > span,.story-portal-visual-copy > small,.story-portal-photo-caption { font: 700 10px 'DM Sans',sans-serif; letter-spacing: .22em; }
+.story-portal-visual-copy strong { display: block; width: 100%; margin: 20px 0; font: normal clamp(4rem,7vw,8.5rem)/.85 'Italiana',Georgia,serif; letter-spacing: -.07em; overflow-wrap: anywhere; }
+.story-portal-visual-copy strong i { display: inline-block; font: italic .5em Georgia,serif; color: color-mix(in srgb,var(--portal-accent),white 65%); transition: color .45s ease; }
+.story-portal-visual-copy small b { margin: 0 8px; color: #c4d8c0; }
+.story-portal-photo-caption { position: absolute; z-index: 1; bottom: 38px; left: 42px; color: #fff9; font-size: 8px; }
+.story-portal-controls { display: flex; flex-direction: column; justify-content: center; min-height: 100svh; max-width: 680px; width: 100%; padding: clamp(70px,7vw,110px) clamp(28px,6vw,92px) 48px; }
+.story-portal-index { color: #78947a; font: 700 10px 'DM Sans',sans-serif; letter-spacing: .18em; }
+.story-portal-controls h2 { margin: 20px 0 12px; font-size: clamp(3.3rem,5.3vw,6.2rem); line-height: .95; }
+.story-portal-controls h2 em { color: #829b7f; }
+.story-portal-controls > p { max-width: 390px; margin-bottom: 28px; color: #6b796d; font-size: 14px; line-height: 1.6; }
+.story-portal-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.story-portal-fields label { display: grid; gap: 7px; color: #617464; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.story-portal-fields label:last-child { grid-column: 1/-1; }
+.story-portal-fields input { width: 100%; min-width: 0; min-height: 45px; padding: 11px 12px; border: 1px solid #cbd5c8; border-radius: 2px; background: #fffefa; color: #27372c; font-size: 15px; letter-spacing: normal; text-transform: none; outline-offset: 2px; }
+.story-portal-fields input:focus { outline: 2px solid #78947a; border-color: transparent; }
+.story-portal-palettes { margin: 24px 0; padding: 0; border: 0; }
+.story-portal-palettes legend { margin-bottom: 10px; color: #617464; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.story-portal-palettes > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.story-portal-palettes button { display: flex; align-items: center; gap: 7px; min-height: 39px; padding: 5px 11px 5px 6px; border: 1px solid #cbd5c8; border-radius: 30px; background: #fffefa; color: #3c5141; font-size: 11px; }
+.story-portal-palettes button[aria-pressed="true"] { border-color: #456a4a; background: #eaf1e7; }
+.story-portal-palettes button i { width: 25px; height: 25px; border-radius: 50%; background: var(--swatch); }
+.story-portal-open { display: flex; align-items: center; justify-content: space-between; gap: 20px; width: 100%; max-width: 380px; min-height: 52px; padding: 13px 19px; border-radius: 40px; background: #304938; color: white; font-size: 13px; font-weight: 700; }
+.story-portal-open:hover,.story-portal-open:focus-visible { background: #4a6850; }
+.story-portal-privacy { margin-top: 13px; color: #8a998b; font-size: 10px; }
+@media (max-width: 900px) {
+  .story-portal { display: block; background: #102015; }
+  .story-portal-close { top: max(13px,env(safe-area-inset-top)); right: 13px; }
+  .story-portal-visual { min-height: 52svh; background-position: center 42%; }
+  .story-portal-visual::after { inset: 13px; }
+  .story-portal-visual-copy { inset: auto 8% 14%; }
+  .story-portal-visual-copy strong { font-size: clamp(3.8rem,12vw,6rem); margin: 12px 0; }
+  .story-portal-photo-caption { display: none; }
+  .story-portal-controls { position: relative; z-index: 2; min-height: 0; max-width: none; margin-top: -22px; padding: 28px 24px calc(34px + env(safe-area-inset-bottom)); border-radius: 24px 24px 0 0; background: #f8f5ef; }
+  .story-portal-controls h2 { font-size: clamp(3.2rem,8vw,5rem); margin: 11px 0 8px; }
+  .story-portal-controls > p { margin-bottom: 21px; }
+}
+@media (max-width: 480px) {
+  .story-portal-visual { min-height: 39svh; }
+  .story-portal-visual-copy > span,.story-portal-visual-copy > small { font-size: 8px; }
+  .story-portal-visual-copy strong { font-size: clamp(3.2rem,13vw,5rem); }
+  .story-portal-controls { padding: 22px 20px calc(30px + env(safe-area-inset-bottom)); }
+  .story-portal-controls h2 { font-size: clamp(3rem,11vw,4.4rem); }
+  .story-portal-fields { gap: 10px; }
+  .story-portal-fields input { min-height: 48px; }
+  .story-portal-palettes { margin: 17px 0; }
+  .story-portal-open { max-width: none; }
+}
+@media (prefers-reduced-motion: reduce) { .story-portal * { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
