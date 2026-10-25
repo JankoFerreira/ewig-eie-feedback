@@ -90,7 +90,7 @@ main > * {
 
 @media (pointer: fine) {
   html, body, body *, body *::before, body *::after { cursor: none !important; }
-  #cursor-dot, #cursor-ring { opacity: 0; }
+  #cursor-dot, #cursor-ring { opacity: 0; z-index: 1000; }
   #cursor-dot { display: block; width: 6px; height: 6px; background: #a6b7a1; margin: -3px; }
   #cursor-ring { display: block; width: 31px; height: 31px; border: 1px solid #a6b7a1; margin: -15px; }
 }
