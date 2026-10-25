@@ -85,3 +85,31 @@
   #cursor-ring { border-color: #ad7881; }
 }
 @media (prefers-reduced-motion: reduce) { .minimal-step,.offer-ribbon { animation: none; transition: none; } }
+/* A quieter green and beige finish. */
+@media(min-width:981px){
+.site-header .header-inner,.site-header.header-solid .header-inner{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px}
+.site-header .brand-artwork{grid-column:2;grid-row:1;justify-self:center}
+.site-header .header-nav-all{grid-column:1;grid-row:1;justify-content:flex-start}
+.site-header .header-actions{grid-column:3;grid-row:1;gap:4px}
+.site-header .header-actions .header-cta{display:none}
+.site-header .header-nav-secondary{gap:0}
+.site-header .header-nav-secondary a{display:flex;align-items:center;min-height:44px;padding:0 8px;font-size:11px;border-radius:30px}
+.site-header .header-nav-secondary a:hover{background:#e4ebdf}
+.site-header .language-switch{width:58px;min-width:58px!important}
+}
+[data-watermark]::before,.page-hero.page-hero-image::before,.expo-hero::before{font-size:clamp(4rem,10vw,10rem);opacity:.035;letter-spacing:-.04em}
+.minimal-studio::before{color:#647f69}
+.minimal-offer-action{background:linear-gradient(110deg,#f6f0e5,#e5ecdf);border-color:#d4dacb;box-shadow:none}
+.minimal-offer-action small{color:#62795e}
+.offer-ribbon{background:linear-gradient(100deg,#c5ccb4,#e6d8bd 35%,#8da58b 70%,#bdc7aa);opacity:.45}
+.offer-summary{display:grid;grid-template-columns:1fr 1fr;gap:7vw;background:#f6f2e9}
+.offer-summary h2{font-size:clamp(2.5rem,4vw,4.5rem);margin:22px 0}
+.offer-summary p,.offer-dashboard>p,.photographer-intro p{max-width:650px;color:#687567}
+.offer-dashboard h2,.photographer-intro h2{font-size:clamp(2.7rem,4.8vw,5rem);margin:25px 0}
+.offer-dashboard .dashboard-demo{margin-top:36px}
+.photographer-intro{max-width:1000px;margin:auto}
+@media(pointer:fine){#cursor-dot{color:#52764e}#cursor-ring{border-color:#799574}}
+.cursor-heart-trail{position:fixed;z-index:999;pointer-events:none;color:#789672;font:12px Georgia,serif;transform:translate(-50%,-50%);animation:heart-trail-fade .65s ease-out forwards}
+@keyframes heart-trail-fade{to{opacity:0;transform:translate(-50%,15px) scale(.35)}}
+@media(max-width:760px){.offer-summary{grid-template-columns:1fr;gap:48px}[data-watermark]::before,.page-hero.page-hero-image::before{font-size:14vw;opacity:.035}}
+@media(pointer:coarse),(prefers-reduced-motion:reduce){.cursor-heart-trail{display:none}}
