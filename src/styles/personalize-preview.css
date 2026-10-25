@@ -1,16 +1,24 @@
-.preview-personalize-trigger { position: relative; display: grid; justify-items: start; gap: 9px; width: min(100%,440px); margin-top: 30px; padding: 22px 60px 20px 24px; border: 1px solid #d7dfd4; background: #fffdf8; color: #304534; text-align: left; box-shadow: 0 18px 40px #273c2c0b; transition: transform .35s,box-shadow .35s,border-color .35s; }
-.preview-personalize-trigger:hover,.preview-personalize-trigger:focus-visible { transform: translateY(-4px); border-color: #91ac90; box-shadow: 0 22px 50px #273c2c18; }
-.preview-personalize-trigger:focus-visible { outline: 2px solid #6f9372; outline-offset: 3px; }
-.preview-personalize-trigger > span { color: #5e805f; font-size: 10px; font-weight: 700; letter-spacing: .15em; }
-.preview-personalize-trigger strong { font: normal clamp(2rem,3vw,2.9rem)/1 Georgia,serif; letter-spacing: -.05em; }
-.preview-personalize-trigger strong i { color: #8da989; font-size: .7em; }
-.preview-personalize-trigger small { color: #798b7b; font-size: 11px; }
-.preview-personalize-trigger > svg { position: absolute; right: 20px; bottom: 22px; color: #4e7454; }
+.preview-personalize { width: min(100%, 490px); margin-top: 26px; padding: 22px; border: 1px solid #d7dfd4; border-radius: 18px; background: #fffdf9; box-shadow: 0 18px 40px #273c2c0b; }
+.preview-personalize-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 5px 12px; margin-bottom: 18px; }
+.preview-personalize-heading span { color: #5e805f; font-size: 10px; font-weight: 700; letter-spacing: .13em; }
+.preview-personalize-heading small { color: #849486; font-size: 11px; }
+.preview-personalize-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.preview-personalize-fields label { display: grid; gap: 7px; min-width: 0; color: #617464; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.preview-personalize-fields .preview-date-field { grid-column: 1/-1; }
+.preview-personalize-fields input { width: 100%; min-width: 0; height: 46px; padding: 10px 12px; border: 1px solid #d1dacf; border-radius: 5px; background: #fff; color: #2e4533; font-size: 15px; letter-spacing: normal; text-transform: none; }
+.preview-personalize-fields input:focus-visible { outline: 2px solid #759477; outline-offset: 2px; }
+.preview-palette-options { margin: 18px 0; padding: 0; border: 0; }
+.preview-palette-options legend { margin-bottom: 9px; color: #617464; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.preview-palette-options > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.preview-palette-options button { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 5px 12px 5px 7px; border: 1px solid #d0dad0; border-radius: 100px; background: #fff; color: #415b46; font-size: 11px; }
+.preview-palette-options button[aria-pressed="true"] { border-color: #658f68; background: #edf4ea; }
+.preview-palette-options button i { width: 23px; height: 23px; border-radius: 50%; background: var(--swatch); }
+.preview-open-link { display: inline-flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 44px; padding: 9px 16px; border-radius: 100px; background: #334c3a; color: white; font-size: 12px; font-weight: 700; }
+.preview-open-link:hover,.preview-open-link:focus-visible { background: #4c7051; }
 .preview-browser { --preview-accent:#6f8a71; }
 .preview-browser-nav button[aria-selected="true"] { border-color:var(--preview-accent); color:var(--preview-accent); }
 .preview-browser-nav>span i,.preview-screen-overlay strong i { color:var(--preview-accent); }
 .preview-rsvp,.preview-rsvp>svg { color:var(--preview-accent); }
 .preview-screen-overlay { background:linear-gradient(0deg,color-mix(in srgb,var(--preview-accent),transparent 80%),transparent 55%); }
 @media (max-width:760px) { .showcase-visual { width:100%; } }
-@media (max-width:440px) { .preview-personalize-trigger { width:100%; margin-top: 24px; padding: 20px 55px 20px 20px; } }
-@media (prefers-reduced-motion: reduce) { .preview-personalize-trigger { transition:none; } .preview-personalize-trigger:hover { transform:none; } }
+@media (max-width:440px) { .preview-personalize { width:100%; padding:18px; } .preview-personalize-heading { margin-bottom:14px; } }

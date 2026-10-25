@@ -18,3 +18,4 @@ import './styles/story-portal.css';
 import './styles/mobile-impact.css';
 const Router = import.meta.env.BASE_URL === '/' ? BrowserRouter : HashRouter;
 createRoot(document.getElementById('root')!).render(<React.StrictMode><Router><LanguageProvider><App/></LanguageProvider></Router></React.StrictMode>);
+import './styles/refinements.css';
