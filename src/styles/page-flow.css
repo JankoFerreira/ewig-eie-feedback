@@ -65,3 +65,6 @@
 @media(prefers-reduced-motion:reduce){.offer-service-image img,.site-header .header-nav a::after{transition:none}}
 
 .expo-intro .expo-price{font-size:26px;margin:24px 0;color:#456043}.expo-intro .expo-price span{font-size:13px}.expo-intro{padding-bottom:35px}
+
+/* Vector ornaments keep their sage colour on iOS and Android. */
+.brand-flourish{display:inline-block;flex-shrink:0;width:1em;height:1em;vertical-align:-.12em;pointer-events:none}

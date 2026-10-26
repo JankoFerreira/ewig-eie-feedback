@@ -1,3 +1,4 @@
+import { Flourish } from '../Flourish';
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { gsap } from 'gsap';
 import { defaultRibbonTheme } from './defaultConfig';
@@ -119,7 +120,7 @@ export function EternalRibbonIntro({
       <div className="er-envelope-shadow" />
       <div className="er-envelope">
         <div className="er-envelope-back" />
-        <div className="er-card"><div className="er-card-inner"><span className="er-card-kicker">{language === 'af' ? 'MET LIEFDE' : 'WITH LOVE'}</span><span className="er-card-flourish" aria-hidden="true">✳</span><strong>{coupleNames}</strong><span className="er-card-wording">{wording}</span><time>{weddingDate}</time></div></div>
+        <div className="er-card"><div className="er-card-inner"><span className="er-card-kicker">{language === 'af' ? 'MET LIEFDE' : 'WITH LOVE'}</span><span className="er-card-flourish" aria-hidden="true"><Flourish/></span><strong>{coupleNames}</strong><span className="er-card-wording">{wording}</span><time>{weddingDate}</time></div></div>
         <div className="er-flap" />
         <div className="er-envelope-front" />
         {showBotanicals && <svg className="er-botanicals" viewBox="0 0 510 330" aria-hidden="true"><g fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"><path d="M24 307c39-29 58-67 69-107M38 294c-2-19-9-29-20-36M53 278c17-5 27-14 34-27M69 252c-2-16-10-25-19-31M78 230c14-4 25-12 32-23"/><path d="M485 307c-38-28-59-65-69-107M472 294c2-19 9-29 20-36M456 277c-17-5-26-14-33-27M441 252c2-16 9-25 19-31M432 230c-14-4-25-12-32-23"/></g><g fill="currentColor" opacity=".55"><path d="M18 258c-3-18 2-25 13-31 4 15-1 25-13 31ZM87 251c9-15 20-18 32-15-9 14-19 19-32 15ZM50 221c-3-16 2-24 13-30 4 16-1 25-13 30ZM110 207c9-14 19-17 30-14-8 13-18 17-30 14Z"/><path d="M492 258c3-18-2-25-13-31-4 15 1 25 13 31ZM423 251c-9-15-20-18-32-15 9 14 19 19 32 15ZM460 221c3-16-2-24-13-30-4 16 1 25 13 30ZM400 207c-9-14-19-17-30-14 8 13 18 17 30 14Z"/></g></svg>}

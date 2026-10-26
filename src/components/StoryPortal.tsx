@@ -1,3 +1,4 @@
+import { Flourish } from './Flourish';
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
@@ -74,12 +75,12 @@ export function StoryPortal({ open, onClose, firstName, onFirstNameChange, secon
       <div className="story-portal-visual-copy">
         <span>{t('A GLIMPSE INTO YOUR DAY', '’N VOORSMAAK VAN JULLE DAG')}</span>
         <motion.strong key={`${displayFirst}-${displaySecond}`} initial={reduced ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}>{displayFirst} <i>&</i> {displaySecond}</motion.strong>
-        <small>{displayDate} <b>✳</b> {t('FOREVER YOURS', 'EWIG JULLE EIE')}</small>
+        <small>{displayDate} <b><Flourish/></b> {t('FOREVER YOURS', 'EWIG JULLE EIE')}</small>
       </div>
       <span className="story-portal-photo-caption">EWIG & EIE / {t('MADE FOR YOUR STORY', 'GEMAAK VIR JULLE STORIE')}</span>
     </div>
     <div className="story-portal-controls">
-      <span className="story-portal-index">01 / 01 &nbsp; ✳ &nbsp; {t('LIVE PREVIEW', 'REGSTREEKSE VOORSKOU')}</span>
+      <span className="story-portal-index">01 / 01 &nbsp; <Flourish/> &nbsp; {t('LIVE PREVIEW', 'REGSTREEKSE VOORSKOU')}</span>
       <h2>{t('The magic is', 'Die magie is')}<br/><em>{t('in your story.', 'in julle storie.')}</em></h2>
       <p>{t('Add your names, choose a feeling, and watch your invitation become yours.', 'Voeg julle name by, kies ’n gevoel en sien hoe die uitnodiging julle eie word.')}</p>
       <div className="story-portal-fields">
