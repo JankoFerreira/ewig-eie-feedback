@@ -1,0 +1,15 @@
+{
+  "collection": "garden",
+  "fictional": true,
+  "provenance": "AI-generated with built-in image_gen for fictional Ewig & Eie demonstration characters and venue; not documentary wedding photography",
+  "palette": {"ivory": "#F7F3EA", "sage": "#A8B5A0", "olive": "#344638", "flax": "#E7DFD0", "rose": "#C69C91"},
+  "typography": {"heading": "Cormorant Garamond", "body": "Source Sans 3", "headingFallback": "Georgia, serif", "bodyFallback": "system-ui, sans-serif"},
+  "wedding": {"couple": ["Clara September", "Ruben de Villiers"], "date": "2027-10-16", "timezone": "Africa/Johannesburg", "rsvpDeadline": "2027-09-16", "venue": "Die Varinghuis", "venueIsFictional": true, "region": "Elgin Valley, Western Cape", "address": null, "mapUrl": null},
+  "images": [
+    {"file": "images/garden-couple-reference.png", "width": 1122, "height": 1402, "placement": "Story portrait; mobile hero; invitation cover; canonical identity reference", "objectPosition": "50% 35%", "alt": {"en": "Fictional couple Clara and Ruben together in a sunlit garden.", "af": "Die fiktiewe paartjie Clara en Ruben saam in 'n sonnige tuin."}},
+    {"file": "images/garden-hero.png", "width": 1536, "height": 1024, "placement": "Desktop welcome hero", "objectPosition": "65% 45%", "cropNote": "Use the portrait reference on mobile. Keep both faces and bouquet visible. Place text beside image or on an opaque ivory panel, not directly over detailed foliage.", "alt": {"en": "Clara and Ruben beside a garden path, with a glasshouse behind them; fictional wedding concept.", "af": "Clara en Ruben langs 'n tuinpaadjie met 'n glashuis agter hulle; fiktiewe troukonsep."}},
+    {"file": "images/garden-candid-table.png", "width": 1536, "height": 1024, "placement": "Personal note or gallery", "objectPosition": "50% 40%", "alt": {"en": "Clara and Ruben sharing a laugh at a garden table; fictional wedding concept.", "af": "Clara en Ruben lag saam aan 'n tuintafel; fiktiewe troukonsep."}},
+    {"file": "images/garden-venue.png", "width": 1536, "height": 1024, "placement": "Venue section", "objectPosition": "60% 50%", "caption": {"en": "Die Varinghuis · Fictional venue illustration", "af": "Die Varinghuis · Voorstelling van 'n fiktiewe venue"}, "alt": {"en": "An imagined glasshouse reception venue beside an apple orchard in the Elgin Valley.", "af": "'n Denkbeeldige glashuis vir 'n onthaal langs 'n appelboord in die Elginvallei."}},
+    {"file": "images/garden-botanical-detail.png", "width": 1122, "height": 1402, "placement": "RSVP supporting image or invitation detail", "objectPosition": "50% 45%", "alt": {"en": "Ivory flowers, green foliage and a blank envelope on natural linen.", "af": "Ivoorkleurige blomme, groen loof en 'n skoon koevert op natuurlike linne."}, "decorativeAltAllowed": true}
+  ]
+}

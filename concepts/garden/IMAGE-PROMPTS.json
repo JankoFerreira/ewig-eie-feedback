@@ -1,0 +1,32 @@
+{
+  "generationTool": "Built-in image_gen",
+  "generatedOn": "2026-10-26",
+  "fictional": true,
+  "prompts": [
+    {
+      "file": "images/garden-couple-reference.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: fictional wedding couple identity reference and story portrait for Ewig & Eie Garden Collection. One natural editorial photograph, waist-up, portrait 4:5. Clara September, 30, medium-brown skin, dark-brown eyes, shoulder-length dark natural curls, softly rounded face, small gold earrings, ivory crepe square-neck wedding dress. Ruben de Villiers, 32, fair lightly freckled skin, hazel eyes, short wavy chestnut hair and neat moustache without beard, stone linen suit and ivory open-collar shirt. Standing close together, comfortable affectionate smiles, both faces clearly visible towards camera, realistic skin texture and anatomy. Fictional Elgin garden with softly blurred foliage and limewashed wall. Soft spring daylight, restrained sage green, warm ivory and flax, neutral skin tones, contemporary understated romantic wedding photography. No text, logos, watermark, collage, heavy filters or exaggerated glamour. These are invented demonstration characters.",
+      "reference": null
+    },
+    {
+      "file": "images/garden-hero.png",
+      "prompt": "Use case: identity-preserve. Input image 1 is the definitive identity and wardrobe reference for fictional Clara and Ruben. Generate a new photorealistic editorial wedding photograph of precisely this same couple, preserve facial features, skin tones, hair, moustache, body proportions, square-neck ivory dress, gold earrings, stone linen suit and ivory open collar shirt. Wide landscape 3:2 garden website hero. Couple standing together in right half, seen from knees upward with recognisable faces, looking warmly at each other. Left third is calm softly blurred sage foliage for optional heading. Invented Elgin garden, gravel path, limewashed wall, a modest weathered sage-metal pitched-roof glasshouse in far background, apple orchard beyond. Small ivory flower bouquet. Natural soft afternoon spring daylight, true skin colour, ivory, sage, flax. Relaxed intimate moment, no text, logos, watermark or collage. One image.",
+      "reference": "images/garden-couple-reference.png"
+    },
+    {
+      "file": "images/garden-candid-table.png",
+      "prompt": "Use case: identity-preserve. Image 1 is the definitive identity and wardrobe reference. Create one new candid editorial photograph of the exact same fictional Clara and Ruben at their garden wedding, landscape 3:2. Preserve faces, hair, skin tones, Ruben's freckles and neat moustache, Clara's shoulder-length curls, square-neck ivory crepe dress and small gold earrings, his stone linen suit and ivory shirt. They sit side by side at a linen-covered outdoor supper table, laughing naturally at something off-camera, relaxed hands resting naturally on table, no exaggerated gestures. Medium waist-up framing, recognisable faces, ivory plates, a basket of bread, low white flowers with sage foliage, simple clear glassware. Background softly blurred garden and limewash. Warm natural evening daylight, true skin texture, contemporary understated romantic aesthetic, no text or watermark, no collage, no other foreground people.",
+      "reference": "images/garden-couple-reference.png"
+    },
+    {
+      "file": "images/garden-venue.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: venue image for fictional South African wedding concept, landscape 3:2. Invented Die Varinghuis in Elgin Valley, an intimate garden estate: weathered sage-green metal and clear glass pitched-roof glasshouse, limewashed low walls, pale gravel approach, garden lawn and apple orchards beyond, soft hills in background. Glasshouse large enough for intimate 64-person wedding supper with long tables, ivory linen, simple wooden chairs, low white flowers and sage foliage, no people. Contemporary understated romantic botanical atmosphere, late spring afternoon soft natural light, believable architecture and photographic detail. Warm ivory, sage, pale flax, no heavy filters, no text, signage, logos or watermarks. Not a real venue or a photograph of any existing property. Single cohesive photograph, not collage.",
+      "reference": null
+    },
+    {
+      "file": "images/garden-botanical-detail.png",
+      "prompt": "Use case: photorealistic-natural. Asset type: botanical detail photograph for Ewig & Eie fictional Garden Collection wedding invitation and RSVP section. One portrait 4:5 editorial still-life photograph. Small loose arrangement of ivory garden roses, delicate white flowers and natural sage-green foliage in simple ceramic vase on washed flax linen, beside a blank warm-ivory uncoated paper envelope and one clear drinking glass. Close intimate crop, materials visibly tactile, subtle organic shadows, generous quiet linen in lower half. Warm soft window daylight, refined contemporary romantic botanical palette, realistic colour and texture. No lettering, calligraphy, logos, watermark, people, rings or collage. Restraint rather than elaborate floral display.",
+      "reference": null
+    }
+  ]
+}

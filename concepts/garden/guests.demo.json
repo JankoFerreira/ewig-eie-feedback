@@ -1,0 +1,26 @@
+{
+  "fictional": true,
+  "purpose": "Local dashboard demonstration only; no messaging or real contact information",
+  "datasetScope": "Eight invited adults; a subset of the fictional wedding's approximately 64 guests",
+  "asOf": "2027-08-20",
+  "asOfNote": "Simulated dashboard date, not the current date",
+  "attendanceValues": ["accepted", "declined", "pending"],
+  "dietarySemantics": "null means unanswered; an empty array means explicitly no requirements. Only accepted guests count towards confirmed catering. Allergy notes require human review.",
+  "households": [
+    {"id": "garden-h01", "label": "Adams household", "email": "adams@example.invalid", "phone": null},
+    {"id": "garden-h02", "label": "Naidoo household", "email": "naidoo@example.invalid", "phone": null},
+    {"id": "garden-h03", "label": "Botha household", "email": "botha@example.invalid", "phone": null},
+    {"id": "garden-h04", "label": "Mokoena household", "email": "mokoena@example.invalid", "phone": null}
+  ],
+  "guests": [
+    {"id": "garden-g01", "householdId": "garden-h01", "name": "Leila Adams", "language": "en", "attendance": "accepted", "dietaryRequirements": ["vegetarian"], "allergies": [], "accessNeeds": null, "respondedOn": "2027-08-11"},
+    {"id": "garden-g02", "householdId": "garden-h01", "name": "Sam Adams", "language": "en", "attendance": "accepted", "dietaryRequirements": [], "allergies": [{"ingredient": "peanuts", "note": "Avoid cross-contact; confirm preparation with caterer"}], "accessNeeds": null, "respondedOn": "2027-08-11"},
+    {"id": "garden-g03", "householdId": "garden-h02", "name": "Priya Naidoo", "language": "en", "attendance": "accepted", "dietaryRequirements": ["vegan"], "allergies": [], "accessNeeds": null, "respondedOn": "2027-08-15"},
+    {"id": "garden-g04", "householdId": "garden-h02", "name": "Arun Naidoo", "language": "en", "attendance": "declined", "dietaryRequirements": null, "allergies": null, "accessNeeds": null, "respondedOn": "2027-08-15"},
+    {"id": "garden-g05", "householdId": "garden-h03", "name": "Anika Botha", "language": "af", "attendance": "accepted", "dietaryRequirements": ["gluten-free"], "allergies": [], "accessNeeds": null, "respondedOn": "2027-08-18"},
+    {"id": "garden-g06", "householdId": "garden-h03", "name": "Pieter Botha", "language": "af", "attendance": "accepted", "dietaryRequirements": [], "allergies": [], "accessNeeds": "Please discuss a shorter route with minimal walking", "respondedOn": "2027-08-18"},
+    {"id": "garden-g07", "householdId": "garden-h04", "name": "Thandi Mokoena", "language": "en", "attendance": "pending", "dietaryRequirements": null, "allergies": null, "accessNeeds": null, "respondedOn": null},
+    {"id": "garden-g08", "householdId": "garden-h04", "name": "Kabelo Mokoena", "language": "en", "attendance": "pending", "dietaryRequirements": null, "allergies": null, "accessNeeds": null, "respondedOn": null}
+  ],
+  "expectedSummary": {"invited": 8, "accepted": 5, "declined": 1, "pending": 2, "acceptedWithDietaryRequirements": 3, "acceptedWithAllergies": 1}
+}

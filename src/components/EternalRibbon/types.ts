@@ -10,6 +10,7 @@ export type EternalRibbonTheme = {
 };
 
 export type EternalRibbonIntroProps = {
+  couplePhoto?: string;
   coupleNames: string;
   initials: string;
   weddingDate: string;

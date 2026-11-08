@@ -56,3 +56,7 @@ Keep the marketing website independent. Build the RSVP backend later as a separa
 ## Notes
 
 The GitHub Pages version is a public design preview for feedback. Its package prices, gallery projects, invitation flow, and RSVP experience remain draft demonstrations until real content and backend services are added.
+
+## Garden Collection
+
+`/collections/garden` includes the fictional Clara & Ruben website, photographic envelope opening, bilingual inline content/photo editor, undo/redo, named browser drafts and JSON backup import/export. The template layout remains fixed. Sample RSVP responses feed the reusable dashboard and reset on reload. See `concepts/garden/INTEGRATION.md` for the backend handoff and current limits.
