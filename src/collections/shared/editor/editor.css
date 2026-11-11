@@ -1,0 +1,76 @@
+/* One editor look for every design. Neutral ivory and ink with a soft gold accent,
+   so couples learn it once and it reads well on light and dark designs alike. */
+:root{--ee-paper:#fffdf9;--ee-ink:#1f2320;--ee-soft:#6b6f68;--ee-line:#1f232022;--ee-accent:#a88b55;--ee-serif:'Cormorant Garamond',Georgia,serif;--ee-sans:'DM Sans',system-ui,sans-serif}
+
+/* Editable targets on the page */
+.ee-target{cursor:pointer!important;outline:1px dashed color-mix(in srgb,var(--ee-accent) 85%,transparent);outline-offset:3px;border-radius:2px;transition:outline-color .2s,background-color .2s}
+.ee-target:hover,.ee-target:focus-visible{outline:2px solid var(--ee-accent);background-color:color-mix(in srgb,var(--ee-accent) 12%,transparent)}
+.ee-target.is-current{outline:2px solid var(--ee-accent);background-color:color-mix(in srgb,var(--ee-accent) 18%,transparent)}
+div.ee-target.is-photo{display:block;position:relative}
+div.ee-target.is-photo::after{content:'✎';position:absolute;top:10px;right:10px;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:var(--ee-ink);color:var(--ee-paper);font-size:15px;pointer-events:none;box-shadow:0 6px 18px #0004}
+.ee-target.is-empty i{font-style:normal;opacity:.7;font-size:.8em}
+
+/* Bottom bar */
+.ee-bar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:9000;display:flex;align-items:center;gap:18px;max-width:calc(100vw - 24px);padding:10px 10px 10px 22px;border-radius:999px;background:var(--ee-ink);color:var(--ee-paper);font:400 13px var(--ee-sans);box-shadow:0 20px 50px -18px #000a}
+.ee-bar p{margin:0;display:flex;flex-direction:column;line-height:1.3}
+.ee-bar strong{font:500 17px var(--ee-serif);letter-spacing:.01em}
+.ee-bar span{opacity:.7;font-size:12px}
+.ee-bar div{display:flex;gap:6px;flex-wrap:wrap}
+.ee-bar.ee-bar button{min-height:40px;padding:0 15px;border-radius:999px;border:1px solid #fffdf933;background:transparent;color:inherit;font:500 13px var(--ee-sans);cursor:pointer}
+.ee-bar.ee-bar button:hover:not(:disabled){border-color:var(--ee-accent)}
+.ee-bar.ee-bar button:disabled{opacity:.35;cursor:not-allowed}
+.ee-bar.ee-bar .ee-bar-done{background:var(--ee-paper);color:var(--ee-ink);border-color:var(--ee-paper)}
+@media (max-width:760px){.ee-bar{left:8px;right:8px;bottom:8px;transform:none;border-radius:18px;flex-direction:column;align-items:stretch;gap:8px;padding:12px}.ee-bar span{display:none}.ee-bar div{display:grid;grid-template-columns:repeat(4,1fr)}.ee-bar.ee-bar button{padding:0 6px;font-size:12px}}
+
+/* Floating edit card (bottom sheet on phones) */
+.ee-card{position:fixed;z-index:9001;width:380px;max-height:min(70vh,560px);overflow:auto;background:var(--ee-paper);color:var(--ee-ink);border:1px solid var(--ee-line);box-shadow:0 30px 70px -30px #000b;font:400 14px/1.5 var(--ee-sans);text-align:left;letter-spacing:normal;text-transform:none}
+.ee-card.is-sheet{left:0;right:0;bottom:0;width:auto;max-height:72vh;border-radius:16px 16px 0 0}
+.ee-card header{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;background:var(--ee-paper);border-bottom:1px solid var(--ee-line)}
+.ee-card header strong{font:500 21px var(--ee-serif)}
+.ee-card.ee-card header button{min-height:38px;padding:0 16px;border:0;border-radius:999px;background:var(--ee-ink);color:var(--ee-paper);font:500 13px var(--ee-sans);cursor:pointer}
+.ee-card-body{padding:16px 18px 6px}
+.ee-card>.ee-small{padding:0 18px 14px}
+
+/* Side drawer */
+dialog.ee-drawer{position:fixed;inset:0 0 0 auto;width:min(560px,100vw);max-width:100vw;height:100svh;max-height:100svh;margin:0;padding:0 clamp(18px,3vw,32px) 0;border:0;border-left:1px solid var(--ee-line);background:var(--ee-paper);color:var(--ee-ink);font:400 14px/1.55 var(--ee-sans);overflow:auto;text-align:left;letter-spacing:normal;text-transform:none}
+dialog.ee-drawer::backdrop{background:#16181699;backdrop-filter:blur(2px)}
+.ee-drawer-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:20px 0 14px;margin-bottom:12px;background:var(--ee-paper);border-bottom:1px solid var(--ee-line)}
+.ee-drawer-head h2{margin:0;font:400 34px/1.05 var(--ee-serif);color:var(--ee-ink)}
+.ee-drawer .ee-drawer-head button{min-height:42px;padding:0 18px;border:0;border-radius:999px;background:var(--ee-ink);color:var(--ee-paper);font:500 13px var(--ee-sans);cursor:pointer}
+.ee-kicker{margin:0 0 4px;font:600 10.5px var(--ee-sans);letter-spacing:.22em;text-transform:uppercase;color:var(--ee-accent)}
+.ee-drawer-intro{color:var(--ee-soft);margin:0 0 14px}
+.ee-drawer details{border-top:1px solid var(--ee-line);padding:2px 0 12px}
+.ee-drawer summary{cursor:pointer;min-height:54px;display:flex;align-items:center;font:400 23px var(--ee-serif);color:var(--ee-ink);list-style-position:inside}
+.ee-status{position:sticky;bottom:0;margin:0;padding:12px 0;min-height:1.5em;background:var(--ee-paper);font-size:13.5px;color:var(--ee-soft)}
+.ee-status:empty{padding:0;min-height:0}
+
+/* Shared form parts (cards and drawers) */
+:is(.ee-card,.ee-drawer) label{display:grid;gap:6px;font:500 13px var(--ee-sans);color:var(--ee-ink);margin:0 0 14px}
+:is(.ee-card,.ee-drawer) :is(input:not([type=checkbox]):not([type=radio]):not([type=color]):not([type=range]):not([type=file]),textarea,select){width:100%;min-height:44px;padding:10px 12px;border:1px solid #1f232040;border-radius:0;background:#fff;color:var(--ee-ink);font:400 15px var(--ee-sans);box-sizing:border-box}
+:is(.ee-card,.ee-drawer) textarea{resize:vertical;line-height:1.5}
+:is(.ee-card,.ee-drawer) :is(input,textarea,select):focus-visible{outline:2px solid var(--ee-accent);outline-offset:1px}
+:is(.ee-card,.ee-drawer) input[type=color]{width:100%;height:44px;padding:2px;border:1px solid #1f232040;background:#fff}
+:is(.ee-card,.ee-drawer) input[type=range]{accent-color:var(--ee-ink)}
+:is(.ee-card,.ee-drawer) input[type=file]{font-size:13px}
+:is(.ee-card,.ee-drawer) fieldset{border:1px solid var(--ee-line);padding:12px 14px 2px;margin:0 0 14px;min-width:0}
+:is(.ee-card,.ee-drawer) legend{font:600 11px var(--ee-sans);letter-spacing:.14em;text-transform:uppercase;padding:0 6px;color:var(--ee-soft)}
+.ee-drawer button:not(.ee-swatch):not(.ee-drawer-head button){min-height:42px;padding:0 16px;margin:0 6px 8px 0;border:1px solid var(--ee-ink);border-radius:999px;background:transparent;color:var(--ee-ink);font:500 13px var(--ee-sans);cursor:pointer}
+.ee-drawer button:disabled{opacity:.4;cursor:not-allowed}
+.ee-drawer small,.ee-small{display:block;font-size:12.5px;color:var(--ee-soft);line-height:1.5}
+.ee-field span{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ee-soft)}
+.ee-grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+.ee-pair{display:grid;gap:0}
+.ee-check{display:flex!important;align-items:center;gap:10px;min-height:40px;grid-template-columns:none}
+.ee-check input{width:20px;height:20px;accent-color:var(--ee-ink)}
+.ee-thumb{display:block;width:100%;height:150px;object-fit:cover;margin:0 0 12px}
+.ee-actions{display:flex;flex-wrap:wrap;gap:0;margin:0 0 12px}
+.ee-swatches{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+:is(.ee-card,.ee-drawer) .ee-swatch{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border:1px solid var(--ee-line);border-radius:999px;background:#fff;color:var(--ee-ink);font:500 13px var(--ee-sans);cursor:pointer}
+:is(.ee-card,.ee-drawer) .ee-swatch i{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px #0002}
+:is(.ee-card,.ee-drawer) .ee-swatch[aria-pressed=true]{border-color:var(--ee-ink);box-shadow:0 0 0 1px var(--ee-ink)}
+.ee-error{color:#9b2c2c;font-size:13px}
+@media (max-width:520px){.ee-grid2{grid-template-columns:1fr}}
+
+/* The "Make it yours" button that switches each design into edit mode */
+.ee-launch{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 18px;border-radius:999px;border:1px solid currentColor;background:transparent;color:inherit;font:500 13px var(--ee-sans);cursor:pointer}
+.ee-launch[aria-pressed=true]{background:var(--ee-accent);border-color:var(--ee-accent);color:#fff}

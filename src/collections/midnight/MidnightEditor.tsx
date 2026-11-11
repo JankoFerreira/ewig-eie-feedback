@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from '../shared/useHistory';
 import { withTryNames } from '../shared/tryNames';
 import { defaultMidnight, type Copy, type Language, type MidnightData } from './content';
+import { EditorDrawer } from '../shared/editor/EditorKit';
 import { listMidnightDrafts, saveMidnightDraft, validateMidnight, serializeMidnightBackup, parseMidnightBackup, type SavedMidnight } from './storage';
 export const useMidnightStudio = () => useHistory(() => withTryNames(structuredClone(defaultMidnight), n => ({ ...structuredClone(defaultMidnight), first: n.first || defaultMidnight.first, second: n.second || defaultMidnight.second })));
 type Props = { studio: ReturnType<typeof useMidnightStudio>; open: boolean; onClose: () => void; language: Language };
 export function MidnightEditor({ studio, open, onClose, language }: Props) {
-  const dialog = useRef<HTMLDialogElement>(null);
   const [name, setName] = useState('Our Midnight wedding');
   const [saved, setSaved] = useState<SavedMidnight[]>([]);
   const [message, setMessage] = useState('');
@@ -14,15 +14,12 @@ export function MidnightEditor({ studio, open, onClose, language }: Props) {
   const af = language === 'af';
   const t = (en: string, a: string) => af ? a : en;
   const data = studio.state;
-  useEffect(() => { if (open) { dialog.current?.showModal(); listMidnightDrafts().then(setSaved).catch(() => setMessage(t('Storage unavailable. Use a backup.', 'Berging onbeskikbaar. Gebruik ’n rugsteun.'))); } else dialog.current?.close(); }, [open]);
-  useEffect(() => { if (!open) return; const previous = document.body.style.overflow; document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = previous; }; }, [open]);
+  useEffect(() => { if (open) listMidnightDrafts().then(setSaved).catch(() => setMessage(t('Storage unavailable. Use a backup.', 'Berging onbeskikbaar. Gebruik ’n rugsteun.'))); }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
   function update(patch: Partial<MidnightData>) { studio.change({ ...data, ...patch }); }
   const field = (label: string, value: string, change: (value: string) => void, type = 'text') => <label>{label}<input type={type} value={value} maxLength={200} onChange={e => change(e.target.value)}/></label>;
   const copyField = (label: string, value: Copy, change: (value: Copy) => void) => <label>{label}<textarea rows={3} maxLength={4000} value={value[language]} onChange={e => change({ ...value, [language]: e.target.value })}/></label>;
-  return <dialog className="mid-editor" ref={dialog} onCancel={onClose} onClose={onClose} aria-labelledby="mid-editor-title" data-no-translate>
-    <div className="mid-editor-head"><h2 id="mid-editor-title">{t('Your Midnight studio', 'Julle Midnight-ateljee')}</h2><button onClick={onClose}>{t('Close', 'Sluit')} ×</button></div>
-    <p>{t('Fixed layout. Every detail, yours. Edit English and Afrikaans separately using the page language switch. Save before leaving.', 'Vaste uitleg. Elke besonderheid, julle eie. Redigeer Engels en Afrikaans afsonderlik met die bladsy se taalskakelaar. Stoor voordat jy vertrek.')}</p>
-    <div className="mid-editor-actions"><button disabled={!studio.canUndo} onClick={studio.undo}>{t('Undo', 'Ontdoen')}</button><button disabled={!studio.canRedo} onClick={studio.redo}>{t('Redo', 'Herdoen')}</button><button onClick={() => studio.change(structuredClone(defaultMidnight))}>{t('Reset concept', 'Herstel konsep')}</button><button onClick={onClose}>{t('Preview changes', 'Sien veranderinge')}</button></div>
+  return <EditorDrawer open={open} onClose={onClose} language={language} design="The Midnight" className="mid-drawer" status={message} intro={t('Words, times and photos are edited right on the page: close this panel and click them. Here you set names, colours and save your work. English and Afrikaans are edited separately with the page language switch.', 'Woorde, tye en foto’s word reg op die blad geredigeer: maak hierdie paneel toe en klik daarop. Hier stel julle name en kleure en stoor julle werk. Engels en Afrikaans word afsonderlik met die bladsy se taalskakelaar geredigeer.')}>
+    <div className="ee-actions"><button disabled={!studio.canUndo} onClick={studio.undo}>{t('Undo', 'Ontdoen')}</button><button disabled={!studio.canRedo} onClick={studio.redo}>{t('Redo', 'Herdoen')}</button><button onClick={() => studio.change(structuredClone(defaultMidnight))}>{t('Reset concept', 'Herstel konsep')}</button></div>
     <details open><summary>{t('Names, dates & colours', 'Name, datums en kleure')}</summary>
       {field(t('First name', 'Eerste naam'), data.first, first => update({ first }))}{field(t('Second name', 'Tweede naam'), data.second, second => update({ second }))}
       {field(t('Wedding date', 'Troudatum'), data.date, date => update({ date, events: data.events.map(e => e.id === 'wedding' ? { ...e, date } : e) }), 'date')}
@@ -52,6 +49,6 @@ export function MidnightEditor({ studio, open, onClose, language }: Props) {
       <button onClick={() => { let backup: string; try { backup = serializeMidnightBackup(name, data); } catch { setMessage(t('Check your draft name and dates before exporting.', 'Kontroleer jou konsepnaam en datums voordat jy uitvoer.')); return; } const url = URL.createObjectURL(new Blob([backup], { type: 'application/json' })); const a = document.createElement('a'); a.href = url; a.download = 'ewig-midnight-v1.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }}>{t('Download backup', 'Laai rugsteun af')}</button>
       <label>{t('Import Midnight backup', 'Voer Midnight-rugsteun in')}<input type="file" accept=".json,application/json" onChange={async e => { const file = e.target.files?.[0]; e.target.value = ''; if (!file) return; try { if (file.size > 60 * 1024 * 1024) throw Error(); const backup = parseMidnightBackup(await file.text()); studio.change(backup.data); setName(backup.name); setMessage(t('Backup imported. Save to keep it on this device.', 'Rugsteun ingevoer. Stoor om dit op hierdie toestel te hou.')); } catch { setMessage(t('Invalid or incompatible backup. Your draft was not changed.', 'Ongeldige of onversoenbare rugsteun. Jou konsep is nie verander nie.')); } }}/></label>
       <small>{t('Browser-only storage. Photos stay on this device. Reopen a named draft after reload; RSVP demo data is separate and resets.', 'Slegs blaaierberging. Foto’s bly op hierdie toestel. Heropen ’n benoemde konsep ná herlaai; RSVP-demodata is apart en herstel.')}</small>
-    </details><p role="status">{message}</p>
-  </dialog>;
+    </details>
+  </EditorDrawer>;
 }

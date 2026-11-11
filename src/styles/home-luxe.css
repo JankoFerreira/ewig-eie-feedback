@@ -1,0 +1,111 @@
+/* Homepage: a quieter, more luxurious finish. Same images and layout, refined type, hairlines and spacing.
+   Colours come from variables so the light and dark themes are both designed, not inverted. */
+.home-luxe{
+  --lx-bg:#f8f5ef; --lx-surface:#fffdf9; --lx-tint:#f1ece3; --lx-ink:#262a24; --lx-soft:#6c6f66;
+  --lx-line:#26292414; --lx-line-strong:#2629242e; --lx-gold:#a88b55; --lx-gold-soft:#c9b48a;
+  --lx-deep:#1e231f; --lx-deep-ink:#f4efe4; --lx-shadow:0 40px 90px -50px #1e231f66;
+  --lx-display:'Italiana',Georgia,serif; --lx-italic:'Cormorant Garamond',Georgia,serif;
+  background:var(--lx-bg); color:var(--lx-ink);
+}
+[data-theme=dark] .home-luxe{
+  --lx-bg:#121513; --lx-surface:#1a1e1b; --lx-tint:#171a18; --lx-ink:#efe9dd; --lx-soft:#a9ab9f;
+  --lx-line:#efe9dd14; --lx-line-strong:#efe9dd2b; --lx-gold:#c9ad78; --lx-gold-soft:#8f7a52;
+  --lx-deep:#0c0e0d; --lx-deep-ink:#f4efe4; --lx-shadow:0 40px 90px -40px #000c;
+}
+
+/* Section rhythm and headings */
+.home-luxe .section-pad{padding-top:clamp(96px,11vw,150px);padding-bottom:clamp(96px,11vw,150px)}
+.home-luxe [data-watermark]::before,.home-luxe [data-watermark]::after{content:none!important;display:none!important}
+.home-luxe .eyebrow{color:var(--lx-gold);letter-spacing:.32em;font-size:10.5px;font-weight:600}
+.home-luxe .eyebrow-line{background:var(--lx-gold);width:38px;opacity:1}
+.home-luxe h2{color:var(--lx-ink);letter-spacing:-.035em}
+.home-luxe h2 em,.home-luxe .showcase-intro h2 em,.home-luxe .minimal-section-top h2 em,.home-luxe .minimal-work h2 em{font-family:var(--lx-italic);font-style:italic;color:var(--lx-gold);letter-spacing:-.01em}
+.home-luxe p{color:var(--lx-soft)}
+
+/* Hero: same photograph, deeper veil, finer frame and type */
+.home-luxe .home-cover{position:relative;isolation:isolate}
+.home-luxe .home-cover::after{content:''!important;display:block!important;position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,#0b0f0c4d 0%,#0b0f0ca6 100%),linear-gradient(0deg,#0b0f0cbf 0%,transparent 50%)!important}
+.home-luxe .home-cover::before{content:'';position:absolute;z-index:1;inset:110px 28px 28px;border:1px solid #f4efe438;pointer-events:none}
+.home-luxe .home-cover .hero-kicker{display:inline-flex;align-items:center;gap:16px;color:#e9dfc8;letter-spacing:.34em;font-size:10.5px;font-weight:500}
+.home-luxe .home-cover .hero-kicker::before,.home-luxe .home-cover .hero-kicker::after{content:'';width:36px;height:1px;background:#c9b48a}
+.home-luxe .home-cover h1{color:#fbf8f1;font-weight:400;letter-spacing:-.05em}
+.home-luxe .home-cover h1 .rotating-word{color:#e3d2ad;font-family:var(--lx-italic);font-style:italic;letter-spacing:-.02em}
+.home-luxe .home-cover .hero-description{color:#efeadfcc;font-size:16px;letter-spacing:.01em}
+.home-luxe .home-cover .hero-primary,.home-luxe .home-cover .hero-secondary{min-height:54px;padding:0 30px;border-radius:0;font-size:11.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;gap:16px;transition:background .35s,color .35s,border-color .35s}
+.home-luxe .home-cover .hero-primary{background:#f4efe4;color:#1e231f;border:1px solid #f4efe4}
+.home-luxe .home-cover .hero-primary:hover{background:#c9b48a;border-color:#c9b48a;color:#1e231f}
+.home-luxe .home-cover .hero-secondary{background:transparent;color:#f4efe4;border:1px solid #f4efe480}
+.home-luxe .home-cover .hero-secondary:hover{background:#f4efe414;color:#fff;border-color:#f4efe4}
+.home-luxe .home-cover .hero-signature{color:#e9dfc8b3;letter-spacing:.06em}
+.home-luxe .home-cover .hero-bottom a{letter-spacing:.32em;font-size:9.5px;color:#e9dfc8}
+.home-luxe .hero-invitation{border-color:#d9ccaf;background:linear-gradient(150deg,#fffdf7,#efe7d6)}
+.home-luxe .hero-invitation-monogram i{color:var(--lx-gold)}
+.home-luxe .hero-invitation-rule{background:#c9b48a}
+
+/* Promise strip under the hero */
+.lx-strip{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px 26px;padding:26px max(6vw,24px);background:var(--lx-surface);border-bottom:1px solid var(--lx-line);color:var(--lx-ink);font-size:11px;font-weight:500;letter-spacing:.24em;text-transform:uppercase}
+.lx-strip i{font-style:normal;font-size:7px;color:var(--lx-gold)}
+
+/* Live preview section */
+.home-luxe .showcase-section{background:var(--lx-bg)}
+.home-luxe .showcase-intro>p{font-size:16px}
+.home-luxe .preview-personalize{background:var(--lx-surface);border:1px solid var(--lx-line-strong);border-radius:0;box-shadow:var(--lx-shadow);padding:28px}
+.home-luxe .preview-personalize-heading span{color:var(--lx-gold);letter-spacing:.24em}
+.home-luxe .preview-personalize label{color:var(--lx-soft);letter-spacing:.14em;font-size:10px;text-transform:uppercase}
+.home-luxe .preview-personalize input{border-radius:0;border:0;border-bottom:1px solid var(--lx-line-strong);background:transparent;color:var(--lx-ink);padding-left:0;font:400 22px var(--lx-italic);box-shadow:none}
+.home-luxe .preview-personalize input:focus{outline:none;border-bottom-color:var(--lx-gold)}
+.home-luxe .preview-palette-options legend{color:var(--lx-soft);letter-spacing:.14em;font-size:10px;text-transform:uppercase}
+.home-luxe .preview-palette-options button{border-radius:0;background:transparent;color:var(--lx-ink);border:1px solid var(--lx-line-strong)}
+.home-luxe .preview-palette-options button[aria-pressed=true]{border-color:var(--lx-ink);box-shadow:inset 0 0 0 1px var(--lx-ink)}
+.home-luxe .preview-open-link{border-radius:0;background:var(--lx-ink);color:var(--lx-bg);letter-spacing:.16em;text-transform:uppercase;font-size:11px;min-height:50px;padding:0 24px}
+.home-luxe .preview-browser{border-radius:0;box-shadow:var(--lx-shadow);border:1px solid var(--lx-line-strong)}
+.home-luxe .showcase-float{color:var(--lx-gold);letter-spacing:.24em}
+
+/* Process: three quiet columns divided by hairlines */
+.home-luxe .minimal-process{background:var(--lx-tint);border-top:1px solid var(--lx-line);border-bottom:1px solid var(--lx-line)}
+.home-luxe .minimal-steps{gap:0;border-top:1px solid var(--lx-line-strong)}
+.home-luxe .minimal-step{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:44px 40px 10px 0!important;min-height:0!important}
+.home-luxe .minimal-step+.minimal-step{padding-left:40px!important;border-left:1px solid var(--lx-line-strong)!important}
+.home-luxe .minimal-step::before,.home-luxe .minimal-step::after{content:none!important}
+.home-luxe .minimal-step>span{font:400 30px var(--lx-italic);font-style:italic;color:var(--lx-gold);letter-spacing:.02em}
+.home-luxe .minimal-step-symbol{display:none}
+.home-luxe .minimal-step h3{font:400 34px/1.1 var(--lx-display);color:var(--lx-ink);margin:18px 0 10px;letter-spacing:-.02em}
+.home-luxe .minimal-step p{font-size:15px}
+
+/* The three websites */
+.home-luxe .minimal-work{background:var(--lx-bg)}
+.home-luxe .minimal-work-heading .text-link{border:1px solid var(--lx-line-strong);padding:14px 22px;border-radius:0;letter-spacing:.16em;text-transform:uppercase;font-size:10.5px;color:var(--lx-ink)}
+.home-luxe .minimal-work-heading .text-link:hover{border-color:var(--lx-ink)}
+.home-luxe .minimal-work-grid{gap:clamp(18px,2.4vw,34px);align-items:start}
+.home-luxe .minimal-work-card{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;margin-top:0!important;transform:none!important}
+.home-luxe .minimal-work-card a{display:flex;flex-direction:column;color:var(--lx-ink)}
+.home-luxe .minimal-work-image{position:relative;overflow:hidden;aspect-ratio:4/5;border-radius:0!important;background:var(--lx-tint)}
+.home-luxe .minimal-work-image img{width:100%;height:100%;object-fit:cover;transition:transform 1.4s cubic-bezier(.2,.7,.2,1),filter 1s}
+.home-luxe .minimal-work-card a:hover .minimal-work-image img{transform:scale(1.045)}
+.home-luxe .minimal-work-image span{position:absolute;left:16px;top:16px;bottom:auto;padding:7px 11px;background:#fffdf9e6;color:#262a24;font-size:9.5px;letter-spacing:.26em;border:0;border-radius:0}
+.home-luxe .minimal-work-card h3{font:400 clamp(30px,2.6vw,40px)/1.1 var(--lx-display);margin:24px 0 6px;color:var(--lx-ink);letter-spacing:-.02em}
+.home-luxe .minimal-work-card p{font:italic 19px var(--lx-italic);margin:0 0 18px;color:var(--lx-soft)}
+.lx-card-foot{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:16px 0;border-top:1px solid var(--lx-line-strong);border-bottom:1px solid var(--lx-line)}
+.lx-card-foot strong{font:400 26px var(--lx-display);color:var(--lx-ink);letter-spacing:-.01em}
+.home-luxe .lx-card-foot .concept-start{margin:0;text-align:right;font-size:12px;color:var(--lx-soft);letter-spacing:.02em;background:none;padding:0;border:0}
+.lx-card-link{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-size:10.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--lx-ink);transition:gap .3s,color .3s}
+.home-luxe .minimal-work-card a:hover .lx-card-link{gap:14px;color:var(--lx-gold)}
+
+/* Final call: a dark, quiet close */
+.home-luxe .minimal-final{background:var(--lx-deep);color:var(--lx-deep-ink);padding:clamp(110px,13vw,170px) 24px;border-top:1px solid var(--lx-line)}
+.home-luxe .minimal-final>span{color:var(--lx-gold-soft);opacity:.18}
+.home-luxe .minimal-final .eyebrow{color:#c9b48a}
+.home-luxe .minimal-final .eyebrow-line{background:#c9b48a}
+.home-luxe .minimal-final h2{color:#f4efe4}
+.home-luxe .minimal-final h2 em{color:#d9c393}
+.home-luxe .minimal-final .hero-primary{border-radius:0;background:#f4efe4;color:#1e231f;min-height:56px;padding:0 32px;letter-spacing:.2em;text-transform:uppercase;font-size:11px}
+.home-luxe .minimal-final .hero-primary:hover{background:#c9b48a}
+
+@media (max-width:760px){
+  .home-luxe .home-cover::before{inset:88px 12px 14px}
+  .home-luxe .home-cover .hero-kicker::before,.home-luxe .home-cover .hero-kicker::after{width:18px}
+  .lx-strip{gap:10px 16px;font-size:9.5px;letter-spacing:.18em;padding:20px 18px}
+  .home-luxe .minimal-steps{border-top:0}
+  .home-luxe .minimal-step,.home-luxe .minimal-step+.minimal-step{padding:28px 0 6px!important;border-left:0!important;border-top:1px solid var(--lx-line-strong)!important}
+  .home-luxe .preview-personalize{padding:22px}
+}

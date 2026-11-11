@@ -83,22 +83,3 @@ export const addOns = {
 export const venuePartnerDiscount = { active: false, note: l('A venue-partner discount is planned for couples booking through a partner venue. It applies only once real agreements exist.', '’n Venuevennootafslag word beplan vir paartjies wat deur ’n vennootvenue bespreek. Dit geld eers wanneer werklike ooreenkomste bestaan.') };
 
 
-/** Founding couples: a small launch offer in exchange for showcase rights and feedback.
- *  The exact rate (free or reduced) is agreed per couple and confirmed in writing. */
-export const foundingCouples = {
-  active: true,
-  spots: 3,
-  title: l('Founding couples', 'Stigterspaartjies'),
-  intro: l(
-    'We are opening a few places at a founding rate while we launch. In return we ask for a little help showing our work.',
-    'Ons maak ’n paar plekke teen ’n stigterstarief oop terwyl ons begin. In ruil vra ons ’n bietjie hulp om ons werk te wys.'
-  ),
-  conditions: [
-    l('Up to three couples only.', 'Hoogstens drie paartjies.'),
-    l('The plan, design and number of revision rounds are fixed in writing before we start. Anything extra is quoted separately.', 'Die plan, ontwerp en aantal hersieningsrondtes word skriftelik vasgelê voordat ons begin. Enigiets ekstra word apart gekwoteer.'),
-    l('We may show your website in our portfolio and on social media. Guest details are never shown, and you approve what we share.', 'Ons mag julle webwerf in ons portefeulje en op sosiale media wys. Gastebesonderhede word nooit gewys nie, en julle keur goed wat ons deel.'),
-    l('A short written testimonial after the wedding.', '’n Kort geskrewe getuigskrif ná die troue.'),
-    l('A small “Made with Ewig & Eie” credit in your website footer.', '’n Klein “Gemaak deur Ewig & Eie”-erkenning onderaan julle webwerf.'),
-  ],
-  cta: l('Ask about a founding place', 'Vra oor ’n stigtersplek'),
-};

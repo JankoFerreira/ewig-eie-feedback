@@ -1,0 +1,8 @@
+/* Theme switch, plus hand-tuned dark-theme details the generator can't judge. */
+.theme-toggle{display:inline-grid;place-items:center;width:32px;height:32px;flex:none;margin-right:10px;padding:0;border-radius:50%;border:1px solid currentColor;border-color:color-mix(in srgb,currentColor 35%,transparent);background:transparent;color:inherit;cursor:pointer;transition:background .25s,border-color .25s}
+.theme-toggle:hover{border-color:currentColor;background:color-mix(in srgb,currentColor 8%,transparent)}
+.theme-toggle-menu{display:flex;width:auto;height:auto;margin:0;gap:12px;justify-content:flex-start;border:0;border-radius:0;padding:16px;font:inherit;text-align:left}
+.theme-toggle-menu:hover{background:transparent}
+
+html[data-theme=dark] body{background:#121513;color:#e9e4d8}
+html[data-theme=dark] img{filter:none}
