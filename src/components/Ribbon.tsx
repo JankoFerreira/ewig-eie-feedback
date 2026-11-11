@@ -2,12 +2,12 @@ import { useEffect, useMemo, useRef } from 'react';
 
 /**
  * A satin ribbon drawn as a lit 3D band: it twists along its length, the face catches a soft sheen,
- * the back is a shade darker, and it casts a blurred shadow. It drifts very slowly when in view
- * (still for reduced motion). Pure SVG, no libraries.
+ * the back is a shade darker, and it casts a blurred shadow. It is still, and turns a little only
+ * as the visitor scrolls past (never for reduced motion). Pure SVG, no libraries.
  */
 type Tone = 'light' | 'dark';
 type Vec = [number, number];
-const SEGMENTS = 420;
+const SEGMENTS = 320;
 
 // The ribbon's path across a 1200 × 420 frame: two cubic curves, plus a falling tail.
 const MAIN: Vec[][] = [
@@ -95,19 +95,26 @@ export function Ribbon({ className = '', tone = 'light' }: { className?: string;
   const phase = useRef(0.6);
   const id = useRef(`rb${Math.random().toString(36).slice(2, 8)}`).current;
   const registry = useRef(new Set<(p: number) => void>());
+  // Still by default. While the section is on screen, scrolling turns the ribbon a little (one redraw per frame at most).
   useEffect(() => {
     const el = svg.current; if (!el) return;
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
-    let raf = 0, visible = false, last = performance.now();
-    const tick = (now: number) => {
-      phase.current += Math.min(0.05, (now - last) / 1000) * 0.18; last = now; // one slow turn every ~35 s
-      registry.current.forEach(fn => fn(phase.current));
-      if (visible) raf = requestAnimationFrame(tick);
+    let visible = false, queued = 0;
+    const update = () => {
+      queued = 0;
+      const r = el.getBoundingClientRect();
+      const progress = (window.innerHeight - r.top) / (window.innerHeight + r.height); // 0 entering → 1 leaving
+      const next = 0.6 + Math.max(0, Math.min(1, progress)) * 1.6;
+      if (Math.abs(next - phase.current) < 0.004) return;
+      phase.current = next;
+      registry.current.forEach(fn => fn(next));
     };
-    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) { last = performance.now(); raf = requestAnimationFrame(tick); } else cancelAnimationFrame(raf); });
+    const onScroll = () => { if (visible && !queued) queued = requestAnimationFrame(update); };
+    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) onScroll(); });
     io.observe(el);
-    return () => { io.disconnect(); cancelAnimationFrame(raf); };
-  }, [id]);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => { io.disconnect(); window.removeEventListener('scroll', onScroll); cancelAnimationFrame(queued); };
+  }, []);
   return <svg ref={svg} className={`ribbon-ornament ribbon-${tone} ${className}`} viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
     <defs><filter id={`${id}-shadow`} x="-10%" y="-30%" width="120%" height="160%"><feGaussianBlur stdDeviation="14"/></filter></defs>
     <Band curves={TAIL} width={58} twists={1.25} tone={tone} phase={phase} idPrefix={`${id}-tail`} registry={registry}/>
