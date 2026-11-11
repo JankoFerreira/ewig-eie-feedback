@@ -1,0 +1,21 @@
+/* Scroll-pinned hero that turns over tile by tile (HeroTiles.tsx). */
+.ht-pin{position:relative}
+.ht-pin::after{content:'';display:block;height:90vh}
+.ht-pin.is-static::after{display:none}
+.ht-pin>.ht-hero{position:sticky;top:0}
+.ht-grid{position:absolute;inset:0;z-index:0;overflow:hidden;perspective:1200px;perspective-origin:50% 55%;pointer-events:none;visibility:hidden}
+.ht-pin.is-turning .ht-grid{visibility:visible}
+.ht-pin.is-turning>.ht-hero.ht-hero{background-image:none!important;background-color:#131613!important}
+.ht-tile{position:absolute;transform-style:preserve-3d;will-change:transform}
+.ht-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.ht-back{transform:rotateX(180deg)}
+.ht-face::after{content:'';position:absolute;inset:0;background:linear-gradient(140deg,#fff8e8 0%,#fff8e800 62%);opacity:var(--sheen,0);mix-blend-mode:soft-light}
+/* As the tiles turn: the photo's veil, the words and the invitation card make way. */
+.home-luxe .ht-hero.home-cover::after{opacity:calc(1 - var(--flip,0) * 1.5)}
+.ht-hero .hero-content{opacity:calc(1 - var(--flip,0) * 2.4);transform:translateY(calc(var(--flip,0) * -70px));will-change:opacity,transform}
+.ht-hero .hero-invitation-wrap,.ht-hero .hero-bottom{opacity:calc(1 - var(--flip,0) * 3)!important}
+.ht-caption{position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,calc(-50% + (1 - var(--flip,0)) * 40px));display:grid;justify-items:center;gap:14px;padding:34px 46px;text-align:center;color:#262a24;background:#fbf7efd9;backdrop-filter:blur(6px);box-shadow:0 30px 70px -40px #1e231f80;opacity:calc((var(--flip,0) - .82) * 6);pointer-events:none}
+.ht-caption span{font-size:10.5px;font-weight:600;letter-spacing:.32em;color:#a88b55}
+.ht-caption strong{font:400 clamp(2.2rem,4.6vw,4.4rem)/1 'Italiana',Georgia,serif;letter-spacing:-.04em;font-weight:400}
+.ht-caption em{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;color:#a88b55}
+@media (max-width:700px){.ht-caption{padding:24px 26px;width:86%}}
