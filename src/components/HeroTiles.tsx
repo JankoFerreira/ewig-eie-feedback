@@ -4,7 +4,8 @@ import './hero-tiles.css';
 /**
  * Scroll-pinned hero whose photograph turns over tile by tile into a second image.
  * The hero stays in place for one screen of scrolling while a wave of tiles (bottom-left first)
- * lifts, turns and settles; each tile catches a sheen mid-turn. Only transforms change, so it runs
+ * lifts, turns and settles; each tile catches a sheen mid-turn. The revealed image then stays
+ * pinned while the next section (`.ht-curtain`) rises over it like a curtain. Only transforms change, so it runs
  * on the GPU. With reduced motion the hero is a normal, static hero.
  */
 type Props = { front: string; back: string; frontPosition?: [number, number]; children: ReactNode; caption?: ReactNode; className?: string; style?: React.CSSProperties };
@@ -52,7 +53,8 @@ export function HeroTiles({ front, back, frontPosition = [0.5, 0.42], children, 
     const update = () => {
       raf = 0;
       const rect = host.getBoundingClientRect();
-      const travel = Math.max(1, host.offsetHeight - window.innerHeight);
+      // The tiles turn during the first stretch; the rest of the pin is the curtain (next section rising over).
+      const travel = Math.max(1, section.offsetHeight - window.innerHeight + window.innerHeight * 0.9);
       const p = clamp(-rect.top / travel);
       if (Math.abs(p - last) < 0.0015) return;
       last = p;

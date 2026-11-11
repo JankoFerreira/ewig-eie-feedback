@@ -1,6 +1,6 @@
 /* Scroll-pinned hero that turns over tile by tile (HeroTiles.tsx). */
 .ht-pin{position:relative}
-.ht-pin::after{content:'';display:block;height:90vh}
+.ht-pin::after{content:'';display:block;height:calc(90vh + 100vh)} /* turn the tiles, then hold for the curtain */
 .ht-pin.is-static::after{display:none}
 .ht-pin>.ht-hero{position:sticky;top:0}
 .ht-grid{position:absolute;inset:0;z-index:0;overflow:hidden;perspective:1200px;perspective-origin:50% 55%;pointer-events:none;visibility:hidden}
@@ -19,3 +19,6 @@
 .ht-caption strong{font:400 clamp(2.2rem,4.6vw,4.4rem)/1 'Italiana',Georgia,serif;letter-spacing:-.04em;font-weight:400}
 .ht-caption em{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;color:#a88b55}
 @media (max-width:700px){.ht-caption{padding:24px 26px;width:86%}}
+/* The section after the hero rises over the pinned, revealed image. */
+.ht-curtain{position:relative;z-index:5;margin-top:-100vh;box-shadow:0 -40px 80px -30px #0b0e0c99}
+:root:has(.ht-pin.is-static) .ht-curtain{margin-top:0;box-shadow:none}
