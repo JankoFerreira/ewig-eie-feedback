@@ -1,7 +1,7 @@
 {
   "collection": "ivory",
-  "status": "brief-ready-not-generated",
-  "note": "Placeholder plates ship in src/assets/ivory/. Generate 'portrait' first and pass it as the identity reference for every couple image. Fictional people; do not resemble real individuals.",
+  "status": "generated-and-integrated",
+  "note": "Fictional editorial photographs ship in src/assets/ivory/. The portrait established the couple identity for the hero; the transparent foreground remains a decorative layer.",
   "global_style": "Editorial wedding photography, natural daylight, warm ivory and soft stone grade, deep olive shadows lifted, delicate champagne highlights, fine film grain, shallow depth of field, calm composition with generous negative space, no text, no logos, no watermark",
   "negative": "text, lettering, watermark, logo, heavy vignette, sepia, oversaturated colour, harsh flash, crowd, plastic skin, extra fingers, distorted glasses",
   "identity": {
