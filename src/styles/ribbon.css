@@ -1,14 +1,8 @@
-/* Satin ribbon ornament (replaces the large star in the closing and callout sections). */
+/* Satin ribbon ornament (Ribbon.tsx): a lit, twisting band behind the closing and call-to-action sections. */
 .ribbon-ornament{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.ribbon-ornament path{stroke-dasharray:2400;stroke-dashoffset:0}
-@media (prefers-reduced-motion:no-preference){
-  .ribbon-ornament path{animation:ribbon-draw 3.2s cubic-bezier(.3,.6,.2,1) both,ribbon-sway 14s ease-in-out 3.2s infinite alternate}
-  .ribbon-ornament .ribbon-tail{animation-delay:1.2s,3.2s}
-}
-@keyframes ribbon-draw{from{stroke-dashoffset:2400}to{stroke-dashoffset:0}}
-@keyframes ribbon-sway{from{transform:translateY(0)}to{transform:translateY(-10px)}}
-.ribbon-ornament .ribbon-edge,.ribbon-ornament .ribbon-shine{animation-name:ribbon-draw}
-.callout .ribbon-ornament{color:#9a8b62;opacity:.55}
-.minimal-final .ribbon-ornament{color:#c9b48a;opacity:.5}
-html[data-theme=dark] .callout .ribbon-ornament{color:#c9b48a;opacity:.4}
+.callout .ribbon-ornament{opacity:.62}
+.minimal-final .ribbon-ornament{opacity:.7}
+html[data-theme=dark] .callout .ribbon-ornament{opacity:.5}
+@media (prefers-reduced-motion:no-preference){.ribbon-ornament{animation:ribbon-in 2.4s cubic-bezier(.3,.6,.2,1) both}}
+@keyframes ribbon-in{from{opacity:0;transform:translateY(18px)}}
 .callout>*:not(.ribbon-ornament),.minimal-final>*:not(.ribbon-ornament){position:relative;z-index:1}

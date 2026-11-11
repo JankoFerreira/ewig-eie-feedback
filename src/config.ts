@@ -28,14 +28,13 @@ export const draftQuotePrices = {
 // printedStationery: off until print prices and vendors are confirmed. photographers: off until partners exist.
 export const publicFeatures = { printedStationery: false, photographers: false, ivoryStationery: false };
 // Business-site photos show no faces, except the homepage hero (a bouquet, faces out of frame).
-import handsBouquet from './assets/garden/garden-hands-bouquet.webp';
 import midnightVenue from './assets/midnight/midnight-venue.webp';
 export const images = {
  designs: designStationery,
  stationery: studioEditorial,
  photographer: photographerCamera,
  contact: contactHands,
- heroMain: handsBouquet,
+ heroMain: 'https://images.unsplash.com/photo-1729100401510-8b8c14c25856?auto=format&fit=crop&w=1400&q=85',
  heroDetail: 'https://images.unsplash.com/photo-1758825178518-ca48833a6c57?auto=format&fit=crop&w=900&q=85',
  hero: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2200&q=85',
  couple: contactHands,
