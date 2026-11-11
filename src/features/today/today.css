@@ -1,0 +1,32 @@
+/* Today mode + roster. Inherits each collection's colours through its own custom properties. */
+.today,.roster{--td-ink:var(--iv-ink,var(--mid-text,var(--garden-ink,#30342d)));--td-paper:var(--iv-paper,var(--mid-bg,var(--garden-paper,#f7f4ef)));--td-accent:var(--iv-accent,var(--mid-accent,var(--garden-accent,#b8975f)));--td-line:color-mix(in srgb,var(--td-ink) 16%,transparent);max-width:760px;margin:0 auto;padding:clamp(36px,6vw,80px) 20px 90px;color:var(--td-ink);font-size:16px;line-height:1.55}
+.today-kicker{font:600 11px/1.4 system-ui,sans-serif;letter-spacing:.22em;text-transform:uppercase;margin:0 0 14px}
+.today h1,.roster h1{font:400 clamp(40px,8vw,72px)/1.02 'Cormorant Garamond',Georgia,serif;margin:0 0 10px}
+.today-place{font:italic 20px 'Cormorant Garamond',Georgia,serif;opacity:.85;margin:0}
+.today-late{display:inline-block;margin:14px 0 0;padding:6px 12px;border:1px solid var(--td-ink);font-size:14px;font-weight:600}
+.today-next{display:grid;gap:2px;margin:28px 0;padding:18px 20px;border:1px solid var(--td-line);border-left:3px solid var(--td-accent);background:color-mix(in srgb,var(--td-paper) 80%,#fff)}
+.today-next span:first-child{font:600 11px system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase}
+.today-next strong{font:400 28px/1.15 'Cormorant Garamond',Georgia,serif}
+.today-day h2,.roster-day h2{font:600 12px system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;margin:34px 0 8px;padding-bottom:8px;border-bottom:1px solid var(--td-ink)}
+.today-day ol,.roster-day ol{list-style:none;margin:0;padding:0}
+.today-day li{display:grid;grid-template-columns:86px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--td-line)}
+.today-day li.is-past{opacity:.5}
+.today-day li.is-now{background:color-mix(in srgb,var(--td-accent) 16%,transparent);margin:0 -12px;padding:12px;font-weight:600}
+.today-day time,.roster-time{font-variant-numeric:tabular-nums;font-weight:600}
+.today-day small,.roster small{display:block;font-weight:400;font-size:12.5px;opacity:.75}
+.today-demo{margin-top:36px;padding:16px;border:1px dashed var(--td-line)}
+.today-demo label{display:grid;gap:8px;font-size:14px}.today-demo input{width:100%;accent-color:var(--td-ink)}
+.today-demo small{display:block;margin-top:8px;font-size:12.5px;opacity:.75}
+.today-roster-link{margin-top:22px;font-size:14px}.today-roster-link button{background:none;border:0;padding:8px 0;min-height:44px;color:inherit;font:inherit;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.roster header p:last-child{opacity:.85}
+.roster-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:18px 0}
+.roster button{min-height:44px;min-width:48px;padding:8px 12px;border:1px solid var(--td-ink);background:transparent;color:var(--td-ink);font:600 15px system-ui,sans-serif;cursor:pointer}
+.roster button:disabled{opacity:.4}
+.roster-day li{display:grid;grid-template-columns:110px 1fr auto;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--td-line)}
+.roster-day li.is-done{opacity:.55}
+.roster-buttons{display:flex;gap:6px;align-items:center}
+.roster-done{display:flex;align-items:center;gap:6px;min-height:44px;font-size:14px;margin-left:4px}.roster-done input{width:22px;height:22px;accent-color:var(--td-ink)}
+.roster-note{margin-top:28px;font-size:13px;opacity:.75}
+@media(max-width:620px){.roster-day li{grid-template-columns:76px 1fr}.roster-buttons{grid-column:1/-1}.roster-buttons button{flex:1}}
+.today-camera{display:block;width:100%;min-height:56px;margin:0 0 8px;border:0;background:var(--td-ink);color:var(--td-paper);font:600 15px system-ui,sans-serif;letter-spacing:.04em;cursor:pointer}
+.today .today-camera{color:var(--td-paper)}

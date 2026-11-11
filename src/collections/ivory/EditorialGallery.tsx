@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { Language, Media } from './content';
 
 export type GalleryLayout = 'editorial' | 'grid';
-type Props = { media: Media[]; language: Language; layout?: GalleryLayout; label?: string };
+// renderItem lets a host (e.g. the on-page editor) replace the lightbox button around each image.
+type Props = { media: Media[]; language: Language; layout?: GalleryLayout; label?: string; renderItem?: (media: Media, image: ReactNode) => ReactNode };
 
 // Modular gallery block: receives media with stable IDs and never fetches.
 // A future media API can supply the same shape ({ id, src, alt, caption, focal }).
-export function EditorialGallery({ media, language, layout = 'editorial', label }: Props) {
+export function EditorialGallery({ media, language, layout = 'editorial', label, renderItem }: Props) {
   const [index, setIndex] = useState<number | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLButtonElement | null>(null);
@@ -20,9 +21,9 @@ export function EditorialGallery({ media, language, layout = 'editorial', label 
   return <>
     <ul className={`iv-gallery iv-gallery-${layout}`} aria-label={label}>
       {media.map((m, i) => <li key={m.id} className={`iv-gallery-item iv-gallery-${m.id}`}>
-        <button type="button" onClick={e => { opener.current = e.currentTarget; setIndex(i); }} aria-label={`${af ? 'Vergroot' : 'View larger'}: ${m.caption[language] || m.alt[language]}`}>
+        {renderItem ? renderItem(m, <img src={m.src} alt={m.alt[language]} style={{ objectPosition: m.focal }} loading="lazy" decoding="async"/>) : <button type="button" onClick={e => { opener.current = e.currentTarget; setIndex(i); }} aria-label={`${af ? 'Vergroot' : 'View larger'}: ${m.caption[language] || m.alt[language]}`}>
           <img src={m.src} alt={m.alt[language]} style={{ objectPosition: m.focal }} loading="lazy" decoding="async"/>
-        </button>
+        </button>}
         <p><span>{String(i + 1).padStart(2, '0')}</span>{m.caption[language]}</p>
       </li>)}
     </ul>

@@ -69,3 +69,11 @@ The cover is a full-bleed, depth-layered photograph with the details centred. Vi
 
 Verification: `npm run build`; `node tests/run-ivory.mjs`; `node tests/run-midnight.mjs`.
 
+
+## Guest features and public switches
+
+Every collection has `?view=today` (Today mode), `?view=roster` (the private day-of roster for the MC or planner) and `?view=camera` (the disposable camera, opened from Today mode). The camera is included in Ivory and an add-on for Garden and Midnight. The front end is complete; the backend contract is in `concepts/guest-features/INTEGRATION.md`. On the Collections page, couples can try every collection with their own names.
+
+Printed stationery, the photographers page and the Ivory stationery view are hidden through `publicFeatures` in `src/config.ts`; set a flag to `true` to bring that item back.
+
+Run all checks with `npm test`, then `npm run build`.

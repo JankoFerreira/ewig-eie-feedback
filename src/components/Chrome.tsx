@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ArrowUpRight, ArrowUp, Menu, X } from 'lucide-react';
-import { business } from '../config';
+import { business, publicFeatures } from '../config';
 import { useLanguage } from '../i18n';
 
 function WhatsAppIcon({ size = 24 }: { size?: number }) {
@@ -32,7 +32,7 @@ export function Header() {
     { to: '/collections', en: 'Designs', af: 'Ontwerpe' },
     { to: '/pricing', en: 'Pricing', af: 'Pryse' },
     { to: '/contact', en: 'Contact', af: 'Kontak' },
-    { to: '/photographers', en: 'Photographers', af: 'Fotograwe' },
+    ...(publicFeatures.photographers ? [{ to: '/photographers', en: 'Photographers', af: 'Fotograwe' }] : []),
   ];
   return <header className={`site-header ${scrolled || location.pathname !== '/' || open ? 'header-solid' : ''}`}><div className="header-inner">
     <Brand />

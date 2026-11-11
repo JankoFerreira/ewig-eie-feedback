@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useHistory } from '../shared/useHistory';
+import { withTryNames } from '../shared/tryNames';
 import { defaultMidnight, type Copy, type Language, type MidnightData } from './content';
 import { listMidnightDrafts, saveMidnightDraft, validateMidnight, serializeMidnightBackup, parseMidnightBackup, type SavedMidnight } from './storage';
-export const useMidnightStudio = () => useHistory(() => structuredClone(defaultMidnight));
+export const useMidnightStudio = () => useHistory(() => withTryNames(structuredClone(defaultMidnight), n => ({ ...structuredClone(defaultMidnight), first: n.first || defaultMidnight.first, second: n.second || defaultMidnight.second })));
 type Props = { studio: ReturnType<typeof useMidnightStudio>; open: boolean; onClose: () => void; language: Language };
 export function MidnightEditor({ studio, open, onClose, language }: Props) {
   const dialog = useRef<HTMLDialogElement>(null);

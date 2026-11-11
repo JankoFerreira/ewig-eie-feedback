@@ -3,6 +3,7 @@
 Run `npm run dev -- --host 127.0.0.1 --port 5175`.
 
 - `/collections/garden`: editable Garden website, matching invitation, reusable dashboard demo.
+- `/collections/midnight`: cinematic bilingual website, optional invitation, editor and two-event dashboard demo. See `concepts/midnight/INTEGRATION.md`.
 - `/invitation-preview`: standalone Eternal Ribbon preview.
 - `/collections/ivory`: flagship Ivory weekend — website, `?view=invitation&household=iv-h05`, `?view=stationery`, `?view=dashboard`.
 

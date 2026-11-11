@@ -332,3 +332,31 @@ body:has(.ivory-collection),body:has(.ivory-collection) *{cursor:auto!important}
 .ivory-collection .budget-embedded .bp-brand,.ivory-collection .budget-embedded .bp-side-bottom a{display:none}
 .iv-budget>.iv-demo-banner{margin-bottom:18px}
 @media(max-width:820px){.iv-plane-front img{object-fit:fill}}
+
+/* On-page editing (Garden style): every editable piece is outlined and clickable */
+.iv-ed{cursor:pointer!important;outline:1px dashed color-mix(in srgb,var(--iv-ink) 35%,transparent);outline-offset:3px;border-radius:2px;transition:outline-color .2s,background .2s}
+div.iv-ed{display:block}
+.iv-ed:hover,.iv-ed:focus-visible{outline:2px solid var(--iv-ink);background:color-mix(in srgb,var(--iv-accent) 14%,transparent)}
+.iv-ed.is-current{outline:2px solid var(--iv-ink);background:color-mix(in srgb,var(--iv-accent) 20%,transparent)}
+.iv-ed.is-empty i{font-size:13px;color:var(--iv-soft)}
+.is-editing .iv-plane-front{opacity:.35}
+.iv-hero-photo-edits{display:flex;justify-content:center;gap:16px;margin:12px 0 0!important;font-size:13px}
+.iv-moment-hidden{opacity:.55}
+.is-editing{padding-bottom:84px}
+.iv-editbar{position:fixed;z-index:60;left:50%;bottom:16px;transform:translateX(-50%);width:min(980px,calc(100vw - 24px));display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 12px 10px 18px;background:var(--iv-ink);color:var(--iv-paper);box-shadow:0 18px 40px -18px #000a;font-family:var(--iv-sans)}
+.iv-editbar p{margin:0!important;font-size:13.5px}.iv-editbar p span{opacity:.85}
+.iv-editbar div{display:flex;flex-wrap:wrap;gap:6px}
+.iv-editbar button{min-height:40px;padding:6px 12px;border:1px solid color-mix(in srgb,var(--iv-paper) 45%,transparent);background:none;color:inherit;font-size:13px;cursor:pointer!important}
+.iv-editbar button:disabled{opacity:.4}
+.iv-editbar .iv-editbar-done{background:var(--iv-paper);color:var(--iv-ink)}
+.iv-editcard{position:fixed;z-index:70;width:380px;max-height:min(70vh,560px);overflow:auto;background:#fffdf8;color:var(--iv-ink);border:1px solid var(--iv-line);box-shadow:0 30px 60px -24px color-mix(in srgb,var(--iv-ink) 55%,transparent);font-family:var(--iv-sans);font-size:14px}
+.iv-editcard header{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px 10px 16px;background:#fffdf8;border-bottom:1px solid var(--iv-line)}
+.iv-editcard header button{min-height:40px;padding:6px 14px;border:0;background:var(--iv-ink);color:var(--iv-paper);cursor:pointer!important}
+.iv-editcard-body{padding:14px 16px 6px}
+.iv-editcard .iv-field{margin-bottom:12px}
+.iv-editcard .iv-field span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--iv-soft)}
+.iv-card-pair-fields{border:0;padding:0;margin:0 0 6px}.iv-card-pair-fields legend{font-weight:600;margin-bottom:6px}
+.iv-card-thumb{width:100%;height:140px;object-fit:cover;margin-bottom:12px}
+.iv-editcard>p{padding:0 16px 12px}
+.iv-editcard.is-sheet{left:0;right:0;bottom:0;width:auto;max-height:72svh;border-left:0;border-right:0}
+@media(max-width:700px){.iv-editbar{flex-direction:column;align-items:stretch;bottom:8px;padding:10px}.iv-editbar p span{display:none}.iv-editbar div{justify-content:space-between}}

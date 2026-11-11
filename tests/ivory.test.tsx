@@ -130,7 +130,7 @@ test('planner exports are spreadsheet-safe and complete', () => {
 });
 
 test('capabilities: Ivory unlocks the advanced tools; Garden and Midnight are unchanged', () => {
-  for (const c of ['households', 'seatingPlan', 'plannerExports', 'stationeryPreview', 'cateringSummary', 'budgetPlanner'] as const) { assert.ok(hasCapability('ivory', c)); assert.equal(hasCapability('midnight', c), false); }
+  for (const c of ['households', 'seatingPlan', 'plannerExports', 'cateringSummary', 'budgetPlanner'] as const) { assert.ok(hasCapability('ivory', c)); assert.equal(hasCapability('midnight', c), false); }
   assert.ok(collectionCapabilities.midnight.every(c => collectionCapabilities.ivory.includes(c)));
 });
 

@@ -1,12 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory } from '../shared/useHistory';
+import { withTryNames } from '../shared/tryNames';
 import { contrastRatio } from '../shared/validateTemplate';
 import { defaultIvory, monogramStyles, type Copy, type IvoryData, type Language } from './content';
 import { listIvoryDrafts, parseIvoryBackup, saveIvoryDraft, serializeIvoryBackup, shiftWeekend, validateIvory, type SavedIvory } from './storage';
 import { Monogram } from './Monogram';
 import { download } from './exports';
 
-export const useIvoryStudio = () => useHistory(() => structuredClone(defaultIvory));
+export const useIvoryStudio = () => useHistory(() => withTryNames(structuredClone(defaultIvory), n => {
+  const d = structuredClone(defaultIvory); const first = n.first || d.couple.first; const second = n.second || d.couple.second;
+  return { ...d, couple: { ...d.couple, first, second }, monogram: { ...d.monogram, left: [...first][0].toUpperCase(), right: [...second][0].toUpperCase() } };
+}));
 type Studio = ReturnType<typeof useIvoryStudio>;
 type Props = { studio: Studio; open: boolean; onClose: () => void; language: Language };
 
@@ -51,8 +55,8 @@ export function IvoryEditor({ studio, open, onClose, language }: Props) {
   }
 
   return <dialog ref={dialog} className="iv-editor" aria-labelledby="iv-editor-title" onClose={onClose} onCancel={onClose} data-no-translate>
-    <header className="iv-editor-head"><div><p className="iv-kicker">IVORY STUDIO</p><h2 id="iv-editor-title">{t('Make it yours', 'Maak dit julle eie')}</h2></div><button type="button" onClick={onClose}>{t('Done', 'Klaar')}</button></header>
-    <p className="iv-editor-intro">{t('The layout stays fixed; every word, photograph, colour and time is yours. Wording is edited per language — switch EN/AF in the toolbar to edit the other version.', 'Die uitleg bly vas; elke woord, foto, kleur en tyd is julle s’n. Bewoording word per taal geredigeer — skakel EN/AF in die nutsbalk om die ander weergawe te redigeer.')}</p>
+    <header className="iv-editor-head"><div><p className="iv-kicker">IVORY STUDIO</p><h2 id="iv-editor-title">{t('Colours, monogram & saving', 'Kleure, monogram en stoor')}</h2></div><button type="button" onClick={onClose}>{t('Done', 'Klaar')}</button></header>
+    <p className="iv-editor-intro">{t('Words, times and photos are edited right on the page: close this panel and click them. Here you set the look and save your work.', 'Woorde, tye en foto’s word reg op die blad geredigeer: maak hierdie paneel toe en klik daarop. Hier stel julle die voorkoms en stoor julle werk.')}</p>
     <div className="iv-editor-actions" role="toolbar" aria-label={t('History', 'Geskiedenis')}>
       <button type="button" disabled={!studio.canUndo} onClick={studio.undo}>{t('Undo', 'Ontdoen')}</button>
       <button type="button" disabled={!studio.canRedo} onClick={studio.redo}>{t('Redo', 'Herdoen')}</button>
@@ -87,26 +91,6 @@ export function IvoryEditor({ studio, open, onClose, language }: Props) {
       <ul className="iv-contrast"><li>{t('Ink on paper', 'Ink op papier')}: {ratio(data.colors.ink, data.colors.paper)}</li><li>{t('Ink on stone', 'Ink op klip')}: {ratio(data.colors.ink, data.colors.stone)}</li><li>{t('Champagne is decorative and never used for text.', 'Sjampanje is dekoratief en word nooit vir teks gebruik nie.')}</li></ul>
     </details>
 
-    <details><summary>{t('The weekend', 'Die naweek')}</summary>
-      {data.events.map(event => <fieldset key={event.id} className="iv-fieldset"><legend>{event.name[language]}</legend>
-        {copyInput(t('Name', 'Naam'), event.name, v => update({ events: data.events.map(e => e.id === event.id ? { ...e, name: v } : e) }), 1)}
-        <div className="iv-grid2">
-          {input(t('Date', 'Datum'), event.date, v => event.id === 'wedding' ? studio.change(c => shiftWeekend(c, v)) : update({ events: data.events.map(e => e.id === event.id ? { ...e, date: v } : e) }), 'date')}
-          {input(t('Time', 'Tyd'), event.time, v => update({ events: data.events.map(e => e.id === event.id ? { ...e, time: v } : e) }), 'time')}
-        </div>
-        {input(t('Location', 'Ligging'), event.location, v => update({ events: data.events.map(e => e.id === event.id ? { ...e, location: v } : e) }))}
-        {copyInput(t('Dress', 'Drag'), event.dress, v => update({ events: data.events.map(e => e.id === event.id ? { ...e, dress: v } : e) }), 1)}
-        {copyInput(t('Description', 'Beskrywing'), event.description, v => update({ events: data.events.map(e => e.id === event.id ? { ...e, description: v } : e) }))}
-        <p className="iv-editor-sub">{t('Schedule moments', 'Programoomblikke')}</p>
-        {data.itinerary.filter(i => i.eventId === event.id).map(item => <div className="iv-moment" key={item.id}>
-          {input(t('Time', 'Tyd'), item.time, v => update({ itinerary: data.itinerary.map(i => i.id === item.id ? { ...i, time: v } : i) }), 'time')}
-          {copyInput(t('Moment', 'Oomblik'), item.name, v => update({ itinerary: data.itinerary.map(i => i.id === item.id ? { ...i, name: v } : i) }), 1)}
-          {copyInput(t('Note', 'Nota'), item.note, v => update({ itinerary: data.itinerary.map(i => i.id === item.id ? { ...i, note: v } : i) }), 1)}
-          <label className="iv-check"><input type="checkbox" checked={!item.hidden} onChange={e => update({ itinerary: data.itinerary.map(i => i.id === item.id ? { ...i, hidden: !e.target.checked } : i) })}/>{t('Show on the website', 'Wys op die webwerf')}</label>
-        </div>)}
-      </fieldset>)}
-    </details>
-
     <details><summary>{t('Dinner & tables', 'Aandete en tafels')}</summary>
       {data.meals.map(meal => <div key={meal.id}>{copyInput(t('Dinner option', 'Aandete-keuse'), meal.name, v => update({ meals: data.meals.map(m => m.id === meal.id ? { ...m, name: v } : m) }), 1)}</div>)}
       <div className="iv-tables-edit">{data.tables.map(table => <div key={table.id} className="iv-grid2">
@@ -115,7 +99,7 @@ export function IvoryEditor({ studio, open, onClose, language }: Props) {
       </div>)}</div>
     </details>
 
-    <details><summary>{t('All wording', 'Alle bewoording')} · {language.toUpperCase()}</summary>
+    <details><summary>{t('Every word as a list', 'Elke woord as ’n lys')} · {language.toUpperCase()}</summary>
       {Object.entries(groups).map(([group, ids]) => <fieldset key={group} className="iv-fieldset"><legend>{t(...(groupLabels[group] ?? [group, group]))}</legend>
         {ids.map(id => <div key={id}>{copyInput(id.split('.').slice(1).join(' · '), data.text[id], v => update({ text: { ...data.text, [id]: v } }), data.text[id].en.length > 90 ? 4 : 1)}</div>)}
       </fieldset>)}

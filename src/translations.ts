@@ -234,6 +234,7 @@ Object.assign(afrikaans, {
 
 Object.assign(afrikaans, {
   'Wedding Websites & Stationery': 'Trouwebwerwe & Drukwerk',
+  'Wedding Websites & Invitations': 'Trouwebwerwe & Uitnodigings',
   'Wedding Websites & RSVP': 'Trouwebwerwe & RSVP',
   'Wedding Stationery': 'Troudrukwerk',
   'Wedding Collections': 'Trouversamelings',
@@ -424,6 +425,6 @@ Object.assign(afrikaans, {
   'Send us your estimate and we will confirm the scope, availability and final price together.': 'Stuur vir ons julle beraming en ons bevestig saam die omvang, beskikbaarheid en finale prys.',
   'designed for you': 'vir julle ontwerp',
   'RSVP and guest management available as optional additions': 'RSVP en gastebestuur beskikbaar as opsionele byvoegings',
-  'Our flagship. Meet Amélie & James: a three-day wedding weekend with household invitations, seating, planner exports and coordinated stationery.': 'Ons vlagskip. Ontmoet Amélie & James: ’n drie-dag-trounaweek met huishoudinguitnodigings, sitplekke, beplanneruitvoer en gekoördineerde skryfbehoeftes.',
+  'Our flagship. Meet Amélie & James: a three-day wedding weekend with household invitations, seating, planner exports and a wedding budget.': 'Ons vlagskip. Ontmoet Amélie & James: ’n drie-dag-trounaweek met huishoudinguitnodigings, sitplekke, beplanneruitvoer en ’n troubegroting.',
   'The Ivory Collection wedding visual inspiration': 'Die Ivoorversameling-troubeeldinspirasie',
 });

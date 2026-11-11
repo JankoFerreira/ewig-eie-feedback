@@ -8,7 +8,7 @@ export type Capability =
 export const collectionCapabilities: Record<'garden' | 'midnight' | 'ivory', readonly Capability[]> = {
   garden: ['rsvp', 'guestDashboard', 'csvExport'],
   midnight: ['rsvp', 'guestDashboard', 'csvExport', 'multiEvent', 'mealChoices', 'gallery'],
-  ivory: ['rsvp', 'guestDashboard', 'csvExport', 'multiEvent', 'mealChoices', 'gallery', 'households', 'cateringSummary', 'seatingPlan', 'plannerExports', 'stationeryPreview', 'monogram', 'budgetPlanner'],
+  ivory: ['rsvp', 'guestDashboard', 'csvExport', 'multiEvent', 'mealChoices', 'gallery', 'households', 'cateringSummary', 'seatingPlan', 'plannerExports', 'monogram', 'budgetPlanner'],
 };
 
 export const hasCapability = (collection: keyof typeof collectionCapabilities, capability: Capability) => collectionCapabilities[collection].includes(capability);

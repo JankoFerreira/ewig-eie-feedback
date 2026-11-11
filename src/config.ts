@@ -25,6 +25,9 @@ export const draftQuotePrices = {
   digitalInvitation: 550,
 };
 // Ivory is the flagship. Its planned R6,000 venue-partner price stays inactive (see collections/ivory/content.ts).
+// Public switches. Off = hidden from the site but kept in the code, ready to switch back on.
+// printedStationery: off until print prices and vendors are confirmed. photographers: off until partners exist.
+export const publicFeatures = { printedStationery: false, photographers: false, ivoryStationery: false };
 export const conceptPrices = { garden: 2000, ivory: 8000, midnight: 5600 };
 export const images = {
  designs: designStationery,

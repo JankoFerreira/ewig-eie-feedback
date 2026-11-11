@@ -1,9 +1,11 @@
 import { createNamedDraftStore } from '../shared/draftStorage';
 import { useHistory } from '../shared/useHistory';
+import { withTryNames } from '../shared/tryNames';
 import { Children, createContext, useContext, cloneElement, isValidElement, useEffect, useRef, useState, type ReactNode, type ReactElement } from 'react';
 import { defaultGardenDraft, readGardenDraft, type GardenDraft } from './content';
 export type StudioState = { draft: GardenDraft; edits: Record<string,string> };
-const initial = ():StudioState=>({draft:readGardenDraft(),edits:{}});
+// Names tried on the Collections page apply only when this browser has no saved Garden details yet.
+const initial = ():StudioState=>{const draft=readGardenDraft();let saved=false;try{saved=!!localStorage.getItem('ewig-garden-draft-v1');}catch{/* no storage */}return {draft:saved?draft:withTryNames(draft,n=>({...draft,first:n.first||draft.first,second:n.second||draft.second})),edits:{}};};
 export function useGardenStudio(){ return useHistory(initial); }
 const { list: savedDrafts, save: saveDraft } = createNamedDraftStore<StudioState>('ewig-garden-studio');
 
