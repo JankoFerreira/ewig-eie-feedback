@@ -97,7 +97,21 @@ def rules(nodes, indent=''):
                 role = VAR_ROLES.get(d.lower_name) if d.lower_name.startswith('--') else role_of(d.lower_name)
                 if not role: continue
                 v, ch = convert_value(d.value, role)
-                if ch: decls.append(f'{d.lower_name}:{v.strip()}{"!important" if d.important else ""}')
+                if not ch: continue
+                imp = '!important' if d.important else ''
+                if d.lower_name == 'background':
+                    # Never emit the shorthand: it would reset background-size/position of photos (e.g. the hero).
+                    if 'url(' in v: continue
+                    layers = split_top(v.strip())
+                    last = layers[-1]
+                    if '(' not in last and len(layers) == 1: decls.append(f'background-color:{last}{imp}'); continue
+                    color = None
+                    if '(' not in last and ' ' not in last.strip(): color = last; layers = layers[:-1]
+                    if all(re.match(r'^(repeating-)?(linear|radial|conic)-gradient\(.*\)$', l.strip()) for l in layers):
+                        decls.append(f'background-image:{",".join(layers)}{imp}')
+                        if color: decls.append(f'background-color:{color}{imp}')
+                    continue
+                decls.append(f'{d.lower_name}:{v.strip()}{imp}')
             if decls: lines.append(f"{indent}{','.join(prefix(s) for s in sels)}{{{';'.join(decls)}}}")
         elif node.type == 'at-rule' and node.lower_at_keyword in ('media', 'supports') and node.content:
             inner = rules(tinycss2.parse_rule_list(node.content, skip_whitespace=True, skip_comments=True), indent + '  ')

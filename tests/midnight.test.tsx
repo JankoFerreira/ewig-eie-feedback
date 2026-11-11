@@ -79,8 +79,8 @@ test('two-event replies, household isolation, changed responses and meal totals 
   const first = { ...updateEventResponse(updateEventResponse(guests[0], 'welcome', 'accepted'), 'wedding', 'accepted'), meal: 'vegan' };
   const second = updateEventResponse(updateEventResponse(guests[1], 'welcome', 'accepted'), 'wedding', 'declined');
   const result = commitHouseholdReplies(guests, household, [first, second], events, meals, '2028-09-01');
-  assert.deepEqual(summarizeEvent(result, 'welcome'), { accepted: 2, declined: 0, pending: 4 });
-  assert.deepEqual(summarizeEvent(result, 'wedding'), { accepted: 1, declined: 1, pending: 4 });
+  assert.deepEqual(summarizeEvent(result, 'welcome'), { accepted: 2, declined: 1, pending: 3 });
+  assert.deepEqual(summarizeEvent(result, 'wedding'), { accepted: 1, declined: 2, pending: 3 });
   assert.equal(mealCount(result, 'vegan'), 1);
   assert.deepEqual(result.slice(2), guests.slice(2));
   assert.equal(result[0].respondedOn, '2028-09-01');
@@ -105,10 +105,19 @@ test('Garden totals remain unchanged and shared dashboard renders both collectio
 });
 
 test('collection pages and Afrikaans RSVP render without server services', () => {
-  const midnight = renderToStaticMarkup(<MemoryRouter><MidnightCollection/></MemoryRouter>);
+  const midnight = renderToStaticMarkup(<MemoryRouter initialEntries={['/collections/midnight?view=website']}><MidnightCollection/></MemoryRouter>);
   for (const text of ['Mila Jacobs', 'Luca Daniels', 'Maison Nocturne', 'CHAPTER', 'FICTIONAL DESIGN CONCEPT', 'The Midnight: R6', '12 photos and 1 video']) assert.ok(midnight.includes(text), text);
-  const garden = renderToStaticMarkup(<MemoryRouter><GardenCollection/></MemoryRouter>);
+  const garden = renderToStaticMarkup(<MemoryRouter initialEntries={['/collections/garden?view=website']}><GardenCollection/></MemoryRouter>);
   assert.match(garden, /Clara/); assert.match(garden, /Ruben/);
   const af = renderToStaticMarkup(<MidnightRSVP data={defaultMidnight} language="af" guests={midnightGuests()} onChange={() => {}} onDashboard={() => {}}/>);
   assert.match(af, /Stoor voorbeeldantwoord/); assert.match(af, /Die verwelkomingsaand/); assert.match(af, /Die troue/);
+});
+
+test('every design opens on its invitation first, with Discover our day and tabs in order', () => {
+  for (const [Page, path] of [[MidnightCollection, '/collections/midnight'], [GardenCollection, '/collections/garden']] as const) {
+    const html = renderToStaticMarkup(<MemoryRouter initialEntries={[path]}><Page/></MemoryRouter>);
+    assert.ok(html.includes('Discover our day'), path);
+    const order = ['Invitation', 'Website', 'Dashboard', 'Today'].map(label => html.indexOf(`>${label}<`));
+    assert.ok(order.every((v, i) => v > -1 && (i === 0 || v > order[i - 1])), `${path} tab order ${order}`);
+  }
 });

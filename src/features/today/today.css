@@ -30,3 +30,17 @@
 @media(max-width:620px){.roster-day li{grid-template-columns:76px 1fr}.roster-buttons{grid-column:1/-1}.roster-buttons button{flex:1}}
 .today-camera{display:block;width:100%;min-height:56px;margin:0 0 8px;border:0;background:var(--td-ink);color:var(--td-paper);font:600 15px system-ui,sans-serif;letter-spacing:.04em;cursor:pointer}
 .today .today-camera{color:var(--td-paper)}
+/* Reception: find your seat */
+.today-seat-soon{margin:0 0 18px;padding:12px 16px;border-left:2px solid currentColor;opacity:.75;font-size:14px}
+.today-seat-switch{margin:16px 0}
+.today-seat-switch button{min-height:44px;padding:0 18px;border:1px solid currentColor;border-radius:999px;background:transparent;color:inherit;font:inherit;font-size:14px;cursor:pointer}
+.seat-search{display:grid;gap:8px;margin:8px 0 14px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.9}
+.seat-search input{min-height:54px;padding:0 16px;border:1px solid currentColor;border-color:color-mix(in srgb,currentColor 40%,transparent);background:transparent;color:inherit;font:400 20px Georgia,serif;letter-spacing:normal;text-transform:none}
+.seat-result{min-height:2em;margin:0 0 18px}
+.seat-result p{margin:0 0 6px;font-size:18px}.seat-result em{font-style:italic}
+.seat-tables{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.seat-tables>li{padding:16px 18px;border:1px solid currentColor;border-color:color-mix(in srgb,currentColor 22%,transparent);transition:border-color .3s,background .3s}
+.seat-tables>li.is-match{border-color:currentColor;background:color-mix(in srgb,currentColor 7%,transparent)}
+.today .seat-tables h2{margin:0 0 8px!important;font:400 24px/1.1 Georgia,serif!important;letter-spacing:0!important}
+.seat-tables ul{list-style:none;padding:0;margin:0;font-size:14px;line-height:1.7;opacity:.85}
+.seat-tables li.is-you{font-weight:700;opacity:1}

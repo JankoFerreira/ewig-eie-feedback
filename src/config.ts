@@ -27,17 +27,20 @@ export const draftQuotePrices = {
 // Public switches. Off = hidden from the site but kept in the code, ready to switch back on.
 // printedStationery: off until print prices and vendors are confirmed. photographers: off until partners exist.
 export const publicFeatures = { printedStationery: false, photographers: false, ivoryStationery: false };
+// Business-site photos show no faces, except the homepage hero (a bouquet, faces out of frame).
+import handsBouquet from './assets/garden/garden-hands-bouquet.webp';
+import midnightVenue from './assets/midnight/midnight-venue.webp';
 export const images = {
  designs: designStationery,
  stationery: studioEditorial,
  photographer: photographerCamera,
  contact: contactHands,
- heroMain: 'https://images.unsplash.com/photo-1729100401510-8b8c14c25856?auto=format&fit=crop&w=1400&q=85',
+ heroMain: handsBouquet,
  heroDetail: 'https://images.unsplash.com/photo-1758825178518-ca48833a6c57?auto=format&fit=crop&w=900&q=85',
  hero: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2200&q=85',
- couple: 'https://images.unsplash.com/photo-1537633552985-df8429e8048b?auto=format&fit=crop&w=1200&q=85',
+ couple: contactHands,
  bouquet: studioEditorial,
- wedding: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1300&q=85',
+ wedding: midnightVenue,
  table: 'https://images.unsplash.com/photo-1632610992667-44a7b82edbdc?auto=format&fit=crop&w=1400&q=85',
  flowers: 'https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?auto=format&fit=crop&w=1200&q=85',
 };

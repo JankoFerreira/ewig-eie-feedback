@@ -73,3 +73,42 @@ test('editor typing coalesces into one undo step per field; other fields start a
 test('hidden for now: printed stationery, photographers, Ivory stationery', () => {
   assert.deepEqual(publicFeatures, { printedStationery: false, photographers: false, ivoryStationery: false });
 });
+
+test('Today switches to table seating at the reception slot, and guests can find their table', async () => {
+  const { liveSchedule, emptyRoster, seatingIsLive, findSeat, demoSeatingPlan, minutesFor } = await import('../src/features/today/model');
+  const slots = [{ id: 'vows', date: '2028-11-18', time: '17:00', title: 'Vows' }, { id: 'supper', date: '2028-11-18', time: '19:00', title: 'Supper' }];
+  const live = liveSchedule(slots, emptyRoster());
+  assert.equal(seatingIsLive(live, 'supper', minutesFor('2028-11-18', '18:55')).live, false);
+  assert.equal(seatingIsLive(live, 'supper', minutesFor('2028-11-18', '19:00')).live, true);
+  // A delay on the roster moves the switch too.
+  const late = liveSchedule(slots, { ...emptyRoster(), delays: { supper: 20 } });
+  assert.equal(seatingIsLive(late, 'supper', minutesFor('2028-11-18', '19:10')).live, false);
+  const plan = demoSeatingPlan(['Thandi Mokoena', 'Pieter Botha', 'Amélie Roux'], ['Fig', 'Olive'], 2);
+  assert.deepEqual(plan.tables.map(t => t.guests.length), [2, 1]);
+  assert.deepEqual(findSeat(plan, 'amelie').map(m => m.table), ['Olive']);
+  assert.deepEqual(findSeat(plan, 'thandi').map(m => m.table), ['Fig']);
+  assert.equal(findSeat(plan, 'x').length, 0);
+});
+
+test('B-list: a decline opens a seat, the next backup is suggested, and only approval invites them', async () => {
+  const { openSeats, backupSuggestions, approveBackup, setBackupStatus, moveBackup, demoBackups, summarizeGuests } = await import('../src/components/couple/guestModel');
+  const g = (id: string, attendance: 'accepted' | 'declined' | 'pending') => ({ id, householdId: id, name: id, language: 'en', attendance, dietaryRequirements: null, allergies: null, accessNeeds: null, respondedOn: null });
+  let guests = [g('a1', 'accepted'), g('a2', 'declined'), g('a3', 'pending')];
+  let backups = demoBackups();
+  assert.equal(openSeats(guests, backups), 1);
+  assert.deepEqual(backupSuggestions(guests, backups).map(b => b.name), ['Lerato Dlamini']);
+  // Skipping moves the suggestion to the next person; reordering changes who is next.
+  backups = setBackupStatus(backups, 'bk1', 'skipped');
+  assert.deepEqual(backupSuggestions(guests, backups).map(b => b.id), ['bk2']);
+  backups = moveBackup(backups, 'bk3', -1);
+  assert.deepEqual(backupSuggestions(guests, backups).map(b => b.id), ['bk3']);
+  // Not suggested = cannot be approved.
+  assert.equal(approveBackup(guests, backups, 'bk4', '2027-08-01').guests.length, 3);
+  ({ guests, backups } = approveBackup(guests, backups, 'bk3', '2027-08-01'));
+  assert.equal(guests.length, 4); assert.equal(guests[3].attendance, 'pending'); assert.equal(guests[3].id, 'b-bk3');
+  assert.equal(openSeats(guests, backups), 0); assert.equal(backupSuggestions(guests, backups).length, 0);
+  assert.equal(summarizeGuests(guests).invited, 4);
+  // Another decline opens another seat.
+  guests = guests.map(x => x.id === 'a3' ? { ...x, attendance: 'declined' as const } : x);
+  assert.deepEqual(backupSuggestions(guests, backups).map(b => b.id), ['bk2']);
+});

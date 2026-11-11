@@ -1,0 +1,25 @@
+/* The 3D "forever" centrepiece. Always dark, in both themes, so the gold reads as jewellery. */
+.forever{position:relative;isolation:isolate;overflow:hidden;min-height:clamp(560px,82vh,820px);display:grid;align-items:center;padding:clamp(70px,9vw,120px) max(6vw,24px);background:#0e110f;color:#f4efe4}
+.forever-glow{position:absolute;inset:0;z-index:-2;background:radial-gradient(60% 70% at 68% 50%,#3a3326 0%,#141713 55%,#0e110f 100%)}
+.forever::after{content:'';position:absolute;inset:22px;border:1px solid #f4efe41f;pointer-events:none}
+.forever-canvas{position:absolute;inset:0;z-index:-1;width:100%;height:100%;display:block;opacity:0;transition:opacity 1.6s ease}
+.forever-live .forever-canvas{opacity:1}
+.forever-fallback{position:absolute;right:4vw;top:50%;width:min(58vw,720px);transform:translateY(-50%);z-index:-1;opacity:.9}
+.forever-copy{position:relative;max-width:520px}
+.forever-kicker{display:inline-flex;align-items:center;gap:14px;margin:0 0 26px;font-size:10.5px;font-weight:600;letter-spacing:.34em;color:#c9b48a}
+.forever-kicker::before{content:'';width:38px;height:1px;background:#c9b48a}
+.forever h2{margin:0 0 26px;font:400 clamp(3.2rem,6.4vw,6.6rem)/.98 'Italiana',Georgia,serif;letter-spacing:-.045em;color:#f7f2e8}
+.forever h2 em{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;color:#d9c393;letter-spacing:-.02em;font-size:.82em}
+.forever-copy>p:not(.forever-kicker){max-width:430px;margin:0 0 34px;color:#d9d4c8cc;font-size:16px;line-height:1.8}
+.forever-cta{display:inline-flex;align-items:center;gap:14px;min-height:54px;padding:0 30px;border:1px solid #f4efe4;color:#f4efe4;font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;transition:background .35s,color .35s}
+.forever-cta:hover{background:#f4efe4;color:#14170f}
+@media (min-width:900px){.forever-canvas{left:38%;width:62%}.forever-copy{max-width:min(520px,34vw)}}
+@media (max-width:899px){
+  .forever{align-items:end;min-height:760px;padding-top:0}
+  .forever-canvas{height:58%;top:0;bottom:auto}
+  .forever-glow{background:radial-gradient(90% 50% at 50% 28%,#3a3326 0%,#141713 60%,#0e110f 100%)}
+  .forever-fallback{right:auto;left:50%;top:28%;width:88vw;transform:translate(-50%,-50%)}
+  .forever-copy{text-align:center;margin:0 auto}
+  .forever-kicker{justify-content:center}.forever-kicker::before{display:none}
+  .forever::after{inset:12px}
+}

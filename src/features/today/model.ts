@@ -52,3 +52,25 @@ export function validRoster(value: unknown): value is Roster {
   return r.version === 1 && !!r.delays && typeof r.delays === 'object' && Object.values(r.delays).every(n => Number.isInteger(n) && Math.abs(n) <= 600)
     && !!r.done && typeof r.done === 'object' && Object.values(r.done).every(b => typeof b === 'boolean');
 }
+
+// ---- Table seating on the day ----
+export type SeatingTablePlan = { name: string; guests: string[] };
+export type SeatingPlan = { tables: SeatingTablePlan[] };
+/** From the reception slot onward, Today mode leads with "Find your seat". */
+export function seatingIsLive(live: LiveSlot[], seatingFrom: string | undefined, nowMinutes: number) {
+  const slot = seatingFrom ? live.find(s => s.id === seatingFrom) : undefined;
+  return { slot: slot ?? null, live: !!slot && nowMinutes >= slot.start };
+}
+/** Finds tables whose guests match what a guest typed (accents and case ignored). */
+const fold = (v: string) => v.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+export function findSeat(plan: SeatingPlan, query: string) {
+  const q = fold(query);
+  if (q.length < 2) return [];
+  return plan.tables.flatMap(t => t.guests.filter(g => fold(g).split(/\s+/).some(part => part.startsWith(q)) || fold(g).includes(q)).map(guest => ({ guest, table: t.name })));
+}
+/** Demo seating for designs without a seating planner: attending guests in order, a set number per table. */
+export function demoSeatingPlan(names: string[], tableNames: string[], perTable = 8): SeatingPlan {
+  const tables = tableNames.map(name => ({ name, guests: [] as string[] }));
+  names.forEach((n, i) => tables[Math.min(tables.length - 1, Math.floor(i / perTable))].guests.push(n));
+  return { tables: tables.filter(t => t.guests.length) };
+}

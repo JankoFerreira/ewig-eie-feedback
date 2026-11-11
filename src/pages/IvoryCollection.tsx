@@ -17,13 +17,13 @@ import type { Slot } from '../features/today/model';
 import { Monogram, romanDate } from '../collections/ivory/Monogram';
 import { DepthHero } from '../collections/ivory/DepthHero';
 import { Ed, InlineEditProvider } from '../collections/ivory/InlineEdit';
-import { invitedEventsFor } from '../collections/ivory/model';
+import { autoSeat, invitedEventsFor } from '../collections/ivory/model';
 import '../styles/garden-collection.css';
 import '../styles/ivory-collection.css';
 
 // The shared invitation opening loads only when a guest chooses to open it.
 const EternalRibbonIntro = lazy(() => import('../components/EternalRibbon/EternalRibbonIntro').then(m => ({ default: m.EternalRibbonIntro })));
-const ALL_VIEWS = ['website', 'invitation', 'stationery', 'dashboard', 'today', 'roster', 'camera'] as const;
+const ALL_VIEWS = ['invitation', 'website', 'stationery', 'dashboard', 'today', 'roster', 'camera'] as const;
 type View = typeof ALL_VIEWS[number];
 // Stationery is hidden for now (publicFeatures.ivoryStationery); the component stays for later.
 const VIEWS = ALL_VIEWS.filter(v => v !== 'stationery' || publicFeatures.ivoryStationery);
@@ -35,7 +35,8 @@ export default function IvoryCollection() {
   const lang = language as Language;
   const t = (en: string, af: string) => lang === 'af' ? af : en;
   const [search, setSearch] = useSearchParams();
-  const view: View = (VIEWS as readonly string[]).includes(search.get('view') ?? '') ? search.get('view') as View : 'website';
+  // Every design opens on its invitation first; ?view=website shows the website.
+  const view: View = (VIEWS as readonly string[]).includes(search.get('view') ?? '') ? search.get('view') as View : 'invitation';
   const household = ivoryHouseholds.some(h => h.id === search.get('household')) ? search.get('household')! : ivoryHouseholds[4].id;
   const studio = useIvoryStudio();
   const data = studio.state;
@@ -48,6 +49,8 @@ export default function IvoryCollection() {
   const openButton = useRef<HTMLButtonElement>(null);
   useEffect(() => { if (!opening) return; const before = document.body.style.overflow; document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = before; }; }, [opening]);
   useEffect(() => { setRevealed(false); }, [household]);
+  // The envelope plays when the invitation is shown; with reduced motion the card is simply revealed.
+  useEffect(() => { if (view !== 'invitation' || revealed) return; if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) setRevealed(true); else setOpening(true); }, [view]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const copy = (id: string) => data.text[id]?.[lang] ?? '';
   // On-page editable copy (inert outside edit mode).
@@ -58,7 +61,7 @@ export default function IvoryCollection() {
   const short = (iso: string) => validDate(iso) ? new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Africa/Johannesburg' }).format(new Date(`${iso}T12:00:00Z`)) : '';
   const media = (id: string) => data.media.find(m => m.id === id)!;
   const photo = (id: string, opts: { eager?: boolean } = {}) => { const m = media(id); return <Ed block target={{ kind: 'photo', id }}><img src={m.src} alt={m.alt[lang]} style={{ objectPosition: m.focal }} loading={opts.eager ? 'eager' : 'lazy'} fetchPriority={opts.eager ? 'high' : 'auto'} decoding="async"/></Ed>; };
-  const go = (next: View, params: Record<string, string> = {}) => { setSearch(next === 'website' ? params : { view: next, ...params }); window.scrollTo({ top: 0 }); };
+  const go = (next: View, params: Record<string, string> = {}) => { setSearch(next === 'invitation' ? params : { view: next, ...params }); window.scrollTo({ top: 0 }); };
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   const names = `${data.couple.first} & ${data.couple.second}`;
   const placeholders = data.media.some(m => m.placeholder);
@@ -142,7 +145,7 @@ export default function IvoryCollection() {
           <p className="iv-kicker">{t('PERSONALISED INVITATION', 'GEPERSONALISEERDE UITNODIGING')}</p>
           <h1 id="iv-invite-title">{t('One invitation per household.', 'Een uitnodiging per huishouding.')}</h1>
           <p>{t('Each household sees its own name and only the gatherings it is invited to.', 'Elke huishouding sien sy eie naam en net die geleenthede waarna hy genooi is.')}</p>
-          <label className="iv-field">{t('Preview for', 'Voorskou vir')}<select value={household} onChange={e => setSearch({ view: 'invitation', household: e.target.value }, { replace: true })}>{ivoryHouseholds.map(h => <option key={h.id} value={h.id}>{h.name}</option>)}</select></label>
+          <label className="iv-field">{t('Preview for', 'Voorskou vir')}<select value={household} onChange={e => setSearch({ household: e.target.value }, { replace: true })}>{ivoryHouseholds.map(h => <option key={h.id} value={h.id}>{h.name}</option>)}</select></label>
           <div className="iv-invite-actions">
             <button type="button" ref={openButton} className="iv-button" onClick={() => { if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setRevealed(true); return; } setOpening(true); }}>{revealed ? t('Replay the opening', 'Speel die opening weer') : t('Open the invitation', 'Maak die uitnodiging oop')}</button>
             {!revealed && <button type="button" className="iv-link" onClick={() => setRevealed(true)}>{t('Show the card without the opening', 'Wys die kaart sonder die opening')}</button>}
@@ -160,7 +163,7 @@ export default function IvoryCollection() {
             <p className="iv-card-small">{data.venue} · {data.region}</p>
             <ul className="iv-card-events">{invitedEvents.map(e => <li key={e.id}><span>{e.name[lang]}</span>{short(e.date)} · {e.time}</li>)}</ul>
             <p className="iv-card-fine">{C('invitation.prepared')} <strong>{invitedHousehold.name}</strong> · {C('invitation.reply')} {formatDate(data.deadline)}</p>
-            <button type="button" className="iv-button" onClick={() => go('website', { household })}>{t('Reply & weekend details', 'Antwoord en naweekbesonderhede')}</button>
+            <button type="button" className="iv-button" onClick={() => go('website', { household })}>{t('Discover our day', 'Ontdek ons dag')}</button>
           </article>
           <div className="iv-envelope-front" aria-hidden="true">{!revealed && mono(64)}</div>
         </div>
@@ -173,7 +176,7 @@ export default function IvoryCollection() {
 
       {view === 'dashboard' && <IvoryDashboard data={data} language={lang} guests={guests} onGuests={setGuests} households={ivoryHouseholds} seating={seating} onSeating={setSeating} onReset={() => { setGuests(ivoryGuests()); setSeating(ivorySeating()); }} formatDate={iso => formatDate(iso)}/>}
 
-      {view === 'today' && <TodayMode slots={slots} weddingId="ivory-demo" language={lang} names={names} onOpenRoster={() => go('roster')} extra={<button type="button" className="today-camera" onClick={() => go('camera')}>{t('Open the disposable camera · 20 shots', 'Maak die weggooikamera oop · 20 foto’s')}</button>}/>}
+      {view === 'today' && <TodayMode seatingFrom="wedding-dinner" seating={(() => { const seated = autoSeat(guests, data, seating); return { tables: data.tables.map(table => ({ name: table.name, guests: guests.filter(g => g.attendance === 'accepted' && seated[g.id] === table.id).map(g => g.name) })) }; })()} slots={slots} weddingId="ivory-demo" language={lang} names={names} onOpenRoster={() => go('roster')} extra={<button type="button" className="today-camera" onClick={() => go('camera')}>{t('Open the disposable camera · 20 shots', 'Maak die weggooikamera oop · 20 foto’s')}</button>}/>}
       {view === 'camera' && <GuestCameraView weddingId="ivory-demo" language={lang} names={names} guests={guests.map(g => ({ id: g.id, name: g.name }))}/>}
       {view === 'roster' && <RosterPanel slots={slots} weddingId="ivory-demo" language={lang} names={names}/>}
 

@@ -45,3 +45,33 @@ export function commitHouseholdReplies(guests: DemoGuest[], householdId: string,
     return reply ? { ...reply, meal: reply.attendance === 'accepted' ? reply.meal : null, respondedOn } : guest;
   });
 }
+
+// ---- A-list / B-list ----
+// The guest list is the A-list. Backup (B-list) guests wait in priority order and are not invited, counted or seated
+// until a seat opens (an invited guest declines) AND the couple approves the suggestion.
+export type BackupStatus = 'waiting' | 'invited' | 'skipped';
+export type BackupGuest = { id: string; name: string; status: BackupStatus; invitedOn?: string };
+export const isBackupGuest = (guest: DemoGuest) => guest.id.startsWith('b-');
+/** Seats opened by declines, minus backups already invited into them. */
+export function openSeats(guests: DemoGuest[], backups: BackupGuest[]) {
+  const declined = guests.filter(g => g.attendance === 'declined').length;
+  return Math.max(0, declined - backups.filter(b => b.status === 'invited').length);
+}
+/** The next waiting backups, one per open seat, in the couple's order. */
+export function backupSuggestions(guests: DemoGuest[], backups: BackupGuest[]) {
+  return backups.filter(b => b.status === 'waiting').slice(0, openSeats(guests, backups));
+}
+/** Couple approved: the backup is invited and joins the guest list as a pending reply. */
+export function approveBackup(guests: DemoGuest[], backups: BackupGuest[], id: string, today: string): { guests: DemoGuest[]; backups: BackupGuest[] } {
+  const backup = backups.find(b => b.id === id);
+  if (!backup || backup.status !== 'waiting' || !backupSuggestions(guests, backups).some(b => b.id === id)) return { guests, backups };
+  const guest: DemoGuest = { id: `b-${backup.id}`, householdId: `b-${backup.id}`, name: backup.name, language: 'en', attendance: 'pending', dietaryRequirements: null, allergies: null, accessNeeds: null, respondedOn: null };
+  return { guests: [...guests, guest], backups: backups.map(b => b.id === id ? { ...b, status: 'invited', invitedOn: today } : b) };
+}
+export function setBackupStatus(backups: BackupGuest[], id: string, status: 'waiting' | 'skipped') { return backups.map(b => b.id === id && b.status !== 'invited' ? { ...b, status } : b); }
+export function moveBackup(backups: BackupGuest[], id: string, by: -1 | 1) {
+  const i = backups.findIndex(b => b.id === id); const j = i + by;
+  if (i < 0 || j < 0 || j >= backups.length) return backups;
+  const next = [...backups]; [next[i], next[j]] = [next[j], next[i]]; return next;
+}
+export const demoBackups = (): BackupGuest[] => ['Lerato Dlamini', 'Johan Pretorius', 'Naledi Khumalo', 'Ruan Steyn', 'Ayesha Patel'].map((name, i) => ({ id: `bk${i + 1}`, name, status: 'waiting' as const }));

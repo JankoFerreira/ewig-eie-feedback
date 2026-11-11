@@ -2,6 +2,7 @@ import { StudioCanvas, GardenEditorShell, useGardenStudio, type GardenTarget } f
 import { DesignPlanNote } from '../components/DesignPlanNote';
 import '../styles/plans.css';
 import { TodayMode, RosterPanel } from '../features/today/Today';
+import { demoSeatingPlan } from '../features/today/model';
 import { GuestCameraView } from '../features/camera/GuestCamera';
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -30,7 +31,8 @@ export default function GardenCollection() {
   const t = (en:string,afrikaans:string) => af ? afrikaans : en;
   const [search,setSearch] = useSearchParams();
   const requested = search.get('view');
-  const view:View = requested==='invitation'||requested==='dashboard'||requested==='today'||requested==='roster'||requested==='camera'?requested:'website';
+  // Every design opens on its invitation first; ?view=website shows the website.
+  const view:View = requested==='website'||requested==='dashboard'||requested==='today'||requested==='roster'||requested==='camera'?requested:'invitation';
   const studio = useGardenStudio();
   const draft=studio.state.draft;
   const setDraft=(next:typeof draft)=>studio.change({...studio.state,draft:next});
@@ -41,7 +43,7 @@ export default function GardenCollection() {
   const [photoError,setPhotoError] = useState(false);
   const [editor,setEditor] = useState(false);
   const [menu,setMenu] = useState(false);
-  const [intro,setIntro] = useState(view==='invitation');
+  const [intro,setIntro] = useState(false); // opened by the effect below when the invitation is shown
   const [replay,setReplay] = useState(0);
   const [guests,setGuests] = useState<DemoGuest[]>(seedGuests);
   const mainHeading = useRef<HTMLHeadingElement>(null);
@@ -62,10 +64,10 @@ export default function GardenCollection() {
   const style = { '--garden-ink':palette.ink,'--garden-accent':palette.accent,'--garden-paper':palette.paper } as CSSProperties;
 
   useEffect(()=>{try{localStorage.setItem('ewig-garden-draft-v1',JSON.stringify(draft));}catch{/* Preview works without persistent storage. */}},[draft]);
-  useEffect(()=>{setIntro(view==='invitation');setMenu(false);},[view]);
+  useEffect(()=>{setIntro(view==='invitation'&&!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);setMenu(false);},[view]);
   useEffect(()=>{if(!intro)return;const previous=document.body.style.overflow;document.body.style.overflow='hidden';return()=>{document.body.style.overflow=previous;};},[intro]);
   useEffect(()=>()=>{if(photoRef.current)URL.revokeObjectURL(photoRef.current);},[]);
-  function changeView(next:View) { setSearch(next==='website'?{}:{view:next});window.scrollTo({top:0,behavior:'instant'}); }
+  function changeView(next:View) { setSearch(next==='invitation'?{}:{view:next});window.scrollTo({top:0,behavior:'instant'}); }
   function scrollTo(id:string) { setMenu(false);document.getElementById(id)?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}); }
   function finishIntro() { setIntro(false);requestAnimationFrame(()=>mainHeading.current?.focus({preventScroll:true})); }
   function reset() { studio.change({draft:{...defaultGardenDraft},edits:{}});if(photoRef.current)URL.revokeObjectURL(photoRef.current);photoRef.current='';setPhoto('');setPhotoError(false); }
@@ -74,7 +76,7 @@ export default function GardenCollection() {
 
   return <div className="garden-collection" style={style} data-no-translate>
     <div inert={intro} aria-hidden={intro}>
-      <div className="garden-preview-bar"><Link to="/collections" className="garden-back"><ArrowLeft size={15}/><span>{t('Designs','Ontwerpe')}</span></Link><span className="garden-preview-name">The Garden <i>{t('concept','konsep')}</i></span><nav aria-label={t('Explore this concept','Verken hierdie konsep')}>{(['website','invitation','dashboard','today'] as View[]).map(item=><button key={item} aria-current={view===item?'page':undefined} onClick={()=>changeView(item)}>{({website:t('Website','Webwerf'),invitation:t('Invitation','Uitnodiging'),dashboard:t('Dashboard','Paneel'),today:t('Today','Vandag'),roster:t('Roster','Rooster'),camera:t('Camera','Kamera')})[item]}</button>)}</nav><button className="garden-edit-trigger" aria-pressed={editing} onClick={()=>{changeView('website');setEditing(e=>!e);}}><Pencil size={14}/>{editing?t('Finish editing','Klaar redigeer'):t('Make it yours','Maak dit julle eie')}</button><div className="garden-language" aria-label={t('Language','Taal')}>{(['en','af'] as const).map(lang=><button aria-pressed={language===lang} key={lang} onClick={()=>setLanguage(lang)}>{lang.toUpperCase()}</button>)}</div></div>
+      <div className="garden-preview-bar"><Link to="/collections" className="garden-back"><ArrowLeft size={15}/><span>{t('Designs','Ontwerpe')}</span></Link><span className="garden-preview-name">The Garden <i>{t('concept','konsep')}</i></span><nav aria-label={t('Explore this concept','Verken hierdie konsep')}>{(['invitation','website','dashboard','today'] as View[]).map(item=><button key={item} aria-current={view===item?'page':undefined} onClick={()=>changeView(item)}>{({website:t('Website','Webwerf'),invitation:t('Invitation','Uitnodiging'),dashboard:t('Dashboard','Paneel'),today:t('Today','Vandag'),roster:t('Roster','Rooster'),camera:t('Camera','Kamera')})[item]}</button>)}</nav><button className="garden-edit-trigger" aria-pressed={editing} onClick={()=>{changeView('website');setEditing(e=>!e);}}><Pencil size={14}/>{editing?t('Finish editing','Klaar redigeer'):t('Make it yours','Maak dit julle eie')}</button><div className="garden-language" aria-label={t('Language','Taal')}>{(['en','af'] as const).map(lang=><button aria-pressed={language===lang} key={lang} onClick={()=>setLanguage(lang)}>{lang.toUpperCase()}</button>)}</div></div>
       <GardenEditorShell studio={studio} af={af} active={editing&&view==='website'} onDetails={()=>setEditor(true)} onDone={()=>setEditing(false)} openRef={openEdit}>
       <StudioCanvas edits={studio.state.edits} active={editing&&view==='website'} language={language} onEdit={(key,value,image,anchor)=>openEdit.current?.({key,value,image},anchor)}>
       {view==='website'&&<>
@@ -90,7 +92,7 @@ export default function GardenCollection() {
         <section className="garden-rsvp" id="garden-rsvp"><div className="garden-rsvp-image"><img src={gardenImages.botanical} alt={alt(4)} loading="lazy"/><span>{t('Good company. Full hearts.','Goeie geselskap. Vol harte.')}</span></div><DemoRSVP guests={guests} households={guestFixture.households} onChange={setGuests} af={af} deadline={deadline} onDashboard={()=>changeView('dashboard')}/></section>
       </>}
       {(view==='website'||view==='invitation')&&<DesignPlanNote design="garden" af={af}/>}
-      {view==='today'&&<TodayMode slots={copy.schedule.map((item,i)=>({id:`garden-${i}`,date:dateValue,time:item.time,title:item.description,place:draft.venue}))} weddingId="garden-demo" language={language} names={names} onOpenRoster={()=>changeView('roster')} extra={<button type="button" className="today-camera" onClick={()=>changeView('camera')}>{t('Open the disposable camera · add-on','Maak die weggooikamera oop · byvoeging')}</button>}/>}
+      {view==='today'&&<TodayMode seatingFrom="garden-3" seating={demoSeatingPlan(guests.filter(g=>g.attendance!=='declined').map(g=>g.name),['The Fig','The Olive','The Quince','The Pear','The Apple'],6)} slots={copy.schedule.map((item,i)=>({id:`garden-${i}`,date:dateValue,time:item.time,title:item.description,place:draft.venue}))} weddingId="garden-demo" language={language} names={names} onOpenRoster={()=>changeView('roster')} extra={<button type="button" className="today-camera" onClick={()=>changeView('camera')}>{t('Open the disposable camera · add-on','Maak die weggooikamera oop · byvoeging')}</button>}/>}
       {view==='camera'&&<GuestCameraView weddingId="garden-demo" language={language} names={names} guests={guests.map(g=>({id:g.id,name:g.name}))} addOn/>}
       {view==='roster'&&<RosterPanel slots={copy.schedule.map((item,i)=>({id:`garden-${i}`,date:dateValue,time:item.time,title:item.description,place:draft.venue}))} weddingId="garden-demo" language={language} names={names}/>}
       {view==='dashboard'&&<CoupleDashboard guests={guests} names={names} af={af} onChange={setGuests} onReset={()=>setGuests(seedGuests())}/>}

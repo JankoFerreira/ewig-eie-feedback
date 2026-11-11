@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { liveSchedule, markDone, minutesFor, nowNext, shiftFrom, weddingNowMinutes, type Roster, type Slot } from './model';
+import { findSeat, liveSchedule, markDone, minutesFor, nowNext, seatingIsLive, shiftFrom, weddingNowMinutes, type Roster, type SeatingPlan, type Slot } from './model';
 import { localRosterSync, type RosterSync } from './sync';
 import './today.css';
 
@@ -30,7 +30,7 @@ const fmt = (lang: Lang, date: string) => new Intl.DateTimeFormat(lang === 'af' 
 const clock = (minutes: number) => new Date(minutes * 60000).toISOString().slice(11, 16);
 
 /** What guests see on the day: now, next, and the rest of the day with live times. */
-export function TodayMode({ slots, weddingId, language, names, onOpenRoster, extra }: { slots: Slot[]; weddingId: string; language: Lang; names: string; onOpenRoster?: () => void; extra?: React.ReactNode }) {
+export function TodayMode({ slots, weddingId, language, names, onOpenRoster, extra, seating, seatingFrom }: { slots: Slot[]; weddingId: string; language: Lang; names: string; onOpenRoster?: () => void; extra?: React.ReactNode; seating?: SeatingPlan; seatingFrom?: string }) {
   const t = text(language);
   const { roster } = useRoster(weddingId);
   const { now, live: isLive, first, last, preview, setPreview } = useNow(slots);
@@ -38,12 +38,18 @@ export function TodayMode({ slots, weddingId, language, names, onOpenRoster, ext
   const { current, next, minutesToNext } = nowNext(schedule, now);
   const late = schedule.find(s => s.delay > 0 && s.start >= now);
   const days = [...new Set(schedule.map(s => s.date))];
+  const reception = seatingIsLive(schedule, seating ? seatingFrom : undefined, now);
+  const [showSchedule, setShowSchedule] = useState(false);
+  if (seating && reception.live && !showSchedule) return <SeatingFinder plan={seating} language={language} names={names} slotTitle={reception.slot!.title} onSchedule={() => setShowSchedule(true)} demo={!isLive ? <div className="today-demo"><label>{t('Preview the day at', 'Voorskou die dag om')} <strong>{clock(preview)}</strong><input type="range" min={first - 30} max={last + 60} step={5} value={preview} onChange={e => setPreview(Number(e.target.value))}/></label></div> : null}/>;
   return <section className="today" aria-labelledby="today-title" data-no-translate>
     <header className="today-head"><p className="today-kicker">{t('TODAY', 'VANDAG')} · {names}</p><h1 id="today-title">{current ? current.title : t('Not long now.', 'Nie meer lank nie.')}</h1>
       {current?.place && <p className="today-place">{current.place}</p>}
       {late && <p className="today-late" role="status">{t(`Running ${late.delay} min behind — times below are updated.`, `Loop ${late.delay} min agter — tye hieronder is bygewerk.`)}</p>}
     </header>
     {next && <div className="today-next" aria-live="polite"><span>{t('Next', 'Volgende')}</span><strong>{next.title}</strong><span>{next.time}{minutesToNext !== null && minutesToNext < 180 ? ` · ${t('in', 'oor')} ${minutesToNext} min` : ''}{next.place ? ` · ${next.place}` : ''}</span></div>}
+    {seating && reception.slot && (reception.live
+      ? <p className="today-seat-switch"><button type="button" onClick={() => setShowSchedule(false)}>{t('Find your seat', 'Vind jou sitplek')} →</button></p>
+      : <p className="today-seat-soon">{t(`Table seating appears here at ${reception.slot.time}, when ${reception.slot.title.toLowerCase()} begins.`, `Tafelsitplekke verskyn hier om ${reception.slot.time}, wanneer ${reception.slot.title.toLowerCase()} begin.`)}</p>)}
     {extra}
     {days.map(day => <div key={day} className="today-day"><h2>{fmt(language, day)}</h2><ol>{schedule.filter(s => s.date === day).map(s => <li key={s.id} className={s.start <= now ? (s.id === current?.id ? 'is-now' : 'is-past') : ''} aria-current={s.id === current?.id ? 'step' : undefined}>
       <time>{s.time}{s.delay !== 0 && <small>{t('was', 'was')} {s.planned}</small>}</time><span>{s.title}{s.place && <small>{s.place}</small>}</span>
@@ -51,6 +57,24 @@ export function TodayMode({ slots, weddingId, language, names, onOpenRoster, ext
     {!isLive && <div className="today-demo"><label>{t('Preview the day at', 'Voorskou die dag om')} <strong>{clock(preview)}</strong><input type="range" min={first - 30} max={last + 60} step={5} value={preview} onChange={e => setPreview(Number(e.target.value))}/></label>
       <small>{t('Before the day, this slider lets you see Today mode at any time. On the day it follows the real clock.', 'Voor die dag laat hierdie skuifbalk julle Vandag-modus op enige tyd sien. Op die dag volg dit die regte horlosie.')}</small></div>}
     {onOpenRoster && <p className="today-roster-link"><button type="button" onClick={onOpenRoster}>{t('MC or planner? Open the day-of roster (demo)', 'MS of beplanner? Maak die dagrooster oop (demo)')}</button></p>}
+  </section>;
+}
+
+/** At the reception: guests type their name and see their table; every table is listed below. */
+function SeatingFinder({ plan, language, names, slotTitle, onSchedule, demo }: { plan: SeatingPlan; language: Lang; names: string; slotTitle: string; onSchedule: () => void; demo: React.ReactNode }) {
+  const t = text(language);
+  const [query, setQuery] = useState('');
+  const matches = findSeat(plan, query);
+  const tables = new Set(matches.map(m => m.table));
+  return <section className="today today-seating" aria-labelledby="seat-title" data-no-translate>
+    <header className="today-head"><p className="today-kicker">{t('NOW', 'NOU')} · {slotTitle} · {names}</p><h1 id="seat-title">{t('Find your seat.', 'Vind jou sitplek.')}</h1></header>
+    <label className="seat-search"><span>{t('Type your name', 'Tik jou naam')}</span><input type="search" autoComplete="off" value={query} onChange={e => setQuery(e.target.value)} placeholder={t('e.g. Thandi', 'bv. Thandi')}/></label>
+    <div className="seat-result" aria-live="polite">{query.trim().length >= 2 && (matches.length
+      ? matches.slice(0, 4).map(m => <p key={m.guest + m.table}><strong>{m.guest}</strong> {t('is at', 'sit by')} <em>{m.table}</em></p>)
+      : <p>{t('No name found yet. Try your first name, or ask the MC.', 'Nog geen naam gevind nie. Probeer jou voornaam, of vra die seremoniemeester.')}</p>)}</div>
+    <ol className="seat-tables">{plan.tables.map(table => <li key={table.name} className={tables.has(table.name) ? 'is-match' : ''}><h2>{table.name}</h2><ul>{table.guests.map(g => <li key={g} className={matches.some(m => m.guest === g) ? 'is-you' : ''}>{g}</li>)}</ul></li>)}</ol>
+    <p className="today-seat-switch"><button type="button" onClick={onSchedule}>{t('See the rest of the day', 'Sien die res van die dag')} →</button></p>
+    {demo}
   </section>;
 }
 

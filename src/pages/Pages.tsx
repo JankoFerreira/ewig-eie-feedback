@@ -1,6 +1,6 @@
 import ivoryPreview from '../assets/ivory/ivory-detail.webp';
-import midnightPreview from '../assets/midnight/midnight-hero.webp';
-import gardenPreview from '../assets/garden/garden-hero.webp';
+import midnightPreview from '../assets/midnight/midnight-venue.webp';
+import gardenPreview from '../assets/garden/garden-venue.webp';
 import { Flourish } from '../components/Flourish';
 import { PageIntro as PageHero } from '../components/PageIntro';
 import { AnimatedHeading } from '../components/WordMotion';
