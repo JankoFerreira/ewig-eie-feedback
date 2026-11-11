@@ -2,7 +2,9 @@ import { lazy, Suspense, useEffect, useRef, useState, type CSSProperties } from 
 import { Link, useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../i18n';
 import { validDate } from '../collections/shared/dates';
-import { ivoryGuests, ivoryHouseholds, ivoryPackage, ivorySeating, type Language } from '../collections/ivory/content';
+import { ivoryGuests, ivoryHouseholds, ivorySeating, type Language } from '../collections/ivory/content';
+import { DesignPlanNote } from '../components/DesignPlanNote';
+import '../styles/plans.css';
 import { IvoryEditor, useIvoryStudio } from '../collections/ivory/IvoryEditor';
 import { IvoryRSVP } from '../collections/ivory/IvoryRSVP';
 import { IvoryDashboard } from '../collections/ivory/IvoryDashboard';
@@ -175,34 +177,7 @@ export default function IvoryCollection() {
       {view === 'camera' && <GuestCameraView weddingId="ivory-demo" language={lang} names={names} guests={guests.map(g => ({ id: g.id, name: g.name }))}/>}
       {view === 'roster' && <RosterPanel slots={slots} weddingId="ivory-demo" language={lang} names={names}/>}
 
-      {view !== 'today' && view !== 'roster' && view !== 'camera' && <section className="iv-scope" aria-labelledby="iv-scope-title">
-        <div className="iv-scope-price">
-          <p className="iv-kicker">EWIG & EIE · IVORY · {t('FLAGSHIP', 'VLAGSKIP')}</p>
-          <h2 id="iv-scope-title">R{ivoryPackage.price.toLocaleString('en-ZA')}</h2>
-          <p>{t('Wedding-weekend website package', 'Trounaweek-webwerfpakket')}</p>
-          <Link className="iv-button" to="/contact?collection=The%20Ivory%20Collection">{t('Enquire about Ivory', 'Doen navraag oor Ivory')}</Link>
-          <p className="iv-fine">{t(`Planned venue-partner price: R${ivoryPackage.plannedPartnerPrice.toLocaleString('en-ZA')}. Not yet available — it activates only once real venue agreements exist.`, `Beplande venuevennootprys: R${ivoryPackage.plannedPartnerPrice.toLocaleString('en-ZA')}. Nog nie beskikbaar nie — dit word eers geaktiveer wanneer werklike venue-ooreenkomste bestaan.`)}</p>
-        </div>
-        <div className="iv-scope-list">
-          <h3>{t('Everything in Garden and Midnight, plus the weekend.', 'Alles in Garden en Midnight, plus die naweek.')}</h3>
-          <ul>
-            <li>{t('Bilingual editorial website with photographic cover, story, venue, gallery and FAQ', 'Tweetalige redaksionele webwerf met fotografiese voorblad, storie, venue, galery en vrae')}</li>
-            <li>{t('Three-event weekend itinerary with dress notes and timed moments', 'Drie-geleentheid-naweekprogram met dragnotas en getydde oomblikke')}</li>
-            <li>{t('Household invitations with event access per household', 'Huishoudinguitnodigings met geleentheidstoegang per huishouding')}</li>
-            <li>{t('Replies per person, per event; dinner choices; dietary, allergy and access summaries', 'Antwoorde per persoon, per geleentheid; etekeuses; dieet-, allergie- en toegangsopsommings')}</li>
-            <li>{t('Seating-plan tool with capacity and household checks', 'Sitplekplan-instrument met kapasiteit- en huishoudingkontroles')}</li>
-            <li>{t('Planner exports: replies, catering, seating and run sheet', 'Beplanneruitvoer: antwoorde, spysenering, sitplekke en program')}</li>
-            <li>{t('Personalised monogram and card-reveal invitation', 'Gepersonaliseerde monogram en kaartonthullingsuitnodiging')}</li>
-          </ul>
-          <h3>{t('Proposed service scope', 'Voorgestelde diensomvang')}</h3>
-          <p>{t('A design consultation, assisted content setup and three consolidated revision rounds.', '’n Ontwerpkonsultasie, bygestane inhoudopstelling en drie saamgevoegde hersieningsrondtes.')}</p>
-          <p className="iv-small">{t('Not included: photography, physical printing or unlimited bespoke development. Changes beyond the fixed layout are quoted separately.', 'Nie ingesluit nie: fotografie, fisiese drukwerk of onbeperkte pasgemaakte ontwikkeling. Veranderinge buite die vaste uitleg word apart gekwoteer.')}</p>
-          <details><summary>{t('What works today, and what needs a production backend?', 'Wat werk vandag, en wat benodig ’n produksiebediener?')}</summary>
-            <p>{t('Working in your browser now: editing in both languages, undo/redo, named drafts, backups, the invitation preview, sample replies, catering totals, seating, exports and the budget.', 'Werk nou in jou blaaier: redigering in albei tale, ontdoen/herdoen, benoemde konsepte, rugsteun, die uitnodigingvoorskou, voorbeeldantwoorde, spyseneringtotale, sitplekke, uitvoer en die begroting.')}</p>
-            <p>{t('Requires a production backend before real use: couple accounts, private household links, delivering invitations, storing real replies, reminders, shared planner access and publishing.', 'Benodig ’n produksiebediener voor werklike gebruik: paartjierekeninge, private huishoudingskakels, aflewering van uitnodigings, berging van regte antwoorde, herinneringe, gedeelde beplannertoegang en publisering.')}</p>
-          </details>
-        </div>
-      </section>}
+      {view !== 'today' && view !== 'roster' && view !== 'camera' && <DesignPlanNote design="ivory" af={lang === 'af'} className="iv-plan-note"/>}
       <footer className="iv-footer">{mono(56)}<p>{C('footer.note')}</p><small>{t('Fictional design concept by', 'Fiktiewe ontwerpkonsep deur')} <Link to="/">Ewig & Eie</Link></small></footer>
       <IvoryEditor studio={studio} open={editor} onClose={() => setEditor(false)} language={lang}/>
     </div>

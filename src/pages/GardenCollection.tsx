@@ -1,4 +1,6 @@
 import { StudioCanvas, StudioTools, useGardenStudio } from '../collections/garden/GardenStudio';
+import { DesignPlanNote } from '../components/DesignPlanNote';
+import '../styles/plans.css';
 import { TodayMode, RosterPanel } from '../features/today/Today';
 import { GuestCameraView } from '../features/camera/GuestCamera';
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
@@ -86,6 +88,7 @@ export default function GardenCollection() {
         <section className="garden-section garden-questions"><GardenReveal><span className="garden-kicker">{t('THE LITTLE DETAILS','DIE KLEIN BESONDERHEDE')}</span><h2>{t('Wondering about','Wonder jy oor')}<br/><em>{t('anything?','iets?')}</em></h2></GardenReveal><div>{copy.questions.map((item,i)=><details key={item.question}><summary>{item.question}<span aria-hidden="true">+</span></summary><p>{i===8?t('In this demo, return to the RSVP form and update your preview response. A real wedding would use each guest’s private invitation link.','Keer in hierdie demo terug na die RSVP-vorm om jou voorbeeldantwoord by te werk. ’n Werklike troue sal elke gas se private uitnodigingskakel gebruik.'):item.answer.replaceAll(af?'16 September 2027':'16 September 2027',deadline)}</p></details>)}</div></section>
         <section className="garden-rsvp" id="garden-rsvp"><div className="garden-rsvp-image"><img src={gardenImages.botanical} alt={alt(4)} loading="lazy"/><span>{t('Good company. Full hearts.','Goeie geselskap. Vol harte.')}</span></div><DemoRSVP guests={guests} households={guestFixture.households} onChange={setGuests} af={af} deadline={deadline} onDashboard={()=>changeView('dashboard')}/></section>
       </>}
+      {(view==='website'||view==='invitation')&&<DesignPlanNote design="garden" af={af}/>}
       {view==='today'&&<TodayMode slots={copy.schedule.map((item,i)=>({id:`garden-${i}`,date:dateValue,time:item.time,title:item.description,place:draft.venue}))} weddingId="garden-demo" language={language} names={names} onOpenRoster={()=>changeView('roster')} extra={<button type="button" className="today-camera" onClick={()=>changeView('camera')}>{t('Open the disposable camera · add-on','Maak die weggooikamera oop · byvoeging')}</button>}/>}
       {view==='camera'&&<GuestCameraView weddingId="garden-demo" language={language} names={names} guests={guests.map(g=>({id:g.id,name:g.name}))} addOn/>}
       {view==='roster'&&<RosterPanel slots={copy.schedule.map((item,i)=>({id:`garden-${i}`,date:dateValue,time:item.time,title:item.description,place:draft.venue}))} weddingId="garden-demo" language={language} names={names}/>}

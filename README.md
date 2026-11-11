@@ -77,3 +77,8 @@ Every collection has `?view=today` (Today mode), `?view=roster` (the private day
 Printed stationery, the photographers page and the Ivory stationery view are hidden through `publicFeatures` in `src/config.ts`; set a flag to `true` to bring that item back.
 
 Run all checks with `npm test`, then `npm run build`.
+
+## Designs and plans
+
+Garden, Midnight and Ivory are designs, free with every plan. Plans live in `src/plans.ts` (draft prices): Essential R5,000, Celebration R6,500 and Complete R8,500. What each plan unlocks is in `src/collections/shared/capabilities.ts`. The homepage, Pricing (plan cards, FAQ, then the quote builder), the Designs page and the note at the bottom of each design demo all read from these files. For now each design demo shows one plan (Garden: Essential, Midnight: Celebration, Ivory: Complete); making every design support every plan is the next engineering step. The venue-partner discount is planned but switched off.
+

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
-import { defaultMidnight, midnightGuests, midnightPackage } from '../src/collections/midnight/content';
+import { defaultMidnight, midnightGuests } from '../src/collections/midnight/content';
 import { MIDNIGHT_DATABASE, parseMidnightBackup, serializeMidnightBackup, validateMidnight } from '../src/collections/midnight/storage';
 import { historyReducer, type History } from '../src/collections/shared/useHistory';
 import { commitHouseholdReplies, mealCount, summarizeEvent, summarizeGuests, updateEventResponse } from '../src/components/couple/guestModel';
@@ -51,9 +51,6 @@ test('rejects Garden, future versions, unsafe photos and malformed fixed layouts
   assert.throws(() => parseMidnightBackup(JSON.stringify({ version: 1, draft: {}, edits: {} })));
   assert.throws(() => serializeMidnightBackup('', defaultMidnight));
   assert.notEqual(MIDNIGHT_DATABASE, 'ewig-garden-studio');
-  assert.equal(midnightPackage.price, 5600);
-  assert.equal(midnightPackage.plannedPartnerPrice, 3600);
-  assert.equal(midnightPackage.partnerEligibilityActive, false);
 });
 
 test('edits and restore are reversible, redo branches are cleared, Garden state stays compatible', () => {
@@ -109,7 +106,7 @@ test('Garden totals remain unchanged and shared dashboard renders both collectio
 
 test('collection pages and Afrikaans RSVP render without server services', () => {
   const midnight = renderToStaticMarkup(<MemoryRouter><MidnightCollection/></MemoryRouter>);
-  for (const text of ['Mila Jacobs', 'Luca Daniels', 'Maison Nocturne', 'CHAPTER', 'FICTIONAL DESIGN CONCEPT', 'R5', 'two consolidated revision rounds']) assert.ok(midnight.includes(text), text);
+  for (const text of ['Mila Jacobs', 'Luca Daniels', 'Maison Nocturne', 'CHAPTER', 'FICTIONAL DESIGN CONCEPT', 'comes with every plan', 'Celebration plan', 'R6']) assert.ok(midnight.includes(text), text);
   const garden = renderToStaticMarkup(<MemoryRouter><GardenCollection/></MemoryRouter>);
   assert.match(garden, /Clara/); assert.match(garden, /Ruben/);
   const af = renderToStaticMarkup(<MidnightRSVP data={defaultMidnight} language="af" guests={midnightGuests()} onChange={() => {}} onDashboard={() => {}}/>);

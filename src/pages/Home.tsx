@@ -1,84 +1,89 @@
-import ivoryPreview from '../assets/ivory/ivory-detail.webp';
-import gardenPreview from '../assets/garden/garden-hero.webp';
-import { Flourish } from '../components/Flourish';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowDown, ArrowRight, ArrowUpRight, Heart } from 'lucide-react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { images, conceptPrices, publicFeatures } from '../config';
+import gardenPortrait from '../assets/garden/garden-couple-reference.webp';
+import gardenHero from '../assets/garden/garden-hero.webp';
+import midnightPortrait from '../assets/midnight/midnight-portrait.webp';
+import midnightTable from '../assets/midnight/midnight-table.webp';
+import ivoryDetail from '../assets/ivory/ivory-detail.webp';
 import { useLanguage } from '../i18n';
-import { AnimatedHeading, KineticWords, RotatingWord } from '../components/WordMotion';
-import { Eyebrow, Reveal } from '../components/Shared';
-import { StoryPortal } from '../components/StoryPortal';
+import { PlanCards } from '../components/PlanCards';
+import { readTryNames } from '../collections/shared/tryNames';
+import { plans, formatRand } from '../plans';
+import '../styles/home-simple.css';
 
-type PreviewTab = 'home' | 'details' | 'rsvp';
-const previewPalettes = {
-  sage: { labelEn: 'Sage', labelAf: 'Salie', color: '#6f8a71' },
-  rose: { labelEn: 'Rose', labelAf: 'Roos', color: '#b17e7a' },
-  midnight: { labelEn: 'Midnight', labelAf: 'Middernag', color: '#46556d' },
-};
-type PreviewPalette = keyof typeof previewPalettes;
-const formatDate = (value: string, af: boolean) => {
-  const date = new Date(`${value}T12:00:00`);
-  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat(af ? 'af-ZA' : 'en-ZA', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
-};
-
-function WebsitePreview({ af, firstName, secondName, date, palette }: { af: boolean; firstName: string; secondName: string; date: string; palette: PreviewPalette }) {
-  const [tab, setTab] = useState<PreviewTab>('home');
-  const reduced = useReducedMotion();
-  const tabs: { id: PreviewTab; en: string; af: string }[] = [
-    { id: 'home', en: 'Our story', af: 'Ons storie' },
-    { id: 'details', en: 'The day', af: 'Die dag' },
-    { id: 'rsvp', en: 'RSVP', af: 'RSVP' },
-  ];
-  return <div className="preview-browser" style={{ '--preview-accent': previewPalettes[palette].color } as React.CSSProperties}><div className="preview-browser-top"><span className="preview-browser-dots" aria-hidden="true"><i/><i/><i/></span><span>{af ? 'JULLE TROUWEBWERF · VOORSKOU' : 'YOUR WEDDING WEBSITE · PREVIEW'}</span><span className="preview-browser-mark"><Flourish/></span></div><div className="preview-browser-body"><div className="preview-browser-nav"><span>{firstName.charAt(0).toUpperCase()} <i>&</i> {secondName.charAt(0).toUpperCase()}</span><div role="tablist" aria-label={af ? 'Voorbeeldblaaie' : 'Preview pages'}>{tabs.map(item => <button key={item.id} type="button" role="tab" aria-selected={tab === item.id} onClick={() => setTab(item.id)}>{af ? item.af : item.en}</button>)}</div></div><AnimatePresence mode="wait"><motion.div key={tab} className={`preview-screen preview-screen-${tab}`} initial={reduced ? false : { opacity: 0, scale: 1.025, filter: 'blur(8px)' }} animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} exit={reduced ? undefined : { opacity: 0, scale: .985, filter: 'blur(6px)' }} transition={{ duration: .48 }}>
-    {tab === 'home' && <><div className="preview-screen-photo" style={{ backgroundImage: `url('${images.heroMain}')` }}/><div className="preview-screen-overlay"><span>{af ? 'MET LIEFDE NOOI ONS JULLE' : 'WITH LOVE, WE INVITE YOU'}</span><strong>{firstName} <i>&</i> {secondName}</strong><small>{formatDate(date, af)} &nbsp; <Flourish/> &nbsp; CAPE TOWN</small></div></>}
-    {tab === 'details' && <><div className="preview-details-photo" style={{ backgroundImage: `url('${images.table}')` }}/><div className="preview-details-copy"><span>{formatDate(date, af).toUpperCase()}</span><strong>{af ? '’n Dag om te onthou.' : 'A day to remember.'}</strong><p>{af ? 'Die seremonie begin om 16:00. Kom vier saam met ons onder die sterre.' : 'The ceremony begins at 16:00. Stay and celebrate under the stars.'}</p><small>CAPE TOWN · SOUTH AFRICA</small></div></>}
-    {tab === 'rsvp' && <div className="preview-rsvp"><Heart size={22}/><span>{af ? 'ONS SIEN UIT NA JULLE' : 'WE CAN’T WAIT TO SEE YOU'}</span><strong>{af ? 'Sal julle daar wees?' : 'Will you be there?'}</strong><p>{af ? 'Antwoord aanlyn en laat ons weet wat julle nodig het.' : 'Reply online and let us know what you need.'}</p><Link to="/websites">{af ? 'Probeer die RSVP-voorbeeld' : 'Try the RSVP preview'} <ArrowUpRight size={16}/></Link></div>}
-  </motion.div></AnimatePresence></div></div>;
-}
+// One promise, one button, then three pillars. Designs and plans are separate (see src/plans.ts).
+const designs = [
+  { key: 'ivory', name: 'Ivory', to: '/collections/ivory', image: ivoryDetail, couple: ['Amélie', 'James'], mood: { en: 'Editorial weekend', af: 'Redaksionele naweek' } },
+  { key: 'garden', name: 'Garden', to: '/collections/garden', image: gardenPortrait, couple: ['Clara', 'Ruben'], mood: { en: 'Soft and botanical', af: 'Sag en botanies' } },
+  { key: 'midnight', name: 'Midnight', to: '/collections/midnight', image: midnightPortrait, couple: ['Mila', 'Luca'], mood: { en: 'Candlelit evening', af: 'Aand by kerslig' } },
+] as const;
 
 export default function Home() {
   const { language } = useLanguage();
-  const reduced = useReducedMotion();
   const af = language === 'af';
-  const t = (en: string, afrikaans: string) => af ? afrikaans : en;
-  const [firstName, setFirstName] = useState('Amelia');
-  const [secondName, setSecondName] = useState('Oliver');
-  const [previewDate, setPreviewDate] = useState('2027-03-20');
-  const [palette, setPalette] = useState<PreviewPalette>('sage');
-  const [storyOpen, setStoryOpen] = useState(false);
-  const closeStory = useCallback(() => setStoryOpen(false), []);
-  const safeFirst = firstName.trim() || 'Amelia';
-  const safeSecond = secondName.trim() || 'Oliver';
-  const invitationUrl = `/invitation-preview?${new URLSearchParams({ first: safeFirst, second: safeSecond, date: previewDate, palette }).toString()}`;
-  const steps = af ? [
-    { n: '01', title: 'Vertel ons', copy: 'Ons leer julle storie, styl en praktiese behoeftes ken. Wys vir ons wat julle liefhet en wat julle liewer wil vermy.' },
-    { n: '02', title: 'Ons skep saam', copy: 'Julle keuses lei die ontwerp. Ons maak die webwerf en bypassende besonderhede, en verfyn dit saam met julle.' },
-    { n: '03', title: 'Julle deel', copy: 'Kyk na die finale weergawe op selfoon en rekenaar. Sodra julle gelukkig is, deel julle die skakel met julle gaste.' },
-  ] : [
-    { n: '01', title: 'Tell us', copy: 'We learn your story, style and practical needs. Show us what you love and what you would rather leave out.' },
-    { n: '02', title: 'We create together', copy: 'Your choices guide the design. We shape the website and matching details, then refine them with you.' },
-    { n: '03', title: 'You share', copy: 'Review the finished experience on phone and desktop. Once it feels right, share one beautiful link with your guests.' },
-  ];
-  const work = [
-    { to: '/collections/garden', image: gardenPreview, price: conceptPrices.garden, en: 'The Garden', af: 'Die Tuin', moodEn: 'Soft, romantic, alive', moodAf: 'Sag, romanties, lewendig' },
-    { to: '/collections/ivory', image: ivoryPreview, price: conceptPrices.ivory, en: 'The Ivory', af: 'Die Ivoor', moodEn: 'Our flagship wedding weekend', moodAf: 'Ons vlagskip-trounaweek' },
-    { to: '/collections/midnight', image: images.table, price: conceptPrices.midnight, en: 'The Midnight', af: 'Die Middernag', moodEn: 'Modern, warm, memorable', moodAf: 'Modern, warm, onvergeetlik' },
-  ];
-  return <>
-    <section className="hero editorial-hero home-cover" style={{ backgroundImage: `url('${images.hero}')` }}><div className="hero-content"><motion.p initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .15 }} className="hero-kicker">{(publicFeatures.printedStationery ? t('WEDDING WEBSITES, PAPER & THE LITTLE THINGS', 'TROUWEBWERWE, DRUKWERK & DIE KLEIN DINGE') : t('WEDDING WEBSITES, INVITATIONS & THE LITTLE THINGS', 'TROUWEBWERWE, UITNODIGINGS & DIE KLEIN DINGE'))}</motion.p><motion.h1 initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8, delay: .25 }}><KineticWords text={t('A day that feels', '’n Dag wat')} className="hero-kinetic"/><br/><RotatingWord key={language} words={af ? ['soos julle voel.', 'na towerkuns voel.', 'altyd bybly.'] : ['like yours.', 'like magic.', 'forever yours.']}/></motion.h1><motion.p className="hero-description" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .5 }}>{t('A beautiful online place for your story, your guests and your once-in-a-lifetime day.', '’n Pragtige aanlyn tuiste vir julle storie, julle gaste en julle eenmalige dag.')}</motion.p><motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .65 }} className="hero-actions"><button type="button" onClick={() => setStoryOpen(true)} className="hero-primary">{t('Make it yours', 'Maak dit julle eie')} <ArrowUpRight size={17}/></button><Link to={{ pathname: "/pricing", search: '?section=instant-estimate' }} className="hero-secondary">{t('Build a quote', 'Stel ’n kwotasie saam')} <ArrowRight size={17}/></Link></motion.div><span className="hero-signature">Ewig & Eie <i><Flourish/></i> {t('forever & your own', 'ewig & julle eie')}</span></div><motion.div className="hero-invitation-wrap" initial={reduced ? false : { opacity: 0, y: 18, rotate: 7 }} animate={{ opacity: 1, y: 0, rotate: 5 }} transition={{ delay: .85, duration: .8, ease: 'easeOut' }} whileHover={reduced ? undefined : { y: -7, rotate: 0 }}><button type="button" onClick={() => setStoryOpen(true)} className="hero-invitation" aria-label={t('Personalize a sample wedding invitation', 'Maak ’n voorbeeldtrou-uitnodiging julle eie')}><span className="hero-invitation-top">{t('A LITTLE PREVIEW', '’N KLEIN VOORSKOU')}</span><span className="hero-invitation-monogram">{safeFirst.charAt(0).toUpperCase()} <i>&</i> {safeSecond.charAt(0).toUpperCase()}</span><span className="hero-invitation-rule"/><span className="hero-invitation-copy">{t('You are invited', 'Julle is genooi')}</span><span className="hero-invitation-action">{t('Make it yours', 'Maak dit julle eie')}</span><ArrowUpRight size={15} aria-hidden="true"/></button></motion.div><div className="hero-bottom"><Link to={{ pathname: "/", search: '?section=experience' }}>{t('SCROLL TO DISCOVER', 'ROL OM TE ONTDEK')} <ArrowDown size={14}/></Link></div></section>
-    <StoryPortal open={storyOpen} onClose={closeStory} firstName={firstName} onFirstNameChange={setFirstName} secondName={secondName} onSecondNameChange={setSecondName} date={previewDate} onDateChange={setPreviewDate} palette={palette} onPaletteChange={setPalette} invitationUrl={invitationUrl} af={af}/>
+  const t = (en: string, a: string) => af ? a : en;
+  const [tried] = useState(readTryNames);
+  const from = formatRand(Math.min(...plans.map(p => p.price)));
+  return <div className="hs" data-no-translate>
+    <section className="hs-hero" aria-labelledby="hs-title">
+      <p className="hs-kicker">{t('WEDDING WEBSITES · INVITATIONS · PLANNING', 'TROUWEBWERWE · UITNODIGINGS · BEPLANNING')}</p>
+      <h1 id="hs-title">{t('One beautiful home', 'Een pragtige tuiste')}<br/><em>{t('for your wedding.', 'vir julle troue.')}</em></h1>
+      <p className="hs-lead">{t('Your website, invitation and replies, with the planning tools to match. Designed with you, in English and Afrikaans.', 'Julle webwerf, uitnodiging en antwoorde, met die beplanningsgereedskap wat daarby pas. Saam met julle ontwerp, in Engels en Afrikaans.')}</p>
+      <Link className="hs-cta" to="/collections">{t('Choose your design', 'Kies julle ontwerp')}</Link>
+      <p className="hs-sub"><Link to="/pricing">{t(`Plans from ${from}`, `Planne vanaf ${from}`)}</Link><span aria-hidden="true">·</span><Link to="/invitation-preview">{t('Open a sample invitation', 'Maak ’n voorbeelduitnodiging oop')}</Link></p>
+      <div className="hs-fan">{designs.map((d, i) => <Link key={d.key} to={d.to} className={`hs-card hs-card-${i} hs-card-${d.key}`} aria-label={`${d.name}: ${t('open the design', 'maak die ontwerp oop')}`}>
+        <img src={d.image} alt="" loading={i === 1 ? 'eager' : 'lazy'} decoding="async"/>
+        <span className="hs-card-names"><span>{tried?.first || d.couple[0]}</span><i>&amp;</i><span>{tried?.second || d.couple[1]}</span></span>
+        <span className="hs-card-label">{d.name}<small>{af ? d.mood.af : d.mood.en}</small></span>
+      </Link>)}</div>
+    </section>
 
-    <section className="showcase-section section-pad" id="experience" data-watermark={t('The feeling', 'Die gevoel')}><Reveal className="showcase-intro"><Eyebrow>{t('FIRST, THE FEELING', 'EERS, DIE GEVOEL')}</Eyebrow><AnimatedHeading effect="bloom">{t('A website worth', '’n Webwerf wat')}<br/><em>{t('sharing.', 'julle wil deel.')}</em></AnimatedHeading><p>{t('Your guests see the day before it begins. Try your names, date and colours right here.', 'Julle gaste beleef die dag voordat dit begin. Probeer julle name, datum en kleure sommer hier.')}</p><div className="preview-personalize" aria-label={t('Personalize the wedding website preview', 'Verpersoonlik die trouwebwerfvoorskou')}><div className="preview-personalize-heading"><span><Flourish/> {t('MAKE THIS PREVIEW YOURS', 'MAAK HIERDIE VOORSKOU JULLE EIE')}</span><small>{t('Changes appear instantly.', 'Veranderinge verskyn dadelik.')}</small></div><div className="preview-personalize-fields"><label>{t('Your name', 'Jou naam')}<input type="text" maxLength={24} autoComplete="given-name" value={firstName} onChange={event => setFirstName(event.target.value)}/></label><label>{t('Partner’s name', 'Maat se naam')}<input type="text" maxLength={24} value={secondName} onChange={event => setSecondName(event.target.value)}/></label><label className="preview-date-field">{t('Wedding date', 'Troudatum')}<input type="date" value={previewDate} onChange={event => setPreviewDate(event.target.value)}/></label></div><fieldset className="preview-palette-options"><legend>{t('Choose your colour', 'Kies julle kleur')}</legend><div>{(Object.keys(previewPalettes) as PreviewPalette[]).map(key => <button key={key} type="button" aria-pressed={palette === key} onClick={() => setPalette(key)} style={{ '--swatch': previewPalettes[key].color } as React.CSSProperties}><i/>{af ? previewPalettes[key].labelAf : previewPalettes[key].labelEn}</button>)}</div></fieldset><Link className="preview-open-link" to={invitationUrl}>{t('Open your invitation', 'Maak julle uitnodiging oop')} <ArrowUpRight size={16}/></Link></div></Reveal><Reveal className="showcase-visual" delay={.12}><span className="showcase-float"><Flourish/> {t('INTERACTIVE CONCEPT PREVIEW', 'INTERAKTIEWE KONSEPVOORBEELD')}</span><WebsitePreview af={af} firstName={safeFirst} secondName={safeSecond} date={previewDate} palette={palette}/></Reveal></section>
+    <section className="hs-steps" id="process" aria-labelledby="hs-steps-title">
+      <h2 id="hs-steps-title" className="hs-h2">{t('Simple from hello to “I do”.', 'Eenvoudig van hallo tot “ek wil”.')}</h2>
+      <ol>
+        <li><span>01</span><h3>{t('Choose a design', 'Kies ’n ontwerp')}</h3><p>{t('Garden, Midnight or Ivory. Try each one with your own names.', 'Garden, Midnight of Ivory. Probeer elkeen met julle eie name.')}</p></li>
+        <li><span>02</span><h3>{t('We set it up together', 'Ons stel dit saam op')}</h3><p>{t('Send us your story and photos. Change any word yourself, right on the page.', 'Stuur vir ons julle storie en foto’s. Verander enige woord self, reg op die blad.')}</p></li>
+        <li><span>03</span><h3>{t('Share one link', 'Deel een skakel')}</h3><p>{t('Guests open the invitation, reply in a minute and find everything on the day.', 'Gaste maak die uitnodiging oop, antwoord binne ’n minuut en kry alles op die dag.')}</p></li>
+      </ol>
+    </section>
 
-    <section className="minimal-process section-pad" id="process" data-watermark={t('The process', 'Die proses')}><div className="minimal-section-top"><Eyebrow>{t('THE PROCESS', 'DIE PROSES')}</Eyebrow><AnimatedHeading effect="wave">{t('Simple from hello', 'Eenvoudig van hallo')}<br/><em>{t('to “I do.”', 'tot “ek wil.”')}</em></AnimatedHeading><p>{t('Your ideas lead. We make them beautiful, useful and easy to share.', 'Julle idees wys die pad. Ons maak dit pragtig, bruikbaar en maklik om te deel.')}</p></div><div className="minimal-steps">{steps.map((item, index) => <Reveal className="minimal-step" key={item.n} delay={index * .1}><span>{item.n}</span><div className="minimal-step-symbol"><Flourish/></div><h3>{item.title}</h3><p>{item.copy}</p></Reveal>)}</div></section>
+    <section className="hs-pillar" id="experience" aria-labelledby="hs-p1">
+      <div className="hs-pillar-media"><img src={gardenHero} alt={t('The Garden design on a wedding website', 'Die Garden-ontwerp op ’n trouwebwerf')} loading="lazy" decoding="async"/></div>
+      <div className="hs-pillar-copy"><p className="hs-kicker">01 · {t('YOUR WEBSITE', 'JULLE WEBWERF')}</p><h2 id="hs-p1" className="hs-h2">{t('Your story, beautifully told.', 'Julle storie, pragtig vertel.')}</h2>
+        <p>{t('The story, the day, the venue and the little details, laid out with care and easy to update yourselves.', 'Die storie, die dag, die venue en die klein besonderhede, met sorg uitgelê en maklik om self op te dateer.')}</p>
+        <Link className="hs-link" to="/collections">{t('Explore the designs', 'Verken die ontwerpe')} →</Link></div>
+    </section>
 
+    <section className="hs-pillar hs-pillar-flip" aria-labelledby="hs-p2">
+      <div className="hs-pillar-media"><img src={midnightTable} alt={t('A candlelit table from the Midnight design', '’n Tafel by kerslig uit die Midnight-ontwerp')} loading="lazy" decoding="async"/></div>
+      <div className="hs-pillar-copy"><p className="hs-kicker">02 · {t('YOUR GUESTS', 'JULLE GASTE')}</p><h2 id="hs-p2" className="hs-h2">{t('Invited, answered, on time.', 'Genooi, geantwoord, betyds.')}</h2>
+        <p>{t('An invitation they open like the real thing, replies for every event, and Today mode that keeps everyone on schedule on the day.', '’n Uitnodiging wat hulle oopmaak soos die regte ding, antwoorde vir elke geleentheid, en Vandag-modus wat almal op die dag op skedule hou.')}</p>
+        <p className="hs-links"><Link className="hs-link" to="/invitation-preview">{t('Open a sample invitation', 'Maak ’n voorbeelduitnodiging oop')} →</Link><Link className="hs-link" to="/collections/midnight?view=today">{t('See Today mode', 'Sien Vandag-modus')} →</Link></p></div>
+    </section>
 
-    <section className="minimal-offer section-pad" id="offer" data-watermark={t('What we offer', 'Wat ons bied')}><div className="minimal-section-top"><Eyebrow>{t('WHAT WE OFFER', 'WAT ONS BIED')}</Eyebrow><AnimatedHeading effect="scatter">{t('One story.', 'Een storie.')}<br/><em>{t('Beautifully connected.', 'Pragtig verbind.')}</em></AnimatedHeading></div><div className="minimal-offer-grid"><Reveal className="minimal-offer-card"><span>01</span><h3>{t('Wedding websites', 'Trouwebwerwe')}</h3><p>{t('A beautiful home for your story, schedule, venue and guest details. Add an RSVP experience and a couple dashboard when those are part of your chosen package.', '’n Pragtige tuiste vir julle storie, program, venue en gasbesonderhede. Voeg ’n RSVP-ervaring en paartjiepaneel by wanneer dit deel van julle pakket is.')}</p><strong>{t('From', 'Vanaf')} R2,000</strong><Link to="/websites" className="minimal-offer-link">{t('Explore websites', 'Verken webwerwe')} <ArrowUpRight size={15}/></Link></Reveal><Reveal className="minimal-offer-card" delay={.1}><span>02</span><h3>{publicFeatures.printedStationery ? t('Paper & invitations', 'Drukwerk & uitnodigings') : t('Digital invitations', 'Digitale uitnodigings')}</h3><p>{publicFeatures.printedStationery ? t('Digital invitations and coordinated print designs for save-the-dates, invitations, menus, place cards and signs. We can plan print quantities with you.', 'Digitale uitnodigings en bypassende drukontwerpe vir onthou-die-datums, uitnodigings, spyskaarte, plekkaartjies en borde. Ons kan drukhoeveelhede saam beplan.') : t('An invitation your guests open like the real thing, matched to your website.', '’n Uitnodiging wat julle gaste oopmaak soos die regte ding, wat by julle webwerf pas.')}</p><strong>{publicFeatures.printedStationery ? t('Draft prices in the builder', 'Konseppryse in die bouer') : t('Part of every collection', 'Deel van elke versameling')}</strong><Link to={publicFeatures.printedStationery ? '/stationery' : '/invitation-preview'} className="minimal-offer-link">{publicFeatures.printedStationery ? t('Explore stationery', 'Verken drukwerk') : t('Open an invitation', 'Maak ’n uitnodiging oop')} <ArrowUpRight size={15}/></Link></Reveal><Reveal className="minimal-offer-card" delay={.2}><span>03</span><h3>{t('Photography', 'Fotografie')}</h3><p>{t('We help connect you with a photographer whose style suits your day. Coverage, availability and final pricing are confirmed with the photographer before you book.', 'Ons help julle om ’n fotograaf te vind wie se styl by julle dag pas. Dekking, beskikbaarheid en finale pryse word met die fotograaf bevestig voordat julle bespreek.')}</p><strong>{t('Subject to availability', 'Onderhewig aan beskikbaarheid')}</strong><Link to={{ pathname: "/pricing", search: '?section=instant-estimate' }} className="minimal-offer-link">{t('Explore options', 'Verken opsies')} <ArrowUpRight size={15}/></Link></Reveal></div><div className="minimal-offer-action"><span className="offer-ribbon offer-ribbon-one" aria-hidden="true"/><span className="offer-ribbon offer-ribbon-two" aria-hidden="true"/><div><small>{t('YOUR DAY, YOUR COMBINATION', 'JULLE DAG, JULLE KOMBINASIE')}</small><p>{t('Choose your pieces and see a transparent draft total.', 'Kies julle dele en sien ’n duidelike konsepbedrag.')}</p></div><Link to={{ pathname: "/pricing", search: '?section=instant-estimate' }} className="hero-primary">{t('Build your estimate', 'Stel julle beraming saam')} <ArrowUpRight size={18}/></Link></div></section>
+    <section className="hs-pillar" aria-labelledby="hs-p3">
+      <div className="hs-pillar-media hs-dash" aria-hidden="true">
+        <div className="hs-dash-row"><strong>18</strong><span>{t('attending the wedding', 'woon die troue by')}</span></div>
+        <div className="hs-dash-row"><strong>7 · 6 · 5</strong><span>{t('lamb · fish · vegetarian', 'lam · vis · vegetaries')}</span></div>
+        <div className="hs-dash-row"><strong>{t('Table', 'Tafel')} Chenin</strong><span>8 / 8 {t('seats', 'sitplekke')}</span></div>
+        <div className="hs-dash-row"><strong>R45 000</strong><span>{t('still to pay', 'nog te betaal')}</span></div>
+        <div className="hs-dash-row"><strong>214</strong><span>{t('guest photos', 'gasfoto’s')}</span></div>
+        <small>{t('Sample figures', 'Voorbeeldsyfers')}</small>
+      </div>
+      <div className="hs-pillar-copy"><p className="hs-kicker">03 · {t('YOUR PLAN', 'JULLE PLAN')}</p><h2 id="hs-p3" className="hs-h2">{t('Every detail, in one place.', 'Elke besonderheid, op een plek.')}</h2>
+        <p>{t('Catering totals, seating, your budget and a disposable camera for your guests. Calm for you, clear for your planner.', 'Spyseneringtotale, sitplekke, julle begroting en ’n weggooikamera vir julle gaste. Rustig vir julle, duidelik vir julle beplanner.')}</p>
+        <Link className="hs-link" to="/collections/ivory?view=dashboard">{t('See the planning dashboard', 'Sien die beplanningspaneel')} →</Link></div>
+    </section>
 
-    <section className="minimal-work section-pad" id="work" data-watermark={t('Design previews', 'Ontwerpvoorskoue')}><div className="minimal-work-heading"><div><Eyebrow>{t('DESIGN PREVIEWS', 'ONTWERPVOORBEELDE')}</Eyebrow><AnimatedHeading effect="bloom">{t('See what is', 'Kyk wat')}<br/><em>{t('possible.', 'moontlik is.')}</em></AnimatedHeading><p>{t('Why look at someone else’s wedding website? Start with a design direction and imagine your own story in it. Try The Garden: edit the details, open your invitation and explore the couple dashboard.', 'Hoekom na iemand anders se trouwebwerf kyk? Begin met ’n ontwerprigting en verbeel julle eie storie daarin. Probeer The Garden: verander die besonderhede, maak julle uitnodiging oop en verken die paartjiepaneel.')}</p></div><Link to="/collections" className="text-link">{t('Explore design previews', 'Verken ontwerpvoorbeelde')} <ArrowUpRight size={17}/></Link></div><div className="minimal-work-grid">{work.map((item, index) => <Reveal className="minimal-work-card" key={item.en} delay={index * .08}><Link to={item.to}><div className="minimal-work-image"><img src={item.image} alt={t(`${item.en} wedding design concept`, `${item.af}-trouontwerpkonsep`)} loading="lazy"/><span>0{index + 1} / {t('CONCEPT', 'KONSEP')}</span></div><h3>{t(item.en, item.af)}</h3><p>{t(item.moodEn, item.moodAf)}</p><small className="concept-start">{t('From', 'Vanaf')} R{item.price.toLocaleString('en-ZA')} · {t('draft estimate', 'konsepberaming')}</small></Link></Reveal>)}</div></section>
+    <section className="hs-plans" id="work" aria-labelledby="hs-plans-title">
+      <h2 id="hs-plans-title" className="hs-h2">{t('Three plans. Any design.', 'Drie planne. Enige ontwerp.')}</h2>
+      <p className="hs-plans-lead">{t('One payment, no subscriptions.', 'Een betaling, geen intekening nie.')}</p>
+      <PlanCards af={af} compact/>
+    </section>
 
-    <section className="minimal-final"><span aria-hidden="true"><Flourish/></span><Eyebrow>{t('YOUR STORY STARTS HERE', 'JULLE STORIE BEGIN HIER')}</Eyebrow><AnimatedHeading effect="drift">{t('Shall we make', 'Sal ons iets')}<br/><em>{t('something lovely?', 'pragtigs maak?')}</em></AnimatedHeading><Link to="/contact" className="hero-primary">{t('Tell us about your day', 'Vertel ons van julle dag')} <ArrowUpRight size={18}/></Link></section>
-  </>;
+    <section className="hs-final">
+      <h2 className="hs-h2">{t('Tell us about your day.', 'Vertel ons van julle dag.')}</h2>
+      <Link className="hs-cta" to="/contact">{t('Get in touch', 'Kontak ons')}</Link>
+    </section>
+  </div>;
 }

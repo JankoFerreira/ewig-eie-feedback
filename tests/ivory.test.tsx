@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
-import { defaultIvory, ivoryGuests, ivoryHouseholds, ivoryPackage, ivorySeating } from '../src/collections/ivory/content';
+import { defaultIvory, ivoryGuests, ivoryHouseholds, ivorySeating } from '../src/collections/ivory/content';
 import { IVORY_DATABASE, parseIvoryBackup, serializeIvoryBackup, shiftWeekend, validateIvory } from '../src/collections/ivory/storage';
 import { analyseSeating, autoSeat, cateringSummary, householdStatus, summarizeInvitedEvent } from '../src/collections/ivory/model';
 import { cateringCsv, householdCsv, runSheetCsv, seatingCsv } from '../src/collections/ivory/exports';
@@ -11,16 +11,18 @@ import { collectionCapabilities, hasCapability } from '../src/collections/shared
 import { MIDNIGHT_DATABASE } from '../src/collections/midnight/storage';
 import { commitHouseholdReplies, updateEventResponse } from '../src/components/couple/guestModel';
 import { CoupleDashboard } from '../src/components/couple/CoupleDashboard';
-import { conceptPrices } from '../src/config';
+import { plans, planById, venuePartnerDiscount } from '../src/plans';
+import { designDemoPlan, planCapabilities } from '../src/collections/shared/capabilities';
 import IvoryCollection from '../src/pages/IvoryCollection';
 import { StationerySuite } from '../src/collections/ivory/Stationery';
 
-test('commercial facts: R8,000 flagship, inactive R6,000 partner price, honest exclusions', () => {
-  assert.equal(ivoryPackage.price, 8000); assert.equal(conceptPrices.ivory, 8000);
-  assert.equal(ivoryPackage.plannedPartnerPrice, 6000); assert.equal(ivoryPackage.partnerEligibilityActive, false);
-  assert.equal(ivoryPackage.revisionRounds, 3);
-  for (const x of ['photography', 'physical-printing', 'unlimited-bespoke-development']) assert.ok((ivoryPackage.excluded as readonly string[]).includes(x));
-  assert.ok(conceptPrices.ivory > conceptPrices.midnight && conceptPrices.midnight > conceptPrices.garden);
+test('plans: Essential R5,000, Celebration R6,500, Complete R8,500; designs carry no price; venue discount off', () => {
+  assert.deepEqual(plans.map(p => [p.id, p.price]), [['essential', 5000], ['celebration', 6500], ['complete', 8500]]);
+  assert.equal(venuePartnerDiscount.active, false);
+  assert.deepEqual(designDemoPlan, { garden: 'essential', midnight: 'celebration', ivory: 'complete' });
+  for (const [a, b] of [['essential', 'celebration'], ['celebration', 'complete']] as const) assert.ok(planCapabilities[a].every(c => planCapabilities[b].includes(c)), `${b} includes all of ${a}`);
+  assert.ok(planCapabilities.complete.includes('disposableCamera') && !planCapabilities.celebration.includes('disposableCamera'));
+  assert.ok(planById('complete').includes.some(l => /three rounds/.test(l.en)));
 });
 
 test('fictional facts: 10 March 2029 is a Saturday and the weekend runs Friday to Sunday', () => {
@@ -143,7 +145,7 @@ test('shared dashboard: uninvited guests are shown as such and excluded from eve
 
 test('page renders the cover, fictional label, scope and Afrikaans stationery without services', () => {
   const html = renderToStaticMarkup(<MemoryRouter initialEntries={['/collections/ivory']}><IvoryCollection/></MemoryRouter>);
-  for (const s of ['Amélie', 'James', 'Maison Aveline', 'RSVP', 'Fictional design concept', 'placeholder plates', 'R8', 'R6', 'three consolidated revision rounds', 'Not included: photography, physical printing']) assert.ok(html.includes(s), s);
+  for (const s of ['Amélie', 'James', 'Maison Aveline', 'RSVP', 'Fictional design concept', 'placeholder plates', 'comes with every plan', 'Complete plan', 'R8']) assert.ok(html.includes(s), s);
   const af = renderToStaticMarkup(<StationerySuite data={defaultIvory} language="af" formatDate={d => d}/>);
   for (const s of ['Hou die datum oop', 'Dankie', 'Versoek', 'Tafel'].map(x => x.toLowerCase())) assert.ok(af.toLowerCase().includes(s), s);
 });

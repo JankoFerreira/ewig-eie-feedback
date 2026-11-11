@@ -11,15 +11,7 @@ export type Language = 'en' | 'af';
 export type Copy = { en: string; af: string };
 export const words = (en: string, af: string): Copy => ({ en, af });
 
-// Commercial facts. Partner pricing stays inactive until a signed venue agreement exists.
-export const ivoryPackage = {
-  price: 8000,
-  plannedPartnerPrice: 6000,
-  partnerEligibilityActive: false,
-  revisionRounds: 3,
-  service: ['design-consultation', 'assisted-content-setup', 'three-consolidated-revision-rounds'],
-  excluded: ['photography', 'physical-printing', 'unlimited-bespoke-development'],
-} as const;
+// Prices and inclusions live in src/plans.ts: Ivory is a design, free with every plan.
 
 export const IVORY_VERSION = 1 as const;
 export const monogramStyles = ['ring', 'arch', 'stacked'] as const;

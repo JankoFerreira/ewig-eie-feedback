@@ -7,7 +7,7 @@ import type { DemoGuest } from '../../components/couple/guestModel';
 export type Language = 'en' | 'af';
 export type Copy = { en: string; af: string };
 export const words = (en: string, af: string): Copy => ({ en, af });
-export const midnightPackage = { price: 5600, plannedPartnerPrice: 3600, partnerEligibilityActive: false, revisionRounds: 2 } as const;
+// Prices and inclusions live in src/plans.ts: Midnight is a design, free with every plan.
 export const textDefaults: Record<string, Copy> = {
   'hero.eyebrow': words('AN EVENING, A LIFETIME', "’N AAND, ’N LEEFTYD"),
   'hero.note': words('Some nights stay with you forever.', 'Party aande bly vir altyd by jou.'),

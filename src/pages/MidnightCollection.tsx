@@ -4,7 +4,9 @@ import { motion, useReducedMotion } from 'motion/react';
 import { useLanguage } from '../i18n';
 import { EternalRibbonIntro } from '../components/EternalRibbon';
 import { CoupleDashboard } from '../components/couple/CoupleDashboard';
-import { midnightGuests, midnightPackage } from '../collections/midnight/content';
+import { midnightGuests } from '../collections/midnight/content';
+import { DesignPlanNote } from '../components/DesignPlanNote';
+import '../styles/plans.css';
 import { MidnightEditor, useMidnightStudio } from '../collections/midnight/MidnightEditor';
 import { CinematicGallery } from '../collections/midnight/CinematicGallery';
 import { MidnightRSVP } from '../collections/midnight/MidnightRSVP';
@@ -62,7 +64,7 @@ export default function MidnightCollection() {
       {view === 'today' && <TodayMode slots={slots} weddingId="midnight-demo" language={language} names={names} onOpenRoster={() => changeView('roster')} extra={<button type="button" className="today-camera" onClick={() => changeView('camera')}>{t('Open the disposable camera · add-on', 'Maak die weggooikamera oop · byvoeging')}</button>}/>}
       {view === 'camera' && <GuestCameraView weddingId="midnight-demo" language={language} names={names} guests={guests.map(g => ({ id: g.id, name: g.name }))} addOn/>}
       {view === 'roster' && <RosterPanel slots={slots} weddingId="midnight-demo" language={language} names={names}/>}
-      <section className="mid-scope"><div><span className="mid-kicker">EWIG & EIE / MIDNIGHT</span><h2>R{midnightPackage.price.toLocaleString('en-ZA')}</h2><p>{t('Wedding website package', 'Trouwebwerfpakket')}</p><Link to="/contact?collection=The%20Midnight%20Collection">{t('Enquire about Midnight', 'Doen navraag oor Midnight')} ↗</Link></div><div><h3>{t('More of your story. Less to organise.', 'Meer van julle storie. Minder om te reël.')}</h3><p>{t('Garden’s essentials, an editorial chapter layout, welcome-event and wedding replies, meal choices, event summaries and an expanded cinematic gallery.', 'Garden se kernfunksies, ’n redaksionele hoofstukuitleg, antwoorde vir die verwelkoming en troue, etekeuses, geleentheidopsommings en ’n uitgebreide filmiese galery.')}</p><p>{t('Proposed service scope: two consolidated revision rounds. Photography services and physical printing are not included.', 'Voorgestelde diensomvang: twee saamgevoegde hersieningsrondtes. Fotografiedienste en fisieke drukwerk is nie ingesluit nie.')}</p><small>{t('Planned venue-partner price: R3,600. Inactive until real agreements exist; no partner discount can be claimed here.', 'Beplande venuevennootprys: R3 600. Onaktief totdat werklike ooreenkomste bestaan; geen vennootafslag kan hier geëis word nie.')}</small><details><summary>{t('What is a demonstration?', 'Wat is ’n demonstrasie?')}</summary><p>{t('Editing, named local drafts, backups, gallery viewing and sample RSVP calculations work in your browser. Live guest accounts, private invitations, shared storage, email confirmations and publishing require a production backend and an agreed service scope.', 'Redigering, benoemde plaaslike konsepte, rugsteun, galerybesigtiging en voorbeeld-RSVP-berekeninge werk in jou blaaier. Werklike gasrekeninge, private uitnodigings, gedeelde berging, e-posbevestigings en publisering benodig ’n produksiebediener en ’n ooreengekome diensomvang.')}</p></details></div></section>
+      {view !== 'today' && view !== 'roster' && view !== 'camera' && <DesignPlanNote design="midnight" af={af} className="mid-plan-note"/>}
       <footer className="mid-footer"><span>{names}</span><p>{copy('footer.note')}</p><small>{t('Fictional design concept by', 'Fiktiewe ontwerpkonsep deur')} <Link to="/">Ewig & Eie</Link></small></footer>
       <MidnightEditor studio={studio} open={editor} onClose={() => setEditor(false)} language={language}/>
     </div>

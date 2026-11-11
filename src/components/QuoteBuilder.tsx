@@ -4,21 +4,29 @@ import { Link } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Copy, Download, Sparkles } from 'lucide-react';
 import { draftQuotePrices as prices, publicFeatures } from '../config';
+import { plans, type PlanId } from '../plans';
 import { downloadEstimatePdf } from '../utils/estimatePdf';
 import { useLanguage } from '../i18n';
 import { AnimatedHeading } from './WordMotion';
 
-type PackageId = 'website' | 'keepsake' | 'captured' | 'complete';
+type PackageId = 'website' | 'keepsake' | 'captured' | 'completeStory' | PlanId;
 type ExtraId = 'rsvp' | 'gallery' | 'timeline' | 'domain' | 'digitalInvitation';
 const packages: { id: PackageId; en: string; af: string; descriptionEn: string; descriptionAf: string; print: boolean; photo: boolean }[] = [
   { id: 'website', en: 'The Website', af: 'Die Webwerf', descriptionEn: 'A beautiful home for your story.', descriptionAf: '’n Pragtige tuiste vir julle storie.', print: false, photo: false },
   { id: 'keepsake', en: 'The Keepsake', af: 'Die Aandenking', descriptionEn: 'Website, 100 invites & 100 menu cards.', descriptionAf: 'Webwerf, 100 uitnodigings & 100 spyskaartjies.', print: true, photo: false },
   { id: 'captured', en: 'The Captured Story', af: 'Die Vasgevangde Storie', descriptionEn: 'Website & 6 hours of photography.', descriptionAf: 'Webwerf & 6 uur se fotografie.', print: false, photo: true },
-  { id: 'complete', en: 'The Complete Story', af: 'Die Volledige Storie', descriptionEn: 'Website, print suite & 6 hours of photography.', descriptionAf: 'Webwerf, drukwerk & 6 uur se fotografie.', print: true, photo: true },
+  { id: 'completeStory', en: 'The Complete Story', af: 'Die Volledige Storie', descriptionEn: 'Website, print suite & 6 hours of photography.', descriptionAf: 'Webwerf, drukwerk & 6 uur se fotografie.', print: true, photo: true },
 ];
 // Printed stationery stays in the code but is hidden until print prices and vendors are confirmed.
-const visiblePackages = packages.filter(option => publicFeatures.printedStationery || !option.print);
+// The builder starts from one of the three plans; legacy print packages return only with printed stationery.
+const planPackages = plans.map(plan => ({ id: plan.id, en: plan.name.en, af: plan.name.af, descriptionEn: plan.summary.en, descriptionAf: plan.summary.af, print: false, photo: false }));
+const visiblePackages = publicFeatures.printedStationery ? packages : planPackages;
+const basePrice = (id: PackageId) => plans.find(plan => plan.id === id)?.price ?? prices.website;
+const allPackages = [...packages.filter(p => !plans.some(plan => plan.id === p.id)), ...planPackages];
 const packageContents: Record<PackageId, { en: string; af: string }[]> = {
+  essential: plans[0].includes.slice(0, 3),
+  celebration: [{ en: 'Everything in Essential', af: 'Alles in Essensieel' }, ...plans[1].includes.slice(0, 2)],
+  complete: [{ en: 'Everything in Celebration', af: 'Alles in Viering' }, ...plans[2].includes.slice(0, 2)],
   website: [
     { en: 'Personal, mobile-friendly website', af: 'Persoonlike, selfoonvriendelike webwerf' },
     { en: 'Story and wedding information pages', af: 'Storie- en trou-inligtingsblaaie' },
@@ -34,19 +42,22 @@ const packageContents: Record<PackageId, { en: string; af: string }[]> = {
     { en: 'Six hours of photography allowance', af: 'Ses uur se fotografietoelaag' },
     { en: 'Photographer subject to availability', af: 'Fotograaf onderhewig aan beskikbaarheid' },
   ],
-  complete: [
+  completeStory: [
     { en: 'Everything in The Website', af: 'Alles in Die Webwerf' },
     { en: '100 invites + 100 menu cards', af: '100 uitnodigings + 100 spyskaartjies' },
     { en: 'Six hours of photography allowance', af: 'Ses uur se fotografietoelaag' },
   ],
 };
-const extraOptions: { id: ExtraId; en: string; af: string; price: number }[] = [
+// RSVP, gallery, timeline and the digital invitation are now part of the plans.
+const includedInPlans: ExtraId[] = ['rsvp', 'gallery', 'timeline', 'digitalInvitation'];
+const extraOptionsAll: { id: ExtraId; en: string; af: string; price: number }[] = [
   { id: 'rsvp', en: 'RSVP & couple dashboard (planned)', af: 'RSVP en paartjiepaneel (beplan)', price: prices.rsvp },
   { id: 'gallery', en: 'Photo gallery', af: 'Fotogalery', price: prices.gallery },
   { id: 'timeline', en: 'Wedding day timeline', af: 'Troudagprogram', price: prices.timeline },
   { id: 'domain', en: 'Custom domain setup', af: 'Pasgemaakte domeinopstelling', price: prices.domain },
   { id: 'digitalInvitation', en: 'Digital invitation design', af: 'Digitale uitnodigingsontwerp', price: prices.digitalInvitation },
 ];
+const extraOptions = publicFeatures.printedStationery ? extraOptionsAll : extraOptionsAll.filter(option => !includedInPlans.includes(option.id));
 const money = (value: number) => `R${value.toLocaleString('en-ZA')}`;
 
 export function QuoteBuilder() {
@@ -55,7 +66,7 @@ export function QuoteBuilder() {
   const t = (en: string, afrikaans: string) => af ? afrikaans : en;
   const reduced = useReducedMotion();
   const [step, setStep] = useState(0);
-  const [packageId, setPackageId] = useState<PackageId>('website');
+  const [packageId, setPackageId] = useState<PackageId>(publicFeatures.printedStationery ? 'website' : 'essential');
   const [print, setPrint] = useState(false);
   const [photo, setPhoto] = useState(false);
   const [invites, setInvites] = useState(100);
@@ -65,10 +76,10 @@ export function QuoteBuilder() {
   const [copied, setCopied] = useState(false);
   const stepHeading = useRef<HTMLHeadingElement>(null);
 
-  const selectedPackage = packages.find(item => item.id === packageId)!;
+  const selectedPackage = allPackages.find(item => item.id === packageId)!;
   const stageNames = af ? ['Versameling', 'Webwerf', publicFeatures.printedStationery ? 'Drukwerk & foto' : 'Fotografie', 'Julle beraming'] : ['Collection', 'Website', publicFeatures.printedStationery ? 'Paper & photo' : 'Photography', 'Your estimate'];
   const items = [
-    { key: 'website', label: t('Personal wedding website', 'Persoonlike trouwebwerf'), amount: prices.website },
+    { key: 'website', label: plans.some(plan => plan.id === packageId) ? `${t(selectedPackage.en, selectedPackage.af)} ${t('plan', 'plan')}` : t('Personal wedding website', 'Persoonlike trouwebwerf'), amount: basePrice(packageId) },
     ...extras.filter(id => id !== 'digitalInvitation').map(id => { const option = extraOptions.find(item => item.id === id)!; return { key: id, label: t(option.en, option.af), amount: option.price }; }),
     ...(print ? [
       { key: 'design', label: t('Invitation suite design', 'Uitnodigingsreeksontwerp'), amount: prices.invitationDesign },
@@ -88,11 +99,11 @@ export function QuoteBuilder() {
     `${t('Indicative total', 'Geskatte totaal')}: ${money(total)}`,
     t('Draft planning figures only. Print specifications, photographer availability, final scope and pricing are confirmed in a written quote.', 'Slegs konsepbedrae vir beplanning. Drukspesifikasies, fotograafbeskikbaarheid, finale omvang en pryse word in ’n skriftelike kwotasie bevestig.'),
   ].join('\n');
-  const enquiryCollection = packageId === 'website' ? '' : selectedPackage.en;
+  const enquiryCollection = packageId === 'website' ? '' : `${selectedPackage.en}${plans.some(plan => plan.id === packageId) ? ' plan' : ''}`;
   const enquiryUrl = `/contact?estimate=${encodeURIComponent(summary)}${enquiryCollection ? `&collection=${encodeURIComponent(enquiryCollection)}` : ''}`;
 
   function selectPackage(id: PackageId) {
-    const chosen = packages.find(item => item.id === id)!;
+    const chosen = allPackages.find(item => item.id === id)!;
     setPackageId(id);
     setPrint(chosen.print);
     setPhoto(chosen.photo);
@@ -129,7 +140,7 @@ export function QuoteBuilder() {
           <h3 ref={stepHeading} tabIndex={-1}>{step === 0 ? t('Start with your story.', 'Begin met julle storie.') : step === 1 ? t('Make your website yours.', 'Maak julle webwerf eie.') : step === 2 ? t('The details beyond digital.', 'Die besonderhede buite digitaal.') : t('Here is your picture.', 'Hier is julle oorsig.')}</h3>
           <p className="quote-stage-copy">{step === 0 ? t('Pick a starting point. You can change every detail in the next steps.', 'Kies ’n beginpunt. Julle kan elke detail in die volgende stappe verander.') : step === 1 ? t('Only add what you actually need. Every choice appears in your total.', 'Voeg net by wat julle regtig nodig het. Elke keuse verskyn in julle totaal.') : step === 2 ? (publicFeatures.printedStationery ? t('Print and photography are flexible planning estimates, shaped to your day.', 'Drukwerk en fotografie is buigsame konsepberamings wat by julle dag aangepas word.') : t('Photography is a flexible planning estimate, shaped to your day.', 'Fotografie is ’n buigsame konsepberaming wat by julle dag aangepas word.')) : t('Keep this estimate, share it, or send it through with your enquiry.', 'Bewaar of deel hierdie beraming, of stuur dit saam met julle navraag.')}</p>
           {step === 0 && <div className="quote-package-grid">{visiblePackages.map(option => {
-            const packageFrom = prices.website + (option.print ? prices.invitationDesign + 100 * (prices.invitationEach + prices.menuCardEach) : 0) + (option.photo ? 6 * prices.photographyHour : 0);
+            const packageFrom = basePrice(option.id) + (option.print ? prices.invitationDesign + 100 * (prices.invitationEach + prices.menuCardEach) : 0) + (option.photo ? 6 * prices.photographyHour : 0);
             return <button key={option.id} type="button" className={`quote-package ${packageId === option.id ? 'selected' : ''}`} aria-pressed={packageId === option.id} onClick={() => selectPackage(option.id)}><span className="quote-package-top"><span>{t(option.en, option.af)}</span><span className="quote-package-check">{packageId === option.id ? <Check size={16}/> : <Flourish/>}</span></span><small>{t(option.descriptionEn, option.descriptionAf)}</small><span className="quote-package-includes">{packageContents[option.id].map(line => <span key={line.en}><Check size={13}/>{t(line.en, line.af)}</span>)}</span><strong>{t('Draft from', 'Konsep vanaf')} {money(packageFrom)}</strong></button>;
           })}<div className="quote-package-preview">{t('Want to see the feeling first?', 'Wil julle eers die gevoel sien?')} <Link to="/websites">{t('Explore the sample website and dashboard', 'Verken die voorbeeldwebwerf en paneel')} <ArrowUpRight size={15}/></Link><small>{t('The dashboard is a design preview; production features are scoped in your final quote.', 'Die paneel is ’n ontwerpvoorskou; produksiekenmerke word in julle finale kwotasie bepaal.')}</small></div></div>}
           {step === 1 && <div className="quote-extra-grid">{extraOptions.map(option => <label className={`quote-extra ${extras.includes(option.id) ? 'selected' : ''}`} key={option.id}><input type="checkbox" checked={extras.includes(option.id)} onChange={() => toggleExtra(option.id)}/><span className="quote-extra-name">{t(option.en, option.af)}</span><strong>+ {money(option.price)}</strong></label>)}</div>}
