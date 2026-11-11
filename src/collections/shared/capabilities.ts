@@ -1,6 +1,6 @@
 import type { PlanId } from '../../plans';
 
-// What each PLAN unlocks. Designs (Garden, Midnight, Ivory) are free to choose and carry no features of their own.
+// What each package unlocks. Each design is its own package (Garden = Essential, Midnight = Celebration, Ivory = Complete).
 export type Capability =
   | 'rsvp' | 'guestDashboard' | 'csvExport' | 'todayMode'
   | 'multiEvent' | 'mealChoices' | 'gallery'
@@ -11,7 +11,7 @@ const celebration: Capability[] = [...essential, 'multiEvent', 'mealChoices', 'g
 const complete: Capability[] = [...celebration, 'households', 'cateringSummary', 'seatingPlan', 'plannerExports', 'budgetPlanner', 'disposableCamera', 'monogram'];
 export const planCapabilities: Record<PlanId, readonly Capability[]> = { essential, celebration, complete };
 
-// Each design page currently demonstrates one plan. Making every design support every plan is the next engineering step.
+// Each design is sold as one package. Seating and budget can be added to Garden or Midnight as paid add-ons.
 export const designDemoPlan = { garden: 'essential', midnight: 'celebration', ivory: 'complete' } as const;
 export const collectionCapabilities: Record<keyof typeof designDemoPlan, readonly Capability[]> = {
   garden: planCapabilities[designDemoPlan.garden], midnight: planCapabilities[designDemoPlan.midnight], ivory: planCapabilities[designDemoPlan.ivory],

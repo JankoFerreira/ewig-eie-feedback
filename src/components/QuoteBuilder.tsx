@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Copy, Download, Sparkles } from 'lucide-react';
 import { draftQuotePrices as prices, publicFeatures } from '../config';
-import { plans, type PlanId } from '../plans';
+import { plans, addOnPrices, type PlanId } from '../plans';
 import { downloadEstimatePdf } from '../utils/estimatePdf';
 import { useLanguage } from '../i18n';
 import { AnimatedHeading } from './WordMotion';
 
 type PackageId = 'website' | 'keepsake' | 'captured' | 'completeStory' | PlanId;
-type ExtraId = 'rsvp' | 'gallery' | 'timeline' | 'domain' | 'digitalInvitation';
+type ExtraId = 'rsvp' | 'gallery' | 'timeline' | 'domain' | 'digitalInvitation' | 'seating' | 'budget';
 const packages: { id: PackageId; en: string; af: string; descriptionEn: string; descriptionAf: string; print: boolean; photo: boolean }[] = [
   { id: 'website', en: 'The Website', af: 'Die Webwerf', descriptionEn: 'A beautiful home for your story.', descriptionAf: '’n Pragtige tuiste vir julle storie.', print: false, photo: false },
   { id: 'keepsake', en: 'The Keepsake', af: 'Die Aandenking', descriptionEn: 'Website, 100 invites & 100 menu cards.', descriptionAf: 'Webwerf, 100 uitnodigings & 100 spyskaartjies.', print: true, photo: false },
@@ -19,14 +19,14 @@ const packages: { id: PackageId; en: string; af: string; descriptionEn: string; 
 ];
 // Printed stationery stays in the code but is hidden until print prices and vendors are confirmed.
 // The builder starts from one of the three plans; legacy print packages return only with printed stationery.
-const planPackages = plans.map(plan => ({ id: plan.id, en: plan.name.en, af: plan.name.af, descriptionEn: plan.summary.en, descriptionAf: plan.summary.af, print: false, photo: false }));
+const planPackages = plans.map(plan => ({ id: plan.id, en: plan.designName.en, af: plan.designName.af, descriptionEn: plan.summary.en, descriptionAf: plan.summary.af, print: false, photo: false }));
 const visiblePackages = publicFeatures.printedStationery ? packages : planPackages;
 const basePrice = (id: PackageId) => plans.find(plan => plan.id === id)?.price ?? prices.website;
 const allPackages = [...packages.filter(p => !plans.some(plan => plan.id === p.id)), ...planPackages];
 const packageContents: Record<PackageId, { en: string; af: string }[]> = {
   essential: plans[0].includes.slice(0, 3),
-  celebration: [{ en: 'Everything in Essential', af: 'Alles in Essensieel' }, ...plans[1].includes.slice(0, 2)],
-  complete: [{ en: 'Everything in Celebration', af: 'Alles in Viering' }, ...plans[2].includes.slice(0, 2)],
+  celebration: [{ en: 'All Garden features', af: 'Alle Tuin-funksies' }, ...plans[1].includes.slice(0, 2)],
+  complete: [{ en: 'All Midnight features', af: 'Alle Middernag-funksies' }, ...plans[2].includes.slice(0, 2)],
   website: [
     { en: 'Personal, mobile-friendly website', af: 'Persoonlike, selfoonvriendelike webwerf' },
     { en: 'Story and wedding information pages', af: 'Storie- en trou-inligtingsblaaie' },
@@ -56,8 +56,13 @@ const extraOptionsAll: { id: ExtraId; en: string; af: string; price: number }[] 
   { id: 'timeline', en: 'Wedding day timeline', af: 'Troudagprogram', price: prices.timeline },
   { id: 'domain', en: 'Custom domain setup', af: 'Pasgemaakte domeinopstelling', price: prices.domain },
   { id: 'digitalInvitation', en: 'Digital invitation design', af: 'Digitale uitnodigingsontwerp', price: prices.digitalInvitation },
+  { id: 'seating', en: addOnPrices.seating.name.en, af: addOnPrices.seating.name.af, price: addOnPrices.seating.price },
+  { id: 'budget', en: addOnPrices.budget.name.en, af: addOnPrices.budget.name.af, price: addOnPrices.budget.price },
 ];
-const extraOptions = publicFeatures.printedStationery ? extraOptionsAll : extraOptionsAll.filter(option => !includedInPlans.includes(option.id));
+const addOnIds: ExtraId[] = ['seating', 'budget'];
+const baseExtras = publicFeatures.printedStationery ? extraOptionsAll : extraOptionsAll.filter(option => !includedInPlans.includes(option.id));
+// Seating and budget are add-ons only where the chosen website does not already include them.
+const extrasFor = (id: string) => baseExtras.filter(option => !addOnIds.includes(option.id) || (plans.some(plan => plan.id === id) && !addOnPrices[option.id as 'seating' | 'budget'].includedIn.includes(id as PlanId)));
 const money = (value: number) => `R${value.toLocaleString('en-ZA')}`;
 
 export function QuoteBuilder() {
@@ -73,13 +78,14 @@ export function QuoteBuilder() {
   const [menus, setMenus] = useState(false);
   const [hours, setHours] = useState(6);
   const [extras, setExtras] = useState<ExtraId[]>([]);
+  const extraOptions = extrasFor(packageId);
   const [copied, setCopied] = useState(false);
   const stepHeading = useRef<HTMLHeadingElement>(null);
 
   const selectedPackage = allPackages.find(item => item.id === packageId)!;
   const stageNames = af ? ['Versameling', 'Webwerf', publicFeatures.printedStationery ? 'Drukwerk & foto' : 'Fotografie', 'Julle beraming'] : ['Collection', 'Website', publicFeatures.printedStationery ? 'Paper & photo' : 'Photography', 'Your estimate'];
   const items = [
-    { key: 'website', label: plans.some(plan => plan.id === packageId) ? `${t(selectedPackage.en, selectedPackage.af)} ${t('plan', 'plan')}` : t('Personal wedding website', 'Persoonlike trouwebwerf'), amount: basePrice(packageId) },
+    { key: 'website', label: plans.some(plan => plan.id === packageId) ? `${t(selectedPackage.en, selectedPackage.af)} ${t('website', 'webwerf')}` : t('Personal wedding website', 'Persoonlike trouwebwerf'), amount: basePrice(packageId) },
     ...extras.filter(id => id !== 'digitalInvitation').map(id => { const option = extraOptions.find(item => item.id === id)!; return { key: id, label: t(option.en, option.af), amount: option.price }; }),
     ...(print ? [
       { key: 'design', label: t('Invitation suite design', 'Uitnodigingsreeksontwerp'), amount: prices.invitationDesign },
@@ -99,12 +105,13 @@ export function QuoteBuilder() {
     `${t('Indicative total', 'Geskatte totaal')}: ${money(total)}`,
     t('Draft planning figures only. Print specifications, photographer availability, final scope and pricing are confirmed in a written quote.', 'Slegs konsepbedrae vir beplanning. Drukspesifikasies, fotograafbeskikbaarheid, finale omvang en pryse word in ’n skriftelike kwotasie bevestig.'),
   ].join('\n');
-  const enquiryCollection = packageId === 'website' ? '' : `${selectedPackage.en}${plans.some(plan => plan.id === packageId) ? ' plan' : ''}`;
+  const enquiryCollection = packageId === 'website' ? '' : selectedPackage.en;
   const enquiryUrl = `/contact?estimate=${encodeURIComponent(summary)}${enquiryCollection ? `&collection=${encodeURIComponent(enquiryCollection)}` : ''}`;
 
   function selectPackage(id: PackageId) {
     const chosen = allPackages.find(item => item.id === id)!;
     setPackageId(id);
+    setExtras(previous => previous.filter(extra => extrasFor(id).some(option => option.id === extra)));
     setPrint(chosen.print);
     setPhoto(chosen.photo);
     setMenus(chosen.print);

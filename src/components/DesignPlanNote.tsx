@@ -1,16 +1,15 @@
 import { Link } from 'react-router-dom';
-import { designDemoPlan } from '../collections/shared/capabilities';
-import { formatRand, planById } from '../plans';
+import { formatRand, mediaLine, planForDesign, type DesignId } from '../plans';
 
-const designNames = { garden: 'Garden', midnight: 'Midnight', ivory: 'Ivory' } as const;
-/** Designs are free to choose; this explains which plan a design demo is showing. */
-export function DesignPlanNote({ design, af, className = '' }: { design: keyof typeof designDemoPlan; af: boolean; className?: string }) {
-  const plan = planById(designDemoPlan[design]);
+/** Bottom note on each design demo: the design is its own package. */
+export function DesignPlanNote({ design, af, className = '' }: { design: DesignId; af: boolean; className?: string }) {
+  const plan = planForDesign(design);
   const t = (en: string, a: string) => af ? a : en;
-  return <section className={`design-plan-note ${className}`} aria-label={t('Design and plan', 'Ontwerp en plan')} data-no-translate>
-    <p className="dpn-kicker">EWIG & EIE · {designNames[design].toUpperCase()}</p>
-    <h2>{t(`The ${designNames[design]} design comes with every plan.`, `Die ${designNames[design]}-ontwerp kom saam met elke plan.`)}</h2>
-    <p>{t(`This demo shows the ${plan.name.en} plan (${formatRand(plan.price)}). Choose any plan with any design.`, `Hierdie demo wys die ${plan.name.af}-plan (${formatRand(plan.price)}). Kies enige plan met enige ontwerp.`)}</p>
-    <p className="dpn-actions"><Link to="/pricing">{t('Compare plans', 'Vergelyk planne')} ↗</Link><Link to={`/contact?collection=${encodeURIComponent(`${designNames[design]} design`)}`}>{t('Enquire', 'Doen navraag')} ↗</Link></p>
+  const name = af ? plan.designName.af : plan.designName.en;
+  return <section className={`design-plan-note ${className}`} aria-label={t('Package', 'Pakket')} data-no-translate>
+    <p className="dpn-kicker">EWIG & EIE · {(af ? plan.name.af : plan.name.en).toUpperCase()}</p>
+    <h2>{t(`${name}: ${formatRand(plan.price)}`, `${name}: ${formatRand(plan.price)}`)}</h2>
+    <p>{t(`Everything you see in this demo, with ${mediaLine(plan.media, false)}. Need something different? Ask us.`, `Alles wat julle in hierdie demo sien, met ${mediaLine(plan.media, true)}. Iets anders nodig? Vra ons.`)}</p>
+    <p className="dpn-actions"><Link to="/pricing">{t('Compare websites', 'Vergelyk webwerwe')} ↗</Link><Link to={`/contact?collection=${encodeURIComponent(plan.designName.en)}`}>{t('Enquire', 'Doen navraag')} ↗</Link></p>
   </section>;
 }

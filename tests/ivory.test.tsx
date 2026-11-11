@@ -145,7 +145,7 @@ test('shared dashboard: uninvited guests are shown as such and excluded from eve
 
 test('page renders the cover, fictional label, scope and Afrikaans stationery without services', () => {
   const html = renderToStaticMarkup(<MemoryRouter initialEntries={['/collections/ivory']}><IvoryCollection/></MemoryRouter>);
-  for (const s of ['Amélie', 'James', 'Maison Aveline', 'RSVP', 'Fictional design concept', 'placeholder plates', 'comes with every plan', 'Complete plan', 'R8']) assert.ok(html.includes(s), s);
+  for (const s of ['Amélie', 'James', 'Maison Aveline', 'RSVP', 'Fictional design concept', 'placeholder plates', 'The Ivory: R8', '20 photos and 2 videos']) assert.ok(html.includes(s), s);
   const af = renderToStaticMarkup(<StationerySuite data={defaultIvory} language="af" formatDate={d => d}/>);
   for (const s of ['Hou die datum oop', 'Dankie', 'Versoek', 'Tafel'].map(x => x.toLowerCase())) assert.ok(af.toLowerCase().includes(s), s);
 });

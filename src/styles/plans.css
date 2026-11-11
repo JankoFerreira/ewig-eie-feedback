@@ -31,3 +31,9 @@
 .founding-cta{display:inline-block;padding:12px 22px;border:1px solid #30342d;color:#30342d;text-decoration:none;font-size:14px;letter-spacing:.06em}
 .founding-cta:hover{background:#30342d;color:#fbf8f2}
 @media (max-width:640px){.founding{padding:28px 22px;margin-top:52px}.founding h2{font-size:28px}}
+.plan-card .plan-tier{margin:0;font:600 11px 'DM Sans',sans-serif;letter-spacing:.2em;color:#8a7a5c}
+.plan-card .plan-media{margin:0;padding:10px 12px;background:#f3eee4;font-size:14px;color:#30342d}
+.plan-card .plan-hosting,.plan-card .plan-addons{margin:0;font-size:13px;color:#6f7468;line-height:1.5}
+.plan-card .plan-links{margin-top:auto;display:flex;flex-direction:column;gap:10px}
+.plan-card .plan-links .plan-cta{margin-top:0}
+.plan-card .plan-demo{text-align:center;font-size:13px;color:#30342d}

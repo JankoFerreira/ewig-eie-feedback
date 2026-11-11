@@ -106,7 +106,7 @@ test('Garden totals remain unchanged and shared dashboard renders both collectio
 
 test('collection pages and Afrikaans RSVP render without server services', () => {
   const midnight = renderToStaticMarkup(<MemoryRouter><MidnightCollection/></MemoryRouter>);
-  for (const text of ['Mila Jacobs', 'Luca Daniels', 'Maison Nocturne', 'CHAPTER', 'FICTIONAL DESIGN CONCEPT', 'comes with every plan', 'Celebration plan', 'R6']) assert.ok(midnight.includes(text), text);
+  for (const text of ['Mila Jacobs', 'Luca Daniels', 'Maison Nocturne', 'CHAPTER', 'FICTIONAL DESIGN CONCEPT', 'The Midnight: R6', '12 photos and 1 video']) assert.ok(midnight.includes(text), text);
   const garden = renderToStaticMarkup(<MemoryRouter><GardenCollection/></MemoryRouter>);
   assert.match(garden, /Clara/); assert.match(garden, /Ruben/);
   const af = renderToStaticMarkup(<MidnightRSVP data={defaultMidnight} language="af" guests={midnightGuests()} onChange={() => {}} onDashboard={() => {}}/>);
