@@ -1,23 +1,27 @@
-import { useRef, useState } from 'react';
+import { lazy, Suspense, useRef, useState } from 'react';
 import { CoupleDashboard } from '../../components/couple/CoupleDashboard';
-import { eventResponse, type DemoGuest } from '../../components/couple/guestModel';
+import type { DemoGuest } from '../../components/couple/guestModel';
 import { collectionCapabilities, type Capability } from '../shared/capabilities';
 import type { Household, IvoryData, Language } from './content';
 import { analyseSeating, autoSeat, cateringSummary, householdStatus, isInvited, summarizeInvitedEvent, type Seating } from './model';
 import { cateringCsv, download, householdCsv, runSheetCsv, seatingCsv } from './exports';
 
+// The shared wedding & honeymoon planner, loaded only when its tab opens. Ivory keeps its own storage key.
+const BudgetPlanner = lazy(() => import('../../features/budget/BudgetPlanner'));
+export const IVORY_BUDGET_KEY = 'ewig-ivory-budget-v1';
+
 type Tab = { id: string; requires: Capability; en: string; af: string };
 const TABS: Tab[] = [
   { id: 'guests', requires: 'guestDashboard', en: 'Guests', af: 'Gaste' },
-  { id: 'households', requires: 'households', en: 'Households', af: 'Huishoudings' },
   { id: 'catering', requires: 'cateringSummary', en: 'Catering', af: 'Spysenering' },
   { id: 'seating', requires: 'seatingPlan', en: 'Seating', af: 'Sitplekke' },
   { id: 'exports', requires: 'plannerExports', en: 'Planner exports', af: 'Beplanneruitvoer' },
+  { id: 'budget', requires: 'budgetPlanner', en: 'Budget', af: 'Begroting' },
 ];
 
-type Props = { data: IvoryData; language: Language; guests: DemoGuest[]; onGuests: (g: DemoGuest[]) => void; households: Household[]; seating: Seating; onSeating: (s: Seating) => void; onReset: () => void; formatDate: (iso: string) => string; onPreviewHousehold: (id: string) => void };
+type Props = { data: IvoryData; language: Language; guests: DemoGuest[]; onGuests: (g: DemoGuest[]) => void; households: Household[]; seating: Seating; onSeating: (s: Seating) => void; onReset: () => void; formatDate: (iso: string) => string };
 
-export function IvoryDashboard({ data, language, guests, onGuests, households, seating, onSeating, onReset, formatDate, onPreviewHousehold }: Props) {
+export function IvoryDashboard({ data, language, guests, onGuests, households, seating, onSeating, onReset, formatDate }: Props) {
   const t = (en: string, af: string) => language === 'af' ? af : en;
   const tabs = TABS.filter(tab => collectionCapabilities.ivory.includes(tab.requires));
   const [active, setActive] = useState(tabs[0].id);
@@ -51,20 +55,7 @@ export function IvoryDashboard({ data, language, guests, onGuests, households, s
     </div>
 
     <section role="tabpanel" id={`iv-panel-${active}`} aria-labelledby={`iv-tab-${active}`} tabIndex={0} className="iv-panel">
-      {active === 'guests' && <CoupleDashboard guests={guests} onChange={onGuests} names={names} af={language === 'af'} onReset={onReset} collection="ivory" events={data.events.map(e => ({ id: e.id, label: e.name[language] }))} meals={data.meals.map(m => ({ id: m.id, label: m.name[language] }))} isInvited={(g, eventId) => isInvited(households, g, eventId)} demoNote={t('Edit any reply below; every total on this dashboard follows.', 'Verander enige antwoord hieronder; elke totaal op hierdie paneel volg.')}/>}
-
-      {active === 'households' && <div className="iv-households">
-        <div className="iv-event-totals">{data.events.map(e => { const s = summarizeInvitedEvent(guests, households, e.id); return <article key={e.id}><h2>{e.name[language]}</h2><p className="iv-small">{formatDate(e.date)} · {e.time}</p><p><strong>{s.accepted}</strong> {t('attending', 'woon by')} · {s.declined} {t('declined', 'bedank')} · {s.pending} {t('awaiting', 'wag')}</p><p className="iv-small">{s.invited} {t('invited', 'genooi')}</p></article>; })}</div>
-        <div className="iv-table-scroll"><table><caption className="iv-sr">{t('Households and their invitations', 'Huishoudings en hul uitnodigings')}</caption>
-          <thead><tr><th scope="col">{t('Household', 'Huishouding')}</th>{data.events.map(e => <th scope="col" key={e.id}>{e.name[language]}</th>)}<th scope="col">{t('Status', 'Status')}</th><th scope="col"><span className="iv-sr">{t('Actions', 'Aksies')}</span></th></tr></thead>
-          <tbody>{households.map(h => { const members = guests.filter(g => g.householdId === h.id); const status = householdStatus(guests, households, h.id); return <tr key={h.id}>
-            <th scope="row">{h.name}<small>{members.length} {members.length === 1 ? t('guest', 'gas') : t('guests', 'gaste')}</small></th>
-            {data.events.map(e => <td key={e.id}>{h.invitedEvents.includes(e.id) ? members.map(m => <span key={m.id} className={`iv-dot iv-dot-${eventResponse(m, e.id)}`} title={`${m.name}: ${eventResponse(m, e.id)}`}><span className="iv-sr">{m.name}: </span>{eventResponse(m, e.id) === 'accepted' ? '✓' : eventResponse(m, e.id) === 'declined' ? '✕' : '…'}</span>) : <span className="iv-muted">{t('Not invited', 'Nie genooi nie')}</span>}</td>)}
-            <td><span className={`iv-status iv-status-${status}`}>{status === 'complete' ? t('Replied', 'Geantwoord') : status === 'partial' ? t('Partly replied', 'Gedeeltelik') : t('Awaiting', 'Wag')}</span></td>
-            <td><button type="button" className="iv-link" onClick={() => onPreviewHousehold(h.id)}>{t('Preview invitation', 'Sien uitnodiging')}</button></td>
-          </tr>; })}</tbody></table></div>
-        <p className="iv-fine">{t('Event access per household is set by the couple. In production, each household receives a private link that only shows its gatherings; here it is simulated.', 'Toegang per huishouding word deur die paartjie bepaal. In produksie ontvang elke huishouding ’n private skakel wat net sy geleenthede wys; hier word dit gesimuleer.')}</p>
-      </div>}
+      {active === 'guests' && <CoupleDashboard guests={guests} onChange={onGuests} names={names} af={language === 'af'} onReset={onReset} collection="ivory" events={data.events.map(e => ({ id: e.id, label: e.name[language] }))} meals={data.meals.map(m => ({ id: m.id, label: m.name[language] }))} isInvited={(g, eventId) => isInvited(households, g, eventId)} householdLabel={g => { const h = households.find(x => x.id === g.householdId); return h ? `${h.name} · ${householdStatus(guests, households, h.id) === 'complete' ? t('replied', 'geantwoord') : householdStatus(guests, households, h.id) === 'partial' ? t('partly replied', 'gedeeltelik') : t('awaiting reply', 'wag op antwoord')}` : ''; }} demoNote={t('Guests are grouped by household: each household receives one invitation showing only its gatherings. Edit any reply below; every total follows.', 'Gaste is per huishouding gegroepeer: elke huishouding ontvang een uitnodiging met net sy geleenthede. Verander enige antwoord hieronder; elke totaal volg.')}/>}
 
       {active === 'catering' && <div className="iv-catering">
         <article><h2>{t('Wedding dinner', 'Trouete')}</h2><p className="iv-small">{catering.attending} {t('attending guests', 'gaste wat bywoon')}</p><ul>{catering.meals.map(m => <li key={m.label}><strong>{m.count}</strong> {m.label}</li>)}{!!catering.unselected.length && <li className="iv-warn-text"><strong>{catering.unselected.length}</strong> {t('still to choose', 'moet nog kies')}: {catering.unselected.join(', ')}</li>}</ul></article>
@@ -100,6 +91,10 @@ export function IvoryDashboard({ data, language, guests, onGuests, households, s
         </table></div>
       </div>}
 
+      {active === 'budget' && <div className="iv-budget">
+        <p className="iv-demo-banner" role="note">{t('Unlike the demo guests, this budget is real and saved in this browser only (separate from the standalone planner). It is in English for now. Use its backup to move it between devices.', 'Anders as die demogaste is hierdie begroting eg en word net in hierdie blaaier gestoor (apart van die losstaande beplanner). Dit is tans in Engels. Gebruik die rugsteun om dit tussen toestelle te skuif.')}</p>
+        <Suspense fallback={<p className="iv-small">{t('Loading budget…', 'Laai begroting…')}</p>}><BudgetPlanner storageKey={IVORY_BUDGET_KEY} embedded/></Suspense>
+      </div>}
       {active === 'exports' && <div className="iv-exports">
         <p>{t('Spreadsheet-ready files for your planner, venue and caterer. They are generated in your browser from the fictional data on this page.', 'Sigbladgereed lêers vir julle beplanner, venue en spysenier. Hulle word in jou blaaier geskep uit die fiktiewe data op hierdie blad.')}</p>
         <ul>

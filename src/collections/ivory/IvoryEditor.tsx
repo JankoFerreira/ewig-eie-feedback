@@ -122,8 +122,9 @@ export function IvoryEditor({ studio, open, onClose, language }: Props) {
     </details>
 
     <details><summary>{t('Photographs', 'Foto’s')}</summary>
+      <label className="iv-check"><input type="checkbox" checked={data.heroDepth} onChange={e => update({ heroDepth: e.target.checked })}/>{t('Depth-layered cover (foreground layer floats in front of the names)', 'Diepte-gelaagde voorblad (voorgrondlaag sweef voor die name)')}</label>
       <p className="iv-editor-sub">{t('Each photograph has a stable ID and is reused wherever it appears. JPG, PNG or WebP up to 8 MB.', 'Elke foto het ’n vaste ID en word oral hergebruik waar dit verskyn. JPG, PNG of WebP tot 8 MB.')}</p>
-      {data.media.map(m => <fieldset key={m.id} className="iv-fieldset iv-photo-edit"><legend>{m.id}{m.placeholder ? ` · ${t('placeholder plate', 'plekhouerplaat')}` : ''}</legend>
+      {data.media.map(m => <fieldset key={m.id} className="iv-fieldset iv-photo-edit"><legend>{m.id === 'heroForeground' ? t('Cover foreground · transparent PNG/WebP', 'Voorbladvoorgrond · deursigtige PNG/WebP') : m.id}{m.placeholder ? ` · ${t('placeholder plate', 'plekhouerplaat')}` : ''}</legend>
         <img src={m.src} alt="" width={120} height={90} style={{ objectPosition: m.focal }}/>
         <label className="iv-field">{t('Replace photograph', 'Vervang foto')}<input type="file" accept="image/jpeg,image/png,image/webp" onChange={e => { replacePhoto(m.id, e.target.files?.[0]); e.target.value = ''; }}/></label>
         {copyInput(t('Description for screen readers', 'Beskrywing vir skermlesers'), m.alt, v => update({ media: data.media.map(x => x.id === m.id ? { ...x, alt: v } : x) }))}

@@ -42,19 +42,28 @@
 .iv-lang{display:flex}.iv-lang button{font-size:11px;letter-spacing:.1em;min-width:40px}.iv-lang button[aria-pressed=true]{font-weight:700;text-decoration:underline;text-underline-offset:5px}
 .iv-fiction{margin:0!important;padding:8px 16px;text-align:center;font:500 10.5px/1.5 var(--iv-sans);letter-spacing:.18em;text-transform:uppercase;border-bottom:1px solid var(--iv-line);background:var(--iv-stone)}
 
-/* Cover */
-.iv-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(360px,1fr);min-height:min(860px,calc(100svh - 92px));border-bottom:1px solid var(--iv-line)}
-.iv-hero-photo{position:relative;margin:clamp(14px,2vw,28px);margin-right:0;overflow:hidden;background:var(--iv-stone)}
-.iv-hero-photo img{width:100%;height:100%;object-fit:cover;animation:iv-settle 1.6s ease-out both}
-.iv-hero-caption{position:absolute;left:18px;bottom:16px;padding:4px 10px;background:color-mix(in srgb,var(--iv-paper) 88%,transparent);font:italic 15px var(--iv-serif)}
-.iv-hero-copy{display:flex;flex-direction:column;justify-content:center;padding:clamp(40px,5vw,80px) clamp(28px,4.5vw,78px)}
-.iv-issue{font:italic 17px var(--iv-serif);color:var(--iv-soft);border-top:1px solid var(--iv-line);border-bottom:1px solid var(--iv-line);padding:10px 0;margin-bottom:clamp(30px,5vh,60px)!important}
-.iv-hero h1{font-size:clamp(64px,7.4vw,124px);line-height:.92;margin-bottom:28px}
-.iv-hero h1 span{display:block}.iv-hero h1 em{display:block;font-size:.42em;line-height:1.3;color:var(--iv-soft);margin:6px 0 4px .1em}
-.iv-hero-date{font:500 15px var(--iv-sans);letter-spacing:.06em;margin-bottom:6px!important}
-.iv-hero-venue{font:400 24px/1.2 var(--iv-serif);margin-bottom:26px!important}.iv-hero-venue span{font-size:15px;font-family:var(--iv-sans);color:var(--iv-soft)}
-.iv-hero-line{max-width:380px;color:var(--iv-soft);margin-bottom:34px!important}
-.iv-hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:22px}
+/* Cover — full-bleed, depth-layered, details centred */
+.iv-hero{position:relative;height:calc(100svh - 92px);min-height:600px;max-height:1100px;overflow:hidden;background:var(--iv-stone);color:var(--iv-ink);--iv-rx:0deg;--iv-ry:0deg;--iv-scroll:0}
+.iv-depth-stage{position:absolute;inset:0;perspective:1400px;perspective-origin:50% 45%}
+.iv-depth-scene{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(var(--iv-rx)) rotateY(var(--iv-ry));will-change:transform}
+.iv-plane{position:absolute;inset:0}
+/* translateZ pushes the photo back; the scale undoes the perspective shrink and leaves bleed for the tilt. */
+.iv-plane-back{transform:translateZ(-260px) scale(1.26) translateY(calc(var(--iv-scroll) * 6%))}
+.iv-plane-back img{width:100%;height:100%;object-fit:cover;animation:iv-settle 1.8s ease-out both}
+.iv-plane-haze{transform:translateZ(-120px) scale(1.1);background:radial-gradient(ellipse 46% 52% at 50% 52%,color-mix(in srgb,var(--iv-paper) 62%,transparent),transparent 72%),linear-gradient(180deg,color-mix(in srgb,var(--iv-paper) 22%,transparent),transparent 30%,transparent 72%,color-mix(in srgb,var(--iv-paper) 30%,transparent))}
+.iv-plane-mid{display:grid;place-items:center;padding:24px;transform:translateZ(0) translateY(calc(var(--iv-scroll) * -4%))}
+.iv-plane-front{transform:translateZ(150px) scale(.9) translateY(calc(var(--iv-scroll) * -10%));pointer-events:none}
+.iv-plane-front img{width:100%;height:100%;object-fit:cover}
+.iv-hero-card{position:relative;width:min(560px,100%);padding:clamp(34px,5vw,58px) clamp(24px,4vw,56px);text-align:center;background:color-mix(in srgb,var(--iv-paper) 80%,transparent);backdrop-filter:blur(10px) saturate(1.05);-webkit-backdrop-filter:blur(10px);box-shadow:0 40px 80px -40px color-mix(in srgb,var(--iv-ink) 45%,transparent)}
+.iv-hero-card::before{content:'';position:absolute;inset:10px;border:1px solid color-mix(in srgb,var(--iv-accent) 75%,transparent);pointer-events:none}
+.iv-hero h1{font-size:clamp(56px,7vw,112px);line-height:.92;margin:6px 0 24px}
+.iv-hero h1 span{display:block}.iv-hero h1 em{display:block;font-size:.4em;line-height:1.35;color:var(--iv-soft)}
+.iv-hero-date{font:600 13px var(--iv-sans);letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px!important}
+.iv-hero-venue{font:400 23px/1.3 var(--iv-serif);margin-bottom:26px!important}.iv-hero-venue span{color:var(--iv-soft)}
+.iv-hero-actions{display:flex;justify-content:center}
+.iv-hero-more{margin-top:14px;font:italic 16px var(--iv-serif);text-decoration-thickness:1px}
+.iv-hero-caption{position:absolute;left:max(3vw,16px);bottom:14px;z-index:2;margin:0!important;padding:3px 10px;background:color-mix(in srgb,var(--iv-paper) 85%,transparent);font:italic 14px var(--iv-serif)}
+.iv-hero-line-quote{font:italic clamp(21px,2vw,26px)/1.4 var(--iv-serif);color:var(--iv-soft);margin-bottom:24px!important}
 
 /* Letter */
 .iv-letter{display:grid;grid-template-columns:auto minmax(0,620px);justify-content:center;gap:clamp(40px,7vw,110px);align-items:start}
@@ -273,23 +282,18 @@ body:has(.ivory-collection),body:has(.ivory-collection) *{cursor:auto!important}
 @media(max-width:1100px){
   .iv-brand{display:none}.iv-toolbar nav{margin-left:auto}
   .iv-notes{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .iv-hero{grid-template-columns:minmax(0,1.1fr) minmax(330px,1fr)}
 }
 @media(max-width:820px){
   .iv-toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:4px 8px;padding:6px 12px}
   .iv-toolbar nav{grid-column:1/-1;grid-row:2;margin:0;justify-content:space-between;overflow-x:auto}
   .iv-toolbar nav button{font-size:13px;padding:8px 6px}
   .iv-edit{font-size:12px!important;padding:6px 10px!important}
-  .iv-hero{grid-template-columns:1fr;min-height:0}
-  .iv-hero-photo{margin:10px 10px 0;height:34svh;min-height:230px}
-  .iv-hero-copy{padding:22px 22px 44px}
-  .iv-hero .iv-kicker{margin-bottom:10px!important}
-  .iv-issue{display:none}
-  .iv-hero h1{font-size:clamp(46px,13.5vw,72px);margin-bottom:16px}
-  .iv-hero h1 em{margin:2px 0}
-  .iv-hero-venue{font-size:21px;margin-bottom:18px!important}
-  .iv-hero-line{order:9;margin:22px 0 0!important}
+  .iv-hero{height:calc(100svh - 104px);min-height:560px}
+  .iv-hero-card{padding:30px 20px}
+  .iv-hero h1{font-size:clamp(48px,14vw,76px);margin-bottom:16px}
+  .iv-hero-venue{font-size:20px;margin-bottom:18px!important}
   .iv-hero .iv-button{letter-spacing:.08em;padding:12px 16px}
+  .iv-plane-front{transform:translateZ(150px) scale(.9) translateY(calc(var(--iv-scroll) * -10%));opacity:.85}
   .iv-fiction{font-size:9.5px;letter-spacing:.12em;padding:6px 12px}
   .iv-letter{grid-template-columns:1fr;justify-items:start}
   .iv-letter .iv-monogram{width:84px;height:84px}
@@ -309,6 +313,7 @@ body:has(.ivory-collection),body:has(.ivory-collection) *{cursor:auto!important}
 }
 @media(prefers-reduced-motion:reduce){
   .ivory-collection *,.ivory-collection *::before,.ivory-collection *::after,.iv-editor *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .iv-depth-scene{transform:none!important}
 }
 
 /* Planner print pack: only the pack prints. */
@@ -320,3 +325,10 @@ body:has(.ivory-collection),body:has(.ivory-collection) *{cursor:auto!important}
   .iv-print-pack table{width:100%;border-collapse:collapse;font-size:9.5pt}.iv-print-pack th,.iv-print-pack td{border-bottom:.5pt solid #ccc;padding:3pt 4pt;text-align:left;vertical-align:top}
   .iv-print-pack section{break-inside:avoid-page}
 }
+
+/* Embedded budget planner, re-toned to Ivory. Storage stays separate (ewig-ivory-budget-v1). */
+.ivory-collection .budget-embedded{--bp-ink:var(--iv-ink);--bp-paper:#fffdf8;--bp-line:color-mix(in srgb,var(--iv-ink) 14%,transparent);min-height:0;border:1px solid var(--iv-line);font-family:var(--iv-sans)}
+.ivory-collection .budget-embedded .bp-sidebar{position:static;height:auto;background:var(--iv-stone)}
+.ivory-collection .budget-embedded .bp-brand,.ivory-collection .budget-embedded .bp-side-bottom a{display:none}
+.iv-budget>.iv-demo-banner{margin-bottom:18px}
+@media(max-width:820px){.iv-plane-front img{object-fit:fill}}

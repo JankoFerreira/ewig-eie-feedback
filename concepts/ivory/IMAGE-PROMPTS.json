@@ -21,5 +21,7 @@
       "prompt": "Overhead flat lay of a blank ivory cotton-paper wedding stationery suite with deckled edges, champagne silk ribbon, pale champagne wax seal with an embossed abstract monogram, natural linen cloth, single olive sprig, no legible text" },
     { "id": "table", "file": "ivory-table.webp", "size": "1600x1067", "focal": "50% 55%", "reference": null,
       "prompt": "Long dinner table inside a whitewashed barn at dusk, natural linen, beeswax taper candles, olive branches down the centre, clear glassware, warm candlelight, no people, symmetrical perspective" }
+    ,{ "id": "heroForeground", "file": "ivory-hero-foreground.webp", "size": "1600x1067 with transparency", "focal": "50% 50%", "reference": "hero",
+      "prompt": "Isolated out-of-focus olive branches entering from the top-left and bottom-right corners only, centre completely empty, transparent background, matches the hero light; export PNG/WebP with alpha" }
   ]
 }

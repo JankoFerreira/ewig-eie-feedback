@@ -9,6 +9,7 @@ import { IvoryDashboard } from '../collections/ivory/IvoryDashboard';
 import { EditorialGallery } from '../collections/ivory/EditorialGallery';
 import { StationerySuite } from '../collections/ivory/Stationery';
 import { Monogram, romanDate } from '../collections/ivory/Monogram';
+import { DepthHero } from '../collections/ivory/DepthHero';
 import { invitedEventsFor } from '../collections/ivory/model';
 import '../styles/garden-collection.css';
 import '../styles/ivory-collection.css';
@@ -42,7 +43,7 @@ export default function IvoryCollection() {
   const formatDate = (iso: string, weekday = false) => validDate(iso) ? new Intl.DateTimeFormat(locale, { ...(weekday ? { weekday: 'long' } : {}), day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Africa/Johannesburg' }).format(new Date(`${iso}T12:00:00Z`)) : t('Date to be confirmed', 'Datum word bevestig');
   const short = (iso: string) => validDate(iso) ? new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Africa/Johannesburg' }).format(new Date(`${iso}T12:00:00Z`)) : '';
   const media = (id: string) => data.media.find(m => m.id === id)!;
-  const photo = (id: string, opts: { eager?: boolean; sizes?: string } = {}) => { const m = media(id); return <img src={m.src} alt={m.alt[lang]} style={{ objectPosition: m.focal }} loading={opts.eager ? 'eager' : 'lazy'} fetchPriority={opts.eager ? 'high' : 'auto'} decoding="async"/>; };
+  const photo = (id: string, opts: { eager?: boolean } = {}) => { const m = media(id); return <img src={m.src} alt={m.alt[lang]} style={{ objectPosition: m.focal }} loading={opts.eager ? 'eager' : 'lazy'} fetchPriority={opts.eager ? 'high' : 'auto'} decoding="async"/>; };
   const go = (next: View, params: Record<string, string> = {}) => { setSearch(next === 'website' ? params : { view: next, ...params }); window.scrollTo({ top: 0 }); };
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   const names = `${data.couple.first} & ${data.couple.second}`;
@@ -64,22 +65,20 @@ export default function IvoryCollection() {
       <p className="iv-fiction" role="note">{t('Fictional design concept · Amélie, James and Maison Aveline are imagined', 'Fiktiewe ontwerpkonsep · Amélie, James en Maison Aveline is denkbeeldig')}{placeholders ? t(' · photographs are placeholder plates', ' · foto’s is plekhouerplate') : ''}</p>
 
       {view === 'website' && <>
-        <section className="iv-hero" aria-labelledby="iv-hero-names">
-          <div className="iv-hero-photo">{photo('hero', { eager: true })}<span className="iv-hero-caption">{media('hero').caption[lang]}</span></div>
-          <div className="iv-hero-copy">
+        <DepthHero background={media('hero')} foreground={media('heroForeground')} depth={data.heroDepth} language={lang}>
+          <div className="iv-hero-card">
             <p className="iv-kicker">{copy('hero.kicker')}</p>
-            <p className="iv-issue">{copy('hero.issue')}</p>
             <h1 id="iv-hero-names"><span>{data.couple.first}</span><em>&</em><span>{data.couple.second}</span></h1>
             <p className="iv-hero-date"><time dateTime={data.date}>{formatDate(data.date, true)}</time></p>
-            <p className="iv-hero-venue">{data.venue}<br/><span>{data.region}</span></p>
-            <p className="iv-hero-line">{copy('hero.line')}</p>
-            <div className="iv-hero-actions"><button type="button" className="iv-button" onClick={() => scrollTo('iv-rsvp')}>RSVP · {t('by', 'teen')} {formatDate(data.deadline)}</button><button type="button" className="iv-link" onClick={() => scrollTo('iv-weekend')}>{t('The weekend', 'Die naweek')} ↓</button></div>
+            <p className="iv-hero-venue">{data.venue} <span>· {data.region}</span></p>
+            <div className="iv-hero-actions"><button type="button" className="iv-button" onClick={() => scrollTo('iv-rsvp')}>RSVP · {t('by', 'teen')} {formatDate(data.deadline)}</button></div>
+            <button type="button" className="iv-link iv-hero-more" onClick={() => scrollTo('iv-letter')}>{copy('hero.issue')} ↓</button>
           </div>
-        </section>
+        </DepthHero>
 
-        <section className="iv-letter iv-section" aria-labelledby="iv-letter-title">
+        <section className="iv-letter iv-section" id="iv-letter" aria-labelledby="iv-letter-title">
           {mono(110)}
-          <div><p className="iv-kicker">{copy('letter.kicker')}</p><h2 id="iv-letter-title">{copy('letter.title')}</h2><p className="iv-dropcap">{copy('letter.body')}</p><p className="iv-sign">{copy('letter.signoff')}<br/><span>{names}</span></p></div>
+          <div><p className="iv-kicker">{copy('letter.kicker')}</p><h2 id="iv-letter-title">{copy('letter.title')}</h2><p className="iv-hero-line-quote">{copy('hero.line')}</p><p className="iv-dropcap">{copy('letter.body')}</p><p className="iv-sign">{copy('letter.signoff')}<br/><span>{names}</span></p></div>
         </section>
 
         <section className="iv-story iv-section" aria-labelledby="iv-story-title">
@@ -109,7 +108,7 @@ export default function IvoryCollection() {
 
         <section className="iv-section iv-gallery-section" aria-labelledby="iv-gallery-title">
           <header className="iv-section-head"><p className="iv-kicker">{copy('gallery.kicker')}</p><h2 id="iv-gallery-title">{copy('gallery.title')}</h2></header>
-          <EditorialGallery media={data.media.filter(m => m.id !== 'hero')} language={lang} label={copy('gallery.title')}/>
+          <EditorialGallery media={data.media.filter(m => m.id !== 'hero' && m.id !== 'heroForeground')} language={lang} label={copy('gallery.title')}/>
         </section>
 
         <section className="iv-faq iv-section" aria-labelledby="iv-faq-title"><p className="iv-kicker" id="iv-faq-title">{copy('faq.kicker')}</p>{['children', 'events', 'weather', 'contact'].map(id => <details key={id}><summary>{copy(`faq.${id}.title`)}</summary><p>{copy(`faq.${id}.body`)}</p></details>)}</section>
@@ -154,7 +153,7 @@ export default function IvoryCollection() {
         <StationerySuite data={data} language={lang} formatDate={iso => formatDate(iso)}/>
       </section>}
 
-      {view === 'dashboard' && <IvoryDashboard data={data} language={lang} guests={guests} onGuests={setGuests} households={ivoryHouseholds} seating={seating} onSeating={setSeating} onReset={() => { setGuests(ivoryGuests()); setSeating(ivorySeating()); }} formatDate={iso => formatDate(iso)} onPreviewHousehold={id => go('invitation', { household: id })}/>}
+      {view === 'dashboard' && <IvoryDashboard data={data} language={lang} guests={guests} onGuests={setGuests} households={ivoryHouseholds} seating={seating} onSeating={setSeating} onReset={() => { setGuests(ivoryGuests()); setSeating(ivorySeating()); }} formatDate={iso => formatDate(iso)}/>}
 
       <section className="iv-scope" aria-labelledby="iv-scope-title">
         <div className="iv-scope-price">

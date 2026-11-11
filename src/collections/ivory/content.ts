@@ -4,6 +4,7 @@ import venue from '../../assets/ivory/ivory-venue.webp';
 import ceremony from '../../assets/ivory/ivory-ceremony.webp';
 import detail from '../../assets/ivory/ivory-detail.webp';
 import table from '../../assets/ivory/ivory-table.webp';
+import heroForeground from '../../assets/ivory/ivory-hero-foreground.webp';
 import type { DemoGuest } from '../../components/couple/guestModel';
 
 export type Language = 'en' | 'af';
@@ -36,6 +37,8 @@ export type IvoryData = {
   couple: { first: string; firstSurname: string; second: string; secondSurname: string };
   monogram: { left: string; right: string; style: MonogramStyle };
   date: string; deadline: string; venue: string; region: string;
+  /** Depth-layered cover: a transparent foreground image floats in front of the details. */
+  heroDepth: boolean;
   colors: { paper: string; stone: string; ink: string; accent: string };
   text: Record<string, Copy>; media: Media[]; events: IvoryEvent[]; itinerary: ItineraryItem[];
   meals: Meal[]; tables: SeatingTable[];
@@ -107,7 +110,7 @@ export const defaultIvory: IvoryData = {
   collection: 'ivory', version: IVORY_VERSION,
   couple: { first: 'Amélie', firstSurname: 'Botha', second: 'James', secondSurname: 'van der Merwe' },
   monogram: { left: 'A', right: 'J', style: 'ring' },
-  date: '2029-03-10', deadline: '2029-01-31', venue: 'Maison Aveline', region: 'Cape Winelands',
+  date: '2029-03-10', deadline: '2029-01-31', venue: 'Maison Aveline', region: 'Cape Winelands', heroDepth: true,
   colors: { paper: '#f6f1e7', stone: '#e4dccd', ink: '#383d2c', accent: '#b8975f' },
   text: ivoryText,
   media: [
@@ -117,6 +120,8 @@ export const defaultIvory: IvoryData = {
     { id: 'ceremony', src: ceremony, placeholder: true, alt: words('Placeholder plate: an aisle between olive trees leading to a small chapel', 'Plekhouerplaat: ’n paadjie tussen olyfbome na ’n klein kapel'), caption: words('The olive walk.', 'Die olyflaan.'), focal: '50% 50%' },
     { id: 'detail', src: detail, placeholder: true, alt: words('Placeholder plate: ivory stationery cards with a champagne ribbon and wax seal on linen', 'Plekhouerplaat: ivoorkleurige skryfbehoeftes met ’n sjampanjelint en wasseël op linne'), caption: words('Paper, ribbon, wax.', 'Papier, lint, was.'), focal: '50% 45%' },
     { id: 'table', src: table, placeholder: true, alt: words('Placeholder plate: a long candlelit dinner table in a barn', 'Plekhouerplaat: ’n lang kersverligte aandetetafel in ’n skuur'), caption: words('The long table.', 'Die lang tafel.'), focal: '50% 55%' },
+    // Transparent foreground for the depth-layered cover (PNG/WebP with transparency). Not shown in the gallery.
+    { id: 'heroForeground', src: heroForeground, placeholder: true, alt: words('', ''), caption: words('Cover foreground layer', 'Voorbladvoorgrondlaag'), focal: '50% 50%' },
   ],
   events: [
     { id: 'welcome', name: words('Welcome evening', 'Verwelkomingsaand'), date: '2029-03-09', time: '18:30', location: 'Maison Aveline · The Olive Terrace', dress: words('Relaxed linen', 'Ontspanne linne'), description: words('Drinks and small plates among the olives for those arriving early.', 'Drankies en klein happies tussen die olyfbome vir dié wat vroeg aankom.') },

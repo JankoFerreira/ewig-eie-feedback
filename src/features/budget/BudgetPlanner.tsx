@@ -6,9 +6,10 @@ import './budget.css';
 const KEY = 'ewig-eie-budget-v1';
 type Modal = { kind: 'expense'; item?: Expense } | { kind: 'payment'; item: Expense } | { kind: 'contribution' } | null;
 function download(content: string, filename: string, type: string) { const url = URL.createObjectURL(new Blob([content], {type})); const a = document.createElement('a'); a.href=url; a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); }
-export default function BudgetPlanner() {
-  const [loadError] = useState(() => { try { const raw=localStorage.getItem(KEY); return raw && !validateBudget(JSON.parse(raw)) ? 'Saved data could not be read. Export or recover your backup before making changes.' : ''; } catch { return 'Browser storage is unavailable or the saved data is damaged. Export a backup before closing.'; } });
-  const [budget,setBudget] = useState<Budget>(() => { try { const raw=localStorage.getItem(KEY); const b=raw?JSON.parse(raw):null; return validateBudget(b)?b:initialBudget(); } catch { return initialBudget(); } });
+// storageKey isolates a collection's budget (e.g. Ivory) from the standalone planner; embedded drops the full-page chrome.
+export default function BudgetPlanner({ storageKey = KEY, embedded = false }: { storageKey?: string; embedded?: boolean } = {}) {
+  const [loadError] = useState(() => { try { const raw=localStorage.getItem(storageKey); return raw && !validateBudget(JSON.parse(raw)) ? 'Saved data could not be read. Export or recover your backup before making changes.' : ''; } catch { return 'Browser storage is unavailable or the saved data is damaged. Export a backup before closing.'; } });
+  const [budget,setBudget] = useState<Budget>(() => { try { const raw=localStorage.getItem(storageKey); const b=raw?JSON.parse(raw):null; return validateBudget(b)?b:initialBudget(); } catch { return initialBudget(); } });
   const [notice,setNotice]=useState(loadError || '');
   const [blocked,setBlocked]=useState(!!loadError);
   const [saved,setSaved]=useState(false);
@@ -20,9 +21,9 @@ export default function BudgetPlanner() {
   const file=useRef<HTMLInputElement>(null);
   const t=totals(budget);
   const events=forecast(budget);
-  useEffect(()=>{ if(blocked) return; try { localStorage.setItem(KEY,JSON.stringify(budget)); setSaved(true); } catch { setSaved(false); setNotice('Your changes could not be saved. Download a backup now to keep them.'); } },[budget,blocked]);
+  useEffect(()=>{ if(blocked) return; try { localStorage.setItem(storageKey,JSON.stringify(budget)); setSaved(true); } catch { setSaved(false); setNotice('Your changes could not be saved. Download a backup now to keep them.'); } },[budget,blocked]);
   useEffect(()=>{ if(modal) { setFormError(''); dialog.current?.showModal(); } else dialog.current?.close(); },[modal]);
-  useEffect(()=>{ const sync=(e:StorageEvent)=>{ if(e.key===KEY && e.newValue) { try { const b=JSON.parse(e.newValue); if(validateBudget(b)) {setBudget(b);setNotice('Updated from another tab.');} } catch { /* Keep the current valid plan. */ } } }; window.addEventListener('storage',sync);return ()=>window.removeEventListener('storage',sync); },[]);
+  useEffect(()=>{ const sync=(e:StorageEvent)=>{ if(e.key===storageKey && e.newValue) { try { const b=JSON.parse(e.newValue); if(validateBudget(b)) {setBudget(b);setNotice('Updated from another tab.');} } catch { /* Keep the current valid plan. */ } } }; window.addEventListener('storage',sync);return ()=>window.removeEventListener('storage',sync); },[]);
   const update=(next:Budget)=>{setBudget(next);setSaved(false);};
   const remove=(kind:'expense'|'payment'|'contribution',id:string)=>{ if(!window.confirm(kind==='expense'?'Delete this item and its payment history?':'Delete this entry?')) return; update({...budget,expenses:kind==='expense'?budget.expenses.filter(e=>e.id!==id):budget.expenses,payments:budget.payments.filter(p=>kind==='payment'?p.id!==id:kind==='expense'?p.expenseId!==id:true),contributions:kind==='contribution'?budget.contributions.filter(c=>c.id!==id):budget.contributions}); };
   function submit(e:FormEvent<HTMLFormElement>) {
@@ -42,7 +43,7 @@ export default function BudgetPlanner() {
   }
   function csv() { const cell=(s:string)=>`"${(/^[=+@\-\t\r]/.test(s)?"'"+s:s).replace(/"/g,'""')}"`; const rows=[['Category','Item','Supplier','Allocated (ZAR)','Paid (ZAR)','Outstanding (ZAR)','Due','Notes'],...budget.expenses.map(e=>[e.category,e.name,e.supplier,String(e.amount),String(paidFor(budget,e.id)),String(round(e.amount-paidFor(budget,e.id))),e.due,e.notes])];download('\uFEFF'+rows.map(r=>r.map(cell).join(',')).join('\r\n'),'wedding-budget.csv','text/csv;charset=utf-8'); }
   const upcoming=budget.expenses.filter(e=>e.amount>paidFor(budget,e.id)).sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));
-  return <div className="budget-app" data-no-translate lang="en">
+  return <div className={`budget-app${embedded ? ' budget-embedded' : ''}`} data-no-translate lang="en">
     <aside className="bp-sidebar"><Link to="/" className="bp-brand">Ewig <i>&</i> Eie<span>YOUR PLANNING SPACE</span></Link><div className="bp-side-label">A BEAUTIFUL BEGINNING</div><nav aria-label="Budget sections">{['Overview','Expenses','Savings','Settings'].map((name,i)=><button key={name} className={tab===name?'active':''} onClick={()=>setTab(name)}><span>0{i+1}</span>{name}{tab===name&&<ArrowUpRight size={16}/>}</button>)}</nav><div className="bp-side-bottom"><Heart size={22}/><p>A little planning.<br/>A lifetime together.</p><Link to="/collections"><ArrowLeft size={14}/> Back to collections</Link></div></aside>
     <div className="bp-workspace"><header className="bp-top"><span>THE WEDDING & HONEYMOON PLANNER</span><span className="bp-save"><i className={saved?'saved':''}/>{saved?'Saved on this browser':'Not saved'}</span></header>
     <div className="bp-body"><div className="bp-heading"><div><p className="bp-eyebrow">YOUR NEXT CHAPTER, THOUGHTFULLY PLANNED</p><h1>{tab==='Overview'?<>Make room for <em>forever.</em></>:tab==='Expenses'?<>Every little <em>detail.</em></>:tab==='Savings'?<>Together, it <em>adds up.</em></>:<>Make it <em>yours.</em></>}</h1><p>{budget.names||'Your wedding & honeymoon'}{budget.weddingDate?` · ${new Date(budget.weddingDate+'T12:00:00').toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'})}`:' · Start with your dates and opening savings.'}</p></div><button className="bp-button" onClick={()=>setModal({kind:tab==='Savings'?'contribution':'expense'})}><Plus size={16}/>{tab==='Savings'?'Add contribution':'Add expense'}</button></div>
