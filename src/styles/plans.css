@@ -23,3 +23,11 @@
 .plans-faq summary{cursor:pointer;padding:18px 0;font:400 22px 'Cormorant Garamond',Georgia,serif;list-style-position:outside}
 .plans-faq p{color:#5d6258;margin:0 0 18px}
 @media(max-width:900px){.plan-cards{grid-template-columns:1fr}}
+.founding{max-width:760px;margin:72px auto 0;padding:40px 44px;border:1px solid #30342d26;border-radius:4px;background:#fbf8f2}
+.founding-kicker{letter-spacing:.18em;font-size:12px;color:#8a7a5c;margin:0 0 8px}
+.founding h2{font:400 34px 'Cormorant Garamond',Georgia,serif;margin:0 0 12px}
+.founding-intro{color:#5d6258;margin:0 0 20px}
+.founding ol{margin:0 0 26px;padding-left:20px;color:#30342d}.founding li{margin:0 0 10px;line-height:1.55}
+.founding-cta{display:inline-block;padding:12px 22px;border:1px solid #30342d;color:#30342d;text-decoration:none;font-size:14px;letter-spacing:.06em}
+.founding-cta:hover{background:#30342d;color:#fbf8f2}
+@media (max-width:640px){.founding{padding:28px 22px;margin-top:52px}.founding h2{font-size:28px}}
