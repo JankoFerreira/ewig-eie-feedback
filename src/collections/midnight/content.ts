@@ -1,8 +1,7 @@
-// No faces in demo imagery: the cover is the candlelit venue, the rest are details and hands.
-import hero from '../../assets/midnight/midnight-venue.webp';
-import venue from '../../assets/midnight/midnight-table-detail.webp';
-import portrait from '../../assets/midnight/midnight-embrace.webp';
-import table from '../../assets/midnight/midnight-hands.webp';
+import hero from '../../assets/midnight/midnight-hero.webp';
+import venue from '../../assets/midnight/midnight-venue.webp';
+import portrait from '../../assets/midnight/midnight-portrait.webp';
+import table from '../../assets/midnight/midnight-table.webp';
 import detail from '../../assets/garden/garden-botanical-detail.webp';
 import type { DemoGuest } from '../../components/couple/guestModel';
 export type Language = 'en' | 'af';
@@ -50,10 +49,10 @@ export const defaultMidnight: MidnightData = {
   collection: 'midnight', version: 1, first: 'Mila Jacobs', second: 'Luca Daniels', date: '2028-11-18', venue: 'Maison Nocturne', region: 'Franschhoek', deadline: '2028-10-18',
   colors: { background: '#17191b', text: '#f3eee5', accent: '#c9b58a' }, text: textDefaults,
   media: [
-    { id: 'hero', src: hero, alt: words('The candlelit manor and long tables at blue hour', 'Die herehuis en lang tafels by kerslig in die blou uur'), caption: words('The world fell quiet.', 'Die wêreld het stil geword.'), focal: '50% 60%' },
-    { id: 'portrait', src: portrait, alt: words('An embrace in an ivory satin dress, candles behind', '’n Omhelsing in ’n ivoorsatynrok, met kerse agter'), caption: words('Just us, for a moment.', 'Net ons, vir ’n oomblik.'), focal: '50% 40%' },
-    { id: 'table', src: table, alt: words('Hands held by candlelight', 'Hande vasgehou by kerslig'), caption: words('Our favourite place: together.', 'Ons gunstelingplek: saam.'), focal: '50% 40%' },
-    { id: 'venue', src: venue, alt: words('A long table of candles, crystal and white roses', '’n Lang tafel met kerse, kristal en wit rose'), caption: words('A place to linger.', '’n Plek om langer te bly.'), focal: '50% 50%' },
+    { id: 'hero', src: hero, alt: words('Mila and Luca at the candlelit manor at blue hour', 'Mila en Luca by die herehuis in die blou uur'), caption: words('The world fell quiet.', 'Die wêreld het stil geword.'), focal: '70% 40%' },
+    { id: 'portrait', src: portrait, alt: words('An intimate portrait of Mila and Luca', '’n Intieme portret van Mila en Luca'), caption: words('Just us, for a moment.', 'Net ons, vir ’n oomblik.'), focal: '50% 40%' },
+    { id: 'table', src: table, alt: words('The same couple sharing a candid moment at the table', 'Dieselfde paartjie deel ’n spontane oomblik aan tafel'), caption: words('Our favourite place: together.', 'Ons gunstelingplek: saam.'), focal: '50% 40%' },
+    { id: 'venue', src: venue, alt: words('An imagined celebration space among the trees', '’n Denkbeeldige onthaalruimte tussen die bome'), caption: words('A place to linger.', '’n Plek om langer te bly.'), focal: '50% 50%' },
     { id: 'detail', src: detail, alt: words('Botanical details for the celebration', 'Botaniese besonderhede vir die viering'), caption: words('The smallest things.', 'Die kleinste dinge.'), focal: '50% 50%' },
   ],
   events: [

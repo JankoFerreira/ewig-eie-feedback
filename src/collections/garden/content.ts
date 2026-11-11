@@ -1,11 +1,10 @@
 import english from '../../../concepts/garden/CONTENT.en.md?raw';
 import afrikaans from '../../../concepts/garden/CONTENT.af.md?raw';
 import manifest from '../../../concepts/garden/assets.json';
-// No faces in demo imagery: the cover is the venue, the rest are details and hands.
-import hero from '../../assets/garden/garden-venue.webp';
-import portrait from '../../assets/garden/garden-hands-bouquet.webp';
-import table from '../../assets/garden/garden-table-hands.webp';
-import venue from '../../assets/garden/garden-bouquet.webp';
+import hero from '../../assets/garden/garden-hero.webp';
+import portrait from '../../assets/garden/garden-couple-reference.webp';
+import table from '../../assets/garden/garden-candid-table.webp';
+import venue from '../../assets/garden/garden-venue.webp';
 import botanical from '../../assets/garden/garden-botanical-detail.webp';
 
 export const gardenImages = { hero, portrait, table, venue, botanical };

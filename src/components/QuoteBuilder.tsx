@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Copy, Download, Sparkles } from 'lucide-react';
 import { draftQuotePrices as prices, publicFeatures } from '../config';
-import { plans, addOnPrices, type PlanId } from '../plans';
+import { plans, addOnPrices, extras as extraCatalogue, bigDaySet, type PlanId } from '../plans';
 import { downloadEstimatePdf } from '../utils/estimatePdf';
 import { useLanguage } from '../i18n';
 import { AnimatedHeading } from './WordMotion';
 
 type PackageId = 'website' | 'keepsake' | 'captured' | 'completeStory' | PlanId;
-type ExtraId = 'rsvp' | 'gallery' | 'timeline' | 'domain' | 'digitalInvitation' | 'seating' | 'budget';
+type ExtraId = string;
 const packages: { id: PackageId; en: string; af: string; descriptionEn: string; descriptionAf: string; print: boolean; photo: boolean }[] = [
   { id: 'website', en: 'The Website', af: 'Die Webwerf', descriptionEn: 'A beautiful home for your story.', descriptionAf: '’n Pragtige tuiste vir julle storie.', print: false, photo: false },
   { id: 'keepsake', en: 'The Keepsake', af: 'Die Aandenking', descriptionEn: 'Website, 100 invites & 100 menu cards.', descriptionAf: 'Webwerf, 100 uitnodigings & 100 spyskaartjies.', print: true, photo: false },
@@ -54,15 +54,17 @@ const extraOptionsAll: { id: ExtraId; en: string; af: string; price: number }[] 
   { id: 'rsvp', en: 'RSVP & couple dashboard (planned)', af: 'RSVP en paartjiepaneel (beplan)', price: prices.rsvp },
   { id: 'gallery', en: 'Photo gallery', af: 'Fotogalery', price: prices.gallery },
   { id: 'timeline', en: 'Wedding day timeline', af: 'Troudagprogram', price: prices.timeline },
-  { id: 'domain', en: 'Custom domain setup', af: 'Pasgemaakte domeinopstelling', price: prices.domain },
   { id: 'digitalInvitation', en: 'Digital invitation design', af: 'Digitale uitnodigingsontwerp', price: prices.digitalInvitation },
   { id: 'seating', en: addOnPrices.seating.name.en, af: addOnPrices.seating.name.af, price: addOnPrices.seating.price },
   { id: 'budget', en: addOnPrices.budget.name.en, af: addOnPrices.budget.name.af, price: addOnPrices.budget.price },
 ];
 const addOnIds: ExtraId[] = ['seating', 'budget'];
+// Small extras and day-of stationery from src/plans.ts, plus the Big Day Set bundle.
+const catalogueOptions = [...extraCatalogue.map(e => ({ id: e.id, en: e.name.en, af: e.name.af, price: e.price })), { id: bigDaySet.id, en: `${bigDaySet.name.en} (programme, seating chart, RSVP reminder & notice)`, af: `${bigDaySet.name.af} (program, sitplekkaart, RSVP-herinnering en -kennisgewing)`, price: bigDaySet.price }];
 const baseExtras = publicFeatures.printedStationery ? extraOptionsAll : extraOptionsAll.filter(option => !includedInPlans.includes(option.id));
 // Seating and budget are add-ons only where the chosen website does not already include them.
-const extrasFor = (id: string) => baseExtras.filter(option => !addOnIds.includes(option.id) || (plans.some(plan => plan.id === id) && !addOnPrices[option.id as 'seating' | 'budget'].includedIn.includes(id as PlanId)));
+const extrasFor = (id: string) => [...baseExtras.filter(option => !addOnIds.includes(option.id) || (plans.some(plan => plan.id === id) && !addOnPrices[option.id as 'seating' | 'budget'].includedIn.includes(id as PlanId))),
+  ...catalogueOptions.filter(option => { const item = extraCatalogue.find(e => e.id === option.id); if (item) return !item.includedIn.includes(id as PlanId); return id !== 'complete'; })];
 const money = (value: number) => `R${value.toLocaleString('en-ZA')}`;
 
 export function QuoteBuilder() {
@@ -78,7 +80,7 @@ export function QuoteBuilder() {
   const [menus, setMenus] = useState(false);
   const [hours, setHours] = useState(6);
   const [extras, setExtras] = useState<ExtraId[]>([]);
-  const extraOptions = extrasFor(packageId);
+  const extraOptions = extrasFor(packageId).filter(option => !(extras.includes(bigDaySet.id) && bigDaySet.pieces.includes(option.id)));
   const [copied, setCopied] = useState(false);
   const stepHeading = useRef<HTMLHeadingElement>(null);
 
@@ -118,7 +120,7 @@ export function QuoteBuilder() {
     setInvites(100);
     setHours(6);
   }
-  function toggleExtra(id: ExtraId) { setExtras(previous => previous.includes(id) ? previous.filter(item => item !== id) : [...previous, id]); }
+  function toggleExtra(id: ExtraId) { setExtras(previous => previous.includes(id) ? previous.filter(item => item !== id) : [...previous.filter(item => !(id === bigDaySet.id && bigDaySet.pieces.includes(item))), id]); }
   async function copy() {
     try { await navigator.clipboard.writeText(summary); setCopied(true); window.setTimeout(() => setCopied(false), 2200); } catch { setCopied(false); }
   }

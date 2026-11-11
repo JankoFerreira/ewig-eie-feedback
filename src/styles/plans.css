@@ -29,3 +29,34 @@
 .plan-card .plan-links{margin-top:auto;display:flex;flex-direction:column;gap:10px}
 .plan-card .plan-links .plan-cta{margin-top:0}
 .plan-card .plan-demo{text-align:center;font-size:13px;color:#30342d}
+.plan-card .plan-extras{padding:12px 0;border-top:1px solid #30342d1a;border-bottom:1px solid #30342d1a}
+.plan-card .plan-extras p{margin:0;font-size:12.5px;line-height:1.55;color:#6f7468}.plan-card .plan-extras strong{color:#30342d;font-size:13px}
+/* Extras catalogue */
+.xc{max-width:1180px;margin:0 auto}
+.xc-head{max-width:720px;margin:0 0 40px}
+.xc-kicker{margin:0 0 10px;font-size:10.5px;font-weight:600;letter-spacing:.3em;color:#a88b55}
+.xc h2{margin:0 0 14px;font-size:clamp(2.6rem,4.6vw,4.4rem)}.xc h2 em{font-family:'Cormorant Garamond',Georgia,serif;color:#a88b55}
+.xc-head p:last-child{color:#6f7468;margin:0}
+.xc-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,64px)}
+.xc h3{font:400 26px 'Cormorant Garamond',Georgia,serif;margin:0 0 10px}
+.xc-list{list-style:none;padding:0;margin:0}
+.xc-list li{display:grid;grid-template-columns:1fr auto 70px;gap:14px;align-items:center;padding:12px 0;border-top:1px solid #30342d1a;font-size:14.5px}
+.xc-list strong{text-align:right;font-weight:500}
+.xc-incl{display:flex;gap:4px}.xc-incl i{width:22px;height:22px;display:grid;place-items:center;font:600 9.5px 'DM Sans',sans-serif;font-style:normal;border:1px solid #30342d22;color:#30342d55}
+.xc-incl i.is-on{background:#30342d;border-color:#30342d;color:#fffdf8}
+.xc-bundle{margin-top:22px;padding:22px 24px;border:1px solid #a88b55;background:#fffdf8}
+.xc-bundle h4{margin:0 0 6px;font:400 28px 'Cormorant Garamond',Georgia,serif}.xc-bundle p{margin:0 0 8px;font-size:14px;color:#6f7468}
+.xc-price s{color:#9a9c94}.xc-price strong{font:400 26px 'Cormorant Garamond',Georgia,serif;color:#30342d}.xc-price span{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#a88b55}
+.xc-note{font-size:12.5px!important;color:#8a8d84!important;margin:6px 0 0!important}
+.xc-bottom{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(24px,4vw,64px);margin-top:64px;padding-top:44px;border-top:1px solid #30342d22}
+.xc-pay ul{list-style:none;padding:0;margin:0;display:grid;gap:12px;font-size:14.5px}.xc-pay li{display:grid;grid-template-columns:20px 1fr;gap:8px}.xc-pay svg{color:#a88b55;margin-top:4px}
+.xc-compare table{width:100%;border-collapse:collapse;font-size:14px}
+.xc-compare th,.xc-compare td{padding:12px 10px;border-top:1px solid #30342d1a;text-align:left;vertical-align:top}
+.xc-compare thead th{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#6f7468;border-top:0}
+.xc-compare td:last-child{color:#30342d;font-weight:500}.xc-compare td:nth-child(2){color:#8a8d84}
+@media(max-width:820px){.xc-grid,.xc-bottom{grid-template-columns:1fr}.xc-list li{grid-template-columns:1fr auto;}.xc-list li strong{grid-column:2;grid-row:1}.xc-incl{grid-column:1}}
+html[data-theme=dark] .xc-list li,html[data-theme=dark] .xc-compare th,html[data-theme=dark] .xc-compare td,html[data-theme=dark] .plan-card .plan-extras{border-color:#efe9dd1f}
+html[data-theme=dark] .xc-bundle{background:#171a18}
+html[data-theme=dark] .xc-incl i{border-color:#efe9dd33;color:#efe9dd55}html[data-theme=dark] .xc-incl i.is-on{background:#e9e1cf;border-color:#e9e1cf;color:#121513}
+html[data-theme=dark] .xc-price strong,html[data-theme=dark] .xc-compare td:last-child,html[data-theme=dark] .plan-card .plan-extras strong{color:#efe9dd}
+html[data-theme=dark] .xc-head p:last-child,html[data-theme=dark] .xc-bundle p,html[data-theme=dark] .plan-card .plan-extras p{color:#a9ab9f}

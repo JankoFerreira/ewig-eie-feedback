@@ -83,3 +83,39 @@ export const addOns = {
 export const venuePartnerDiscount = { active: false, note: l('A venue-partner discount is planned for couples booking through a partner venue. It applies only once real agreements exist.', '’n Venuevennootafslag word beplan vir paartjies wat deur ’n vennootvenue bespreek. Dit geld eers wanneer werklike ooreenkomste bestaan.') };
 
 
+
+// ---- Small extras and day-of digital stationery (draft prices) ----
+// Each package already includes some of these; cards show what is included and what it is worth.
+export type ExtraGroup = 'website' | 'dayof';
+export type Extra = { id: string; group: ExtraGroup; name: Line; price: number; includedIn: PlanId[] };
+export const extras: Extra[] = [
+  { id: 'countdown', group: 'website', name: l('Countdown to the day', 'Aftelling tot die dag'), price: 150, includedIn: ['essential', 'celebration', 'complete'] },
+  { id: 'map', group: 'website', name: l('Venue map', 'Venuekaart'), price: 150, includedIn: ['essential', 'celebration', 'complete'] },
+  { id: 'songs', group: 'website', name: l('Song requests from guests', 'Liedjieversoeke van gaste'), price: 150, includedIn: ['celebration', 'complete'] },
+  { id: 'registry', group: 'website', name: l('Gift registry link', 'Geskenkregister-skakel'), price: 150, includedIn: ['celebration', 'complete'] },
+  { id: 'travel', group: 'website', name: l('Travel, stay & things to do', 'Reis, verblyf en dinge om te doen'), price: 300, includedIn: ['celebration', 'complete'] },
+  { id: 'bridalParty', group: 'website', name: l('Bridal party & family introductions', 'Bruidsparty en familie-bekendstelling'), price: 250, includedIn: ['complete'] },
+  { id: 'voice', group: 'website', name: l('Personal voice message for guests', 'Persoonlike stemboodskap vir gaste'), price: 300, includedIn: ['complete'] },
+  { id: 'childhood', group: 'website', name: l('Childhood photo section', 'Kinderfoto-afdeling'), price: 250, includedIn: [] },
+  { id: 'morePhotos', group: 'website', name: l('10 more photos', '10 ekstra foto’s'), price: 250, includedIn: [] },
+  { id: 'domain', group: 'website', name: l('Your own domain, bought for you', 'Julle eie domein, vir julle gekoop'), price: 400, includedIn: ['complete'] },
+  { id: 'programme', group: 'dayof', name: l('Wedding day programme', 'Troudagprogram'), price: 700, includedIn: ['complete'] },
+  { id: 'seatingChart', group: 'dayof', name: l('Digital seating chart', 'Digitale sitplekkaart'), price: 500, includedIn: ['complete'] },
+  { id: 'rsvpReminder', group: 'dayof', name: l('RSVP reminder', 'RSVP-herinnering'), price: 450, includedIn: ['celebration', 'complete'] },
+  { id: 'rsvpDeadline', group: 'dayof', name: l('RSVP deadline notice', 'RSVP-sperdatumkennisgewing'), price: 450, includedIn: ['complete'] },
+  { id: 'thankYou', group: 'dayof', name: l('Thank-you card after the day', 'Dankiekaartjie ná die dag'), price: 300, includedIn: ['complete'] },
+];
+/** The Big Day Set: the four day-of pieces together, for less. */
+export const bigDaySet = { id: 'bigDaySet', name: l('The Big Day Set', 'Die Groot Dag-stel'), pieces: ['programme', 'seatingChart', 'rsvpReminder', 'rsvpDeadline'], price: 1750 };
+export const bigDaySetValue = () => bigDaySet.pieces.reduce((sum, id) => sum + (extras.find(e => e.id === id)?.price ?? 0), 0);
+export const includedExtras = (plan: PlanId) => extras.filter(e => e.includedIn.includes(plan));
+export const includedValue = (plan: PlanId) => includedExtras(plan).reduce((sum, e) => sum + e.price, 0);
+/** How payment works (shown on Pricing). */
+export const paymentTerms = {
+  deposit: 0.5,
+  lines: [
+    l('50% deposit to start, the balance before your website goes live.', '50% deposito om te begin, die balans voordat julle webwerf regstreeks gaan.'),
+    l('Paid by EFT against an invoice. No subscriptions.', 'Betaal per EFT teen ’n faktuur. Geen intekeninge nie.'),
+    l('Already own a domain? We connect it for free.', 'Besit julle reeds ’n domein? Ons koppel dit gratis.'),
+  ],
+};

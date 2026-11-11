@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { addOnPrices, formatRand, hostingLine, mediaLine, plans } from '../plans';
+import { addOnPrices, formatRand, hostingLine, includedExtras, includedValue, mediaLine, plans } from '../plans';
 import '../styles/plans.css';
 
 /** The three websites. Each design is its own package and lists only what it adds to the one before. */
@@ -18,6 +18,7 @@ export function PlanCards({ af, compact = false }: { af: boolean; compact?: bool
         {i > 0 && <li className="plan-inherit">{t(`All ${plans[i - 1].designName.en} features`, `Alle ${plans[i - 1].designName.af}-funksies`)}</li>}
         {(compact ? plan.includes.slice(0, 3) : plan.includes).map(line => <li key={line.en}>{af ? line.af : line.en}</li>)}
       </ul>
+      {!compact && <div className="plan-extras"><p><strong>{t(`Extras worth ${formatRand(includedValue(plan.id))} included`, `Ekstras ter waarde van ${formatRand(includedValue(plan.id))} ingesluit`)}</strong></p><p>{includedExtras(plan.id).map(e => af ? e.name.af : e.name.en).join(' · ')}</p></div>}
       {!compact && <p className="plan-hosting">{hostingLine(plan, af)}</p>}
       {!compact && addable.length > 0 && <p className="plan-addons">{t('Add-ons: ', 'Byvoegings: ')}{addable.map(id => `${af ? addOnPrices[id].name.af : addOnPrices[id].name.en} +${formatRand(addOnPrices[id].price)}`).join(' · ')}</p>}
       <div className="plan-links">

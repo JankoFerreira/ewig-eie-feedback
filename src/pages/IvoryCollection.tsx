@@ -142,15 +142,13 @@ export default function IvoryCollection() {
 
       {view === 'invitation' && <section className="iv-invitation" aria-labelledby="iv-invite-title">
         <div className="iv-invite-controls">
-          <p className="iv-kicker">{t('PERSONALISED INVITATION', 'GEPERSONALISEERDE UITNODIGING')}</p>
-          <h1 id="iv-invite-title">{t('One invitation per household.', 'Een uitnodiging per huishouding.')}</h1>
-          <p>{t('Each household sees its own name and only the gatherings it is invited to.', 'Elke huishouding sien sy eie naam en net die geleenthede waarna hy genooi is.')}</p>
-          <label className="iv-field">{t('Preview for', 'Voorskou vir')}<select value={household} onChange={e => setSearch({ household: e.target.value }, { replace: true })}>{ivoryHouseholds.map(h => <option key={h.id} value={h.id}>{h.name}</option>)}</select></label>
+          <p className="iv-kicker">{t('YOU ARE INVITED', 'JULLE IS GENOOI')}</p>
+          <h1 id="iv-invite-title">{t('A weekend in the Winelands.', '’n Naweek in die Wynland.')}</h1>
+          <p>{t('Open your invitation for the details, then discover the weekend.', 'Maak julle uitnodiging oop vir die besonderhede, en ontdek dan die naweek.')}</p>
           <div className="iv-invite-actions">
             <button type="button" ref={openButton} className="iv-button" onClick={() => { if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setRevealed(true); return; } setOpening(true); }}>{revealed ? t('Replay the opening', 'Speel die opening weer') : t('Open the invitation', 'Maak die uitnodiging oop')}</button>
             {!revealed && <button type="button" className="iv-link" onClick={() => setRevealed(true)}>{t('Show the card without the opening', 'Wys die kaart sonder die opening')}</button>}
           </div>
-          <p className="iv-fine">{t('Simulated. Real private links per household need a production backend.', 'Gesimuleer. Werklike private skakels per huishouding benodig ’n produksiebediener.')}</p>
         </div>
         <div className={`iv-envelope ${revealed ? 'is-revealed' : ''}`}>
           <div className="iv-envelope-back" aria-hidden="true"/>
