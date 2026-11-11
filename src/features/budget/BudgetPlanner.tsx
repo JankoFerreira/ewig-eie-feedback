@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowUpRight, Check, Download, Heart, Plus, Trash2, Wallet, X } from 'lucide-react';
 import { forecast, initialBudget, money, paidFor, round, sum, today, totals, validateBudget, type Budget, type Expense } from './model';
 import './budget.css';
+import { Cursor } from '../../components/Chrome';
 const KEY = 'ewig-eie-budget-v1';
 type Modal = { kind: 'expense'; item?: Expense } | { kind: 'payment'; item: Expense } | { kind: 'contribution' } | null;
 function download(content: string, filename: string, type: string) { const url = URL.createObjectURL(new Blob([content], {type})); const a = document.createElement('a'); a.href=url; a.download=filename; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); }
@@ -43,7 +44,7 @@ export default function BudgetPlanner({ storageKey = KEY, embedded = false }: { 
   }
   function csv() { const cell=(s:string)=>`"${(/^[=+@\-\t\r]/.test(s)?"'"+s:s).replace(/"/g,'""')}"`; const rows=[['Category','Item','Supplier','Allocated (ZAR)','Paid (ZAR)','Outstanding (ZAR)','Due','Notes'],...budget.expenses.map(e=>[e.category,e.name,e.supplier,String(e.amount),String(paidFor(budget,e.id)),String(round(e.amount-paidFor(budget,e.id))),e.due,e.notes])];download('\uFEFF'+rows.map(r=>r.map(cell).join(',')).join('\r\n'),'wedding-budget.csv','text/csv;charset=utf-8'); }
   const upcoming=budget.expenses.filter(e=>e.amount>paidFor(budget,e.id)).sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));
-  return <div className={`budget-app${embedded ? ' budget-embedded' : ''}`} data-no-translate lang="en">
+  return <div className={`budget-app${embedded ? ' budget-embedded' : ' bp-custom-pointer'}`} data-no-translate lang="en">
     <aside className="bp-sidebar"><Link to="/" className="bp-brand">Ewig <i>&</i> Eie<span>YOUR PLANNING SPACE</span></Link><div className="bp-side-label">A BEAUTIFUL BEGINNING</div><nav aria-label="Budget sections">{['Overview','Expenses','Savings','Settings'].map((name,i)=><button key={name} className={tab===name?'active':''} onClick={()=>setTab(name)}><span>0{i+1}</span>{name}{tab===name&&<ArrowUpRight size={16}/>}</button>)}</nav><div className="bp-side-bottom"><Heart size={22}/><p>A little planning.<br/>A lifetime together.</p><Link to="/collections"><ArrowLeft size={14}/> Back to collections</Link></div></aside>
     <div className="bp-workspace"><header className="bp-top"><span>THE WEDDING & HONEYMOON PLANNER</span><span className="bp-save"><i className={saved?'saved':''}/>{saved?'Saved on this browser':'Not saved'}</span></header>
     <div className="bp-body"><div className="bp-heading"><div><p className="bp-eyebrow">YOUR NEXT CHAPTER, THOUGHTFULLY PLANNED</p><h1>{tab==='Overview'?<>Make room for <em>forever.</em></>:tab==='Expenses'?<>Every little <em>detail.</em></>:tab==='Savings'?<>Together, it <em>adds up.</em></>:<>Make it <em>yours.</em></>}</h1><p>{budget.names||'Your wedding & honeymoon'}{budget.weddingDate?` · ${new Date(budget.weddingDate+'T12:00:00').toLocaleDateString('en-ZA',{day:'numeric',month:'long',year:'numeric'})}`:' · Start with your dates and opening savings.'}</p></div><button className="bp-button" onClick={()=>setModal({kind:tab==='Savings'?'contribution':'expense'})}><Plus size={16}/>{tab==='Savings'?'Add contribution':'Add expense'}</button></div>
@@ -70,7 +71,7 @@ export default function BudgetPlanner({ storageKey = KEY, embedded = false }: { 
       {modal.kind==='expense'&&<label>Notes<textarea name="notes" maxLength={2000} defaultValue={modal.item?.notes} placeholder="Quote details, payment terms, reference…"/></label>}
       {modal.kind==='contribution'&&<label>Status<select name="received"><option value="no">Planned — not received yet</option><option value="yes">Already received</option></select></label>}
       {formError&&<p role="alert" className="bp-negative">{formError}</p>}<button className="bp-button" type="submit">{modal.kind==='payment'?'Save payment':'Save entry'} <Check size={16}/></button><button type="button" className="bp-cancel" onClick={()=>setModal(null)}>Cancel</button>
-    </form>}</div></dialog>
+    </form>}</div></dialog>{!embedded && <Cursor portalTarget={modal && dialog.current ? dialog.current : document.body}/> }
   </div>;
 }
 
