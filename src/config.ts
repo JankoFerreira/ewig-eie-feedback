@@ -24,7 +24,8 @@ export const draftQuotePrices = {
   domain: 400,
   digitalInvitation: 550,
 };
-export const conceptPrices = { garden: 2000, ivory: 2800, midnight: 3500 };
+// Ivory is the flagship. Its planned R6,000 venue-partner price stays inactive (see collections/ivory/content.ts).
+export const conceptPrices = { garden: 2000, ivory: 8000, midnight: 5600 };
 export const images = {
  designs: designStationery,
  stationery: studioEditorial,

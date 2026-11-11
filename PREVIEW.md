@@ -4,6 +4,7 @@ Run `npm run dev -- --host 127.0.0.1 --port 5175`.
 
 - `/collections/garden`: editable Garden website, matching invitation, reusable dashboard demo.
 - `/invitation-preview`: standalone Eternal Ribbon preview.
+- `/collections/ivory`: flagship Ivory weekend — website, `?view=invitation&household=iv-h05`, `?view=stationery`, `?view=dashboard`.
 
 The invitation uses generated photographic cotton paper, translucent silk and champagne wax assets. A textured fabric mesh provides the pull-through effect; a raster fallback supports devices without WebGL. Skip, Escape and reduced motion bypass the opening. The green heart pointer stays visible above the invitation and in the details editor.
 

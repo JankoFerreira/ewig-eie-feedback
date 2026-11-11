@@ -50,11 +50,8 @@ export const defaultGardenDraft: GardenDraft = {
   first:'Clara',second:'Ruben',date:'2027-10-16',venue:'Die Varinghuis',palette:'sage',
   headlineEn:gardenCopy.en.headline,headlineAf:gardenCopy.af.headline,storyEn:'',storyAf:'',
 };
-export function validDate(value: string) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const date = new Date(`${value}T12:00:00Z`);
-  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0,10) === value;
-}
+import { validDate } from '../shared/dates';
+export { validDate };
 export function readGardenDraft(): GardenDraft {
   try {
     const saved: unknown = JSON.parse(localStorage.getItem('ewig-garden-draft-v1') ?? 'null');

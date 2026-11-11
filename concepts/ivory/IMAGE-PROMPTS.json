@@ -1,0 +1,25 @@
+{
+  "collection": "ivory",
+  "status": "brief-ready-not-generated",
+  "note": "Placeholder plates ship in src/assets/ivory/. Generate 'portrait' first and pass it as the identity reference for every couple image. Fictional people; do not resemble real individuals.",
+  "global_style": "Editorial wedding photography, natural daylight, warm ivory and soft stone grade, deep olive shadows lifted, delicate champagne highlights, fine film grain, shallow depth of field, calm composition with generous negative space, no text, no logos, no watermark",
+  "negative": "text, lettering, watermark, logo, heavy vignette, sepia, oversaturated colour, harsh flash, crowd, plastic skin, extra fingers, distorted glasses",
+  "identity": {
+    "amelie": "late-twenties woman, light olive skin, grey-green eyes, straight dark-blonde hair in a low soft chignon with loose strands, natural makeup, ivory silk crepe long-sleeved column dress with bateau neckline, single pearl drop earrings",
+    "james": "early-thirties man, fair skin, light stubble, brown eyes, short dark-brown side-parted hair, rimless round glasses, soft stone wool-linen suit, ivory open-collar shirt, no tie, small olive-sprig boutonniere"
+  },
+  "images": [
+    { "id": "portrait", "file": "ivory-portrait.webp", "size": "1100x1375", "focal": "50% 40%", "reference": null,
+      "prompt": "Waist-up portrait of {amelie} and {james} standing close in a restored reading room beside a tall window with sheer linen curtains, soft side light, both faces fully visible, quiet half-smiles, bookshelves softly out of focus" },
+    { "id": "hero", "file": "ivory-hero.webp", "size": "1600x1067", "focal": "62% 45%", "reference": "portrait",
+      "prompt": "{amelie} and {james} walking slowly arm in arm past a limewashed chapel wall with an arched wooden doorway in early morning light, couple placed right of centre, long soft shadows, calm empty wall on the left third, gravel courtyard, olive branch softly out of focus in the foreground" },
+    { "id": "venue", "file": "ivory-venue.webp", "size": "1600x1067", "focal": "60% 50%", "reference": null,
+      "prompt": "Empty Cape Winelands farmhouse estate: whitewashed gabled farmhouse and small chapel among vineyards and old olive trees, mountains in soft haze, late-morning light, no people, architectural calm" },
+    { "id": "ceremony", "file": "ivory-ceremony.webp", "size": "1100x1375", "focal": "50% 50%", "reference": null,
+      "prompt": "Gravel aisle between two rows of old olive trees leading to a small whitewashed chapel with an arched door, simple ivory chairs, no guests, soft afternoon light" },
+    { "id": "detail", "file": "ivory-detail.webp", "size": "1100x1375", "focal": "50% 45%", "reference": null,
+      "prompt": "Overhead flat lay of a blank ivory cotton-paper wedding stationery suite with deckled edges, champagne silk ribbon, pale champagne wax seal with an embossed abstract monogram, natural linen cloth, single olive sprig, no legible text" },
+    { "id": "table", "file": "ivory-table.webp", "size": "1600x1067", "focal": "50% 55%", "reference": null,
+      "prompt": "Long dinner table inside a whitewashed barn at dusk, natural linen, beeswax taper candles, olive branches down the centre, clear glassware, warm candlelight, no people, symmetrical perspective" }
+  ]
+}

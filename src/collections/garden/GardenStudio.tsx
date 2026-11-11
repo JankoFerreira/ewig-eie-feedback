@@ -1,17 +1,12 @@
+import { createNamedDraftStore } from '../shared/draftStorage';
+import { useHistory } from '../shared/useHistory';
 import { Children, createContext, useContext, cloneElement, isValidElement, useEffect, useRef, useState, type ReactNode, type ReactElement } from 'react';
 import { defaultGardenDraft, readGardenDraft, type GardenDraft } from './content';
 export type StudioState = { draft: GardenDraft; edits: Record<string,string> };
 const initial = ():StudioState=>({draft:readGardenDraft(),edits:{}});
-export function useGardenStudio(){
- const [state,setState]=useState(initial);const [past,setPast]=useState<StudioState[]>([]);const [future,setFuture]=useState<StudioState[]>([]);
- function change(next:StudioState){setPast(p=>[...p.slice(-59),state]);setState(next);setFuture([]);}
- function undo(){const previous=past.at(-1);if(!previous)return;setFuture(f=>[state,...f]);setState(previous);setPast(p=>p.slice(0,-1));}
- function redo(){const next=future[0];if(!next)return;setPast(p=>[...p,state]);setState(next);setFuture(f=>f.slice(1));}
- return {state,change,undo,redo,canUndo:!!past.length,canRedo:!!future.length};
-}
-async function database(){return new Promise<IDBDatabase>((resolve,reject)=>{const req=indexedDB.open('ewig-garden-studio',1);req.onupgradeneeded=()=>req.result.createObjectStore('drafts',{keyPath:'name'});req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
-async function savedDrafts(){const db=await database();return new Promise<{name:string;state:StudioState}[]>((resolve,reject)=>{const tx=db.transaction('drafts','readonly');const req=tx.objectStore('drafts').getAll();req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);tx.oncomplete=()=>db.close();});}
-async function saveDraft(name:string,state:StudioState){const db=await database();return new Promise<void>((resolve,reject)=>{const tx=db.transaction('drafts','readwrite');tx.objectStore('drafts').put({name,state});tx.oncomplete=()=>{db.close();resolve();};tx.onerror=()=>{db.close();reject(tx.error);};});}
+export function useGardenStudio(){ return useHistory(initial); }
+const { list: savedDrafts, save: saveDraft } = createNamedDraftStore<StudioState>('ewig-garden-studio');
+
 type CanvasSettings={edits:Record<string,string>;onEdit:(key:string,value:string,image:boolean)=>void;active:boolean;language:string};
 const StudioContext=createContext<CanvasSettings|null>(null);
 export function EditableChunk({children,id}:{children:ReactNode;id:string}){const settings=useContext(StudioContext);return settings?<StudioCanvas {...settings} base={id}>{children}</StudioCanvas>:<>{children}</>;}

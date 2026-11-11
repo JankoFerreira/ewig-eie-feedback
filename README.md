@@ -60,3 +60,12 @@ The GitHub Pages version is a public design preview for feedback. Its package pr
 ## Garden Collection
 
 `/collections/garden` includes the fictional Clara & Ruben website, photographic envelope opening, bilingual inline content/photo editor, undo/redo, named browser drafts and JSON backup import/export. The template layout remains fixed. Sample RSVP responses feed the reusable dashboard and reset on reload. See `concepts/garden/INTEGRATION.md` for the backend handoff and current limits.
+
+## Ivory Collection (flagship)
+
+`/collections/ivory` presents the fictional Amélie & James wedding weekend at the fictional Maison Aveline (Cape Winelands, 9–11 March 2029). R8,000; the planned R6,000 venue-partner price is inactive until real agreements exist. Photography, physical printing and unlimited bespoke development are not included.
+
+Views: website, personalised household invitation (monogram + card reveal on the shared Eternal Ribbon opening), coordinated digital stationery and a capability-based planning dashboard (guests, households, catering, seating, planner exports and print pack). The editor covers every word in English and Afrikaans, photographs, colours (with live contrast checks), schedules, venue, meals and tables, with undo/redo, named drafts in a separate `ewig-ivory-studio-v1` database and versioned JSON backups. Guests, replies and seating are fictional demo data that reset on reload; nothing is sent. The six photographs are labelled placeholder plates until the brief in `concepts/ivory/IMAGE-PROMPTS.json` is generated. See `concepts/ivory/INTEGRATION.md` for the backend handoff.
+
+Verification: `npm run build`; `node tests/run-ivory.mjs`; `node tests/run-midnight.mjs`.
+
