@@ -2,8 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 
 /**
  * A satin ribbon drawn as a lit 3D band: it twists along its length, the face catches a soft sheen,
- * the back is a shade darker, and it casts a blurred shadow. It is still, and turns a little only
- * as the visitor scrolls past (never for reduced motion). Pure SVG, no libraries.
+ * the back is a shade darker, and it casts a blurred shadow. Pure SVG, rendered once as an image.
  */
 type Tone = 'light' | 'dark';
 type Vec = [number, number];
@@ -60,54 +59,48 @@ function geometry(pts: Vec[], width: number, twists: number, phase: number, tone
   }
   return { edgesA, edgesB, colours };
 }
-const quad = (a: Vec, b: Vec, c: Vec, d: Vec) => `${a[0].toFixed(1)},${a[1].toFixed(1)} ${b[0].toFixed(1)},${b[1].toFixed(1)} ${c[0].toFixed(1)},${c[1].toFixed(1)} ${d[0].toFixed(1)},${d[1].toFixed(1)}`;
+const pt = (p: Vec) => `${p[0].toFixed(1)},${p[1].toFixed(1)}`;
 
-type Registry = { current: Set<(p: number) => void> };
-function Band({ curves, width, twists, tone, phase, idPrefix, registry }: { curves: Vec[][]; width: number; twists: number; tone: Tone; phase: { current: number }; idPrefix: string; registry: Registry }) {
-  const pts = useMemo(() => sample(curves, SEGMENTS), [curves]);
-  const polys = useRef<(SVGPolygonElement | null)[]>([]);
-  const shadow = useRef<SVGPathElement>(null);
-  const edgeA = useRef<SVGPolylineElement>(null);
-  const edgeB = useRef<SVGPolylineElement>(null);
-  const draw = (ph: number) => {
-    const g = geometry(pts, width, twists, ph, tone);
-        for (let i = 0; i < pts.length - 1; i++) {
-      const el = polys.current[i]; if (!el) continue;
-      el.setAttribute('points', quad(g.edgesA[i], g.edgesA[i + 1], g.edgesB[i + 1], g.edgesB[i]));
-      el.setAttribute('fill', g.colours[i]); el.setAttribute('stroke', g.colours[i]);
-    }
-    const outline = `M${g.edgesA.map(p => p.map(v => v.toFixed(1)).join(',')).join('L')}L${[...g.edgesB].reverse().map(p => p.map(v => v.toFixed(1)).join(',')).join('L')}Z`;
-    shadow.current?.setAttribute('d', outline);
-    edgeA.current?.setAttribute('points', g.edgesA.map(p => p.join(',')).join(' '));
-    edgeB.current?.setAttribute('points', g.edgesB.map(p => p.join(',')).join(' '));
-  };
-  useEffect(() => { draw(phase.current); registry.current.add(draw); return () => { registry.current.delete(draw); }; }); // eslint-disable-line react-hooks/exhaustive-deps
-  return <g data-ribbon-band={idPrefix}>
-    <path ref={shadow} fill={PALETTE[tone].shadow} filter={`url(#${idPrefix}-shadow)`} transform="translate(10 26)"/>
-    {pts.slice(0, -1).map((_, i) => <polygon key={i} ref={el => { polys.current[i] = el; }} strokeWidth={1.1} strokeLinejoin="round" shapeRendering="geometricPrecision"/>)}
-    <polyline ref={edgeA} fill="none" stroke={PALETTE[tone].edge} strokeWidth={0.8}/>
-    <polyline ref={edgeB} fill="none" stroke={PALETTE[tone].edge} strokeWidth={0.5} strokeOpacity={0.6}/>
-  </g>;
+/** One band as SVG markup: blurred shadow, shaded slices, fine edges. */
+function bandSvg(curves: Vec[][], width: number, twists: number, phase: number, tone: Tone, shadowId: string) {
+  const pts = sample(curves, SEGMENTS);
+  const g = geometry(pts, width, twists, phase, tone);
+  const outline = `M${g.edgesA.map(pt).join('L')}L${[...g.edgesB].reverse().map(pt).join('L')}Z`;
+  let slices = '';
+  for (let i = 0; i < pts.length - 1; i++) slices += `<polygon points="${pt(g.edgesA[i])} ${pt(g.edgesA[i + 1])} ${pt(g.edgesB[i + 1])} ${pt(g.edgesB[i])}" fill="${g.colours[i]}" stroke="${g.colours[i]}" stroke-width="1.1" stroke-linejoin="round"/>`;
+  const { shadow, edge } = PALETTE[tone];
+  return `<path d="${outline}" fill="${shadow}" filter="url(#${shadowId})" transform="translate(10 26)"/>${slices}`
+    + `<polyline points="${g.edgesA.map(pt).join(' ')}" fill="none" stroke="${edge}" stroke-width=".8"/>`
+    + `<polyline points="${g.edgesB.map(pt).join(' ')}" fill="none" stroke="${edge}" stroke-width=".5" stroke-opacity=".6"/>`;
 }
 
+/** The whole ribbon as one SVG image, built once per tone and cached. */
+const cache = new Map<Tone, string>();
+function ribbonImage(tone: Tone) {
+  if (!cache.has(tone)) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420"><defs><filter id="s" x="-10%" y="-30%" width="120%" height="160%"><feGaussianBlur stdDeviation="14"/></filter></defs>`
+      + bandSvg(TAIL, 58, 1.25, 0.9, tone, 's') + bandSvg(MAIN, 78, 2.5, 0.9, tone, 's') + '</svg>';
+    cache.set(tone, `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`);
+  }
+  return cache.get(tone)!;
+}
+
+/**
+ * Drawn once into a single image, so the browser paints it once. While the section is on screen,
+ * scrolling only slides and tilts that image slightly (a GPU transform: no repainting, no lag).
+ */
 export function Ribbon({ className = '', tone = 'light' }: { className?: string; tone?: Tone }) {
-  const svg = useRef<SVGSVGElement>(null);
-  const phase = useRef(0.6);
-  const id = useRef(`rb${Math.random().toString(36).slice(2, 8)}`).current;
-  const registry = useRef(new Set<(p: number) => void>());
-  // Still by default. While the section is on screen, scrolling turns the ribbon a little (one redraw per frame at most).
+  const img = useRef<HTMLImageElement>(null);
+  const src = useMemo(() => ribbonImage(tone), [tone]);
   useEffect(() => {
-    const el = svg.current; if (!el) return;
+    const el = img.current; if (!el) return;
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
     let visible = false, queued = 0;
     const update = () => {
       queued = 0;
       const r = el.getBoundingClientRect();
-      const progress = (window.innerHeight - r.top) / (window.innerHeight + r.height); // 0 entering → 1 leaving
-      const next = 0.6 + Math.max(0, Math.min(1, progress)) * 1.6;
-      if (Math.abs(next - phase.current) < 0.004) return;
-      phase.current = next;
-      registry.current.forEach(fn => fn(next));
+      const progress = Math.max(0, Math.min(1, (window.innerHeight - r.top) / (window.innerHeight + r.height))) - 0.5;
+      el.style.transform = `translate3d(${(progress * -60).toFixed(1)}px, ${(progress * 34).toFixed(1)}px, 0) rotate(${(progress * -2.4).toFixed(2)}deg) scale(1.08)`;
     };
     const onScroll = () => { if (visible && !queued) queued = requestAnimationFrame(update); };
     const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) onScroll(); });
@@ -115,9 +108,5 @@ export function Ribbon({ className = '', tone = 'light' }: { className?: string;
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => { io.disconnect(); window.removeEventListener('scroll', onScroll); cancelAnimationFrame(queued); };
   }, []);
-  return <svg ref={svg} className={`ribbon-ornament ribbon-${tone} ${className}`} viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-    <defs><filter id={`${id}-shadow`} x="-10%" y="-30%" width="120%" height="160%"><feGaussianBlur stdDeviation="14"/></filter></defs>
-    <Band curves={TAIL} width={58} twists={1.25} tone={tone} phase={phase} idPrefix={`${id}-tail`} registry={registry}/>
-    <Band curves={MAIN} width={78} twists={2.5} tone={tone} phase={phase} idPrefix={`${id}-main`} registry={registry}/>
-  </svg>;
+  return <img ref={img} src={src} alt="" aria-hidden="true" decoding="async" className={`ribbon-ornament ribbon-${tone} ${className}`}/>;
 }

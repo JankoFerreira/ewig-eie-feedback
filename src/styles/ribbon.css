@@ -1,8 +1,7 @@
-/* Satin ribbon ornament (Ribbon.tsx): a lit, twisting band behind the closing and call-to-action sections. */
-.ribbon-ornament{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+/* Satin ribbon ornament (Ribbon.tsx): one pre-drawn image; scrolling only moves it with a GPU transform. */
+.ribbon-ornament{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;z-index:0;transform:scale(1.08);will-change:transform;user-select:none}
 .callout .ribbon-ornament{opacity:.62}
 .minimal-final .ribbon-ornament{opacity:.7}
 html[data-theme=dark] .callout .ribbon-ornament{opacity:.5}
-@media (prefers-reduced-motion:no-preference){.ribbon-ornament{animation:ribbon-in 2.4s cubic-bezier(.3,.6,.2,1) both}}
-@keyframes ribbon-in{from{opacity:0;transform:translateY(18px)}}
+.callout,.minimal-final{overflow:hidden}
 .callout>*:not(.ribbon-ornament),.minimal-final>*:not(.ribbon-ornament){position:relative;z-index:1}
